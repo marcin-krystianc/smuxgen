@@ -12,115 +12,115 @@ URL 	http://code.google.com/p/smuxgen/
 
 1. Opis programu.
 
-SMUXGEN jest darmowym programem s³u¿¹cym do u³atwienia procesu tworzenia w³asnych 
-kursów w programie SuperMemo UX. Kursy generowane s¹ na podstawie pliku tekstowego.
-Dodatkowo istnieje mo¿liwoœæ automatycznego pobierania obrazków z internetu 
+SMUXGEN jest darmowym programem sÅ‚uÅ¼Ä…cym do uÅ‚atwienia procesu tworzenia wÅ‚asnych 
+kursÃ³w w programie SuperMemo UX. Kursy generowane sÄ… na podstawie pliku tekstowego.
+Dodatkowo istnieje moÅ¼liwoÅ›Ä‡ automatycznego pobierania obrazkÃ³w z internetu 
 i generowania pliku mp3 z lektorem. SMUXGEN nie posiada interfejsu graficznego,
-jego dzia³anie opiera siê oprzetwarzanie wsadowe.
+jego dziaÅ‚anie opiera siÄ™ o przetwarzanie wsadowe.
 
 2. Metoda SuperMemoczyli dlaczego warto. (http://www.supermemo.pl/opis_metody)
 
-SuperMemo to wspomagana komputerowo metoda uczenia siê opracowana na bazie 
-d³ugoletnich badañ nad pamiêci¹ d³ugotrwa³¹ i czynnikami odpowiedzialnymi 
-za skuteczne zapamiêtywanie nowych informacji. G³ównym za³o¿eniem metody jest 
-zapewnienie osobie ucz¹cej siê optymalnych odstêpów pomiêdzy poszczególnymi 
-powtórkami materia³u. Codzienna pó³godzinna nauka pozwala przyswoiæ podstawowy 
-zasób s³ów z dowolnego jêzyka obcego (3000 wyrazów, zwi¹zków frazeologicznych 
-i form gramatycznych) w czasie nie d³u¿szym ni¿ jeden miesi¹c.
+SuperMemo to wspomagana komputerowo metoda uczenia siÄ™ opracowana na bazie 
+dÅ‚ugoletnich badaÅ„ nad pamiÄ™ciÄ… dÅ‚ugotrwaÅ‚Ä… i czynnikami odpowiedzialnymi 
+za skuteczne zapamiÄ™tywanie nowych informacji. GÅ‚Ã³wnym zaÅ‚oÅ¼eniem metody jest 
+zapewnienie osobie uczÄ…cej siÄ™ optymalnych odstÄ™pÃ³w pomiÄ™dzy poszczegÃ³lnymi 
+powtÃ³rkami materiaÅ‚u. Codzienna pÃ³Å‚godzinna nauka pozwala przyswoiÄ‡ podstawowy 
+zasÃ³b sÅ‚Ã³w z dowolnego jÄ™zyka obcego (3000 wyrazÃ³w, zwiÄ…zkÃ³w frazeologicznych 
+i form gramatycznych) w czasie nie dÅ‚uÅ¼szym niÅ¼ jeden miesiÄ…c.
 
-Program SuperMemo stale analizuje poziom zapominania i zapamiêtywania materia³u,
-co pozwala na dostosowanie planu powtórek do indywidualnych potrzeb ka¿dego ucznia.
- Dziêki matematycznie zaawansowanym algorytmom, dla ka¿dej informacji 
-zawartej w kursach SuperMemo tworzony jest oddzielny plan powtórek. 
-Uczeñ nie traci zatem czasu na powtarzanie wiadomoœci, które dobrze pamiêta,
-za to z wiêksz¹ intensywnoœci¹ æwiczy materia³, który stwarza mu wiêksze problemy.
+Program SuperMemo stale analizuje poziom zapominania i zapamiÄ™tywania materiaÅ‚u,
+co pozwala na dostosowanie planu powtÃ³rek do indywidualnych potrzeb kaÅ¼dego ucznia.
+ DziÄ™ki matematycznie zaawansowanym algorytmom, dla kaÅ¼dej informacji 
+zawartej w kursach SuperMemo tworzony jest oddzielny plan powtÃ³rek. 
+UczeÅ„ nie traci zatem czasu na powtarzanie wiadomoÅ›ci, ktÃ³re dobrze pamiÄ™ta,
+za to z wiÄ™kszÄ… intensywnoÅ›ciÄ… Ä‡wiczy materiaÅ‚, ktÃ³ry stwarza mu wiÄ™ksze problemy.
 
 3. Instalacja.
 
-Program SMUXGEN nie wymaga instalacji, dlateg ojest rozprowadzany tylko w postaci 
-archiwum 7z wraz z wszystkimi komponentami.W przypadku chêci ko¿ystania z opcji mp3,
-nale¿y zainstalowaæ odpowiednie engine "text to speach". SMUXGEN opiera siê 
-o standardowy interfejs "Microsoft Speach API" firmy microsoft.
+Program SMUXGEN nie wymaga instalacji, dlatego jest rozprowadzany tylko w postaci 
+archiwum 7z wraz z wszystkimi komponentami. W przypadku chÄ™ci korzystania z opcji mp3,
+naleÅ¼y zainstalowaÄ‡ odpowiednie engine "text to speach". SMUXGEN opiera siÄ™ 
+o standardowy interfejs "Microsoft Speach API" firmy Microsoft.
 
-W sk³ad programu wchodzi:
+W skÅ‚ad programu wchodzi:
 
   katalog bin:
-    smuxgen.exe         - g³ówny komponent programu SMUXGEN
-    createMp3.bat 	- skryot odpowiedzialny za generowanie plików mp3
-			  (mozna go edytowaæ w celu dostosowania do potrzeb 
-			  zainstalowanego enginu "text to speach"
-    getGoogleHtml.bat 	- skrypt pobieraj¹cy wyniki wyszukiwania z serwise google images
-    getImage.bat	- skrypt pobieraj¹cy obrazki z podanego adresu URL
+    smuxgen.exe         - gÅ‚Ã³wny komponent programu SMUXGEN
+    createMp3.bat 	- skryot odpowiedzialny za generowanie plikÃ³w mp3
+			  (moÅ¼na go edytowaÄ‡ w celu dostosowania do potrzeb 
+			  zainstalowanego engine "text to speach"
+    getGoogleHtml.bat 	- skrypt pobierajÄ…cy wyniki wyszukiwania z serwisie Google images
+    getImage.bat	- skrypt pobierajÄ…cy obrazki z podanego adresu URL
 
     lame.exe		- kodek mp3 (http://www.free-codecs.com/download/Lame_Encoder.htm)
-    sapi2wav.exe	- darmowy program wyko¿ystuj¹cy interfejs SAPI
-                          do generowania próbek z lektorem (http://blog.hacker.dk/)
-    sox.exe		- manipulacja plikami d¿wiêkowymi (http://sox.sourceforge.net/)
-    wget.exe		- pobierania plków (http://www.gnu.org/software/wget/)
+    sapi2wav.exe	- darmowy program wykorzystujÄ…cy interfejs SAPI
+                          do generowania prÃ³bek z lektorem (http://blog.hacker.dk/)
+    sox.exe		- manipulacja plikami dÅºwiÄ™kowymi (http://sox.sourceforge.net/)
+    wget.exe		- pobierania plkÃ³w (http://www.gnu.org/software/wget/)
 
     *.dll		- potrzebne biblioteki
 
   katalog dat:
-   testowy.smuxgen      - przyk³adowy plik tekstowy dla kursu w jêzyku niemieckim
+   testowy.smuxgen      - przykÅ‚adowy plik tekstowy dla kursu w jÄ™zyku niemieckim
 
- smuxgen.bat		- przyk³adowy skrypt startowy dla pliku testowy.smuxgen
- readme.txt		- plik który w³aœnie czytasz
+ smuxgen.bat		- przykÅ‚adowy skrypt startowy dla pliku testowy.smuxgen
+ readme.txt		- plik ktÃ³ry wÅ‚aÅ›nie czytasz
 
 4. Tworzenie nowego kursu.
 
   a. Zainstaluj program SuperMemo UX (http://www.supermemo.pl/)
   b. Pobierz aktualizacje
-  c. Utwórz nowy kurs w programie SuperMemo (kurs->dodaj->utwórz)
+  c. UtwÃ³rz nowy kurs w programie SuperMemo (kurs->dodaj->utwÃ³rz)
      W katalogu "C:\Program Files\SuperMemo UX\Courses\" zostanie stworzony katalog z nowym kursem.
-  d. Uwórz plik kurs.smuxgen ze s³owkami do zapamiêtania
+  d. UtwÃ³rz plik kurs.smuxgen ze sÅ‚Ã³wkami do zapamiÄ™tania
   e. uruchom program smuxgen (zobacz smuxgen.bat)
-  f. Po dodaniu nowych s³ówek, lub zmianie istniejêcyh uruchom jeszcze raz smuxgen.
+  f. Po dodaniu nowych sÅ‚Ã³wek, lub zmianie istniejÄ™cyh uruchom jeszcze raz smuxgen.
      
-5. Struktóra pliku smuxgen z kursem.
+5. Struktura pliku smuxgen z kursem.
 
-Pliki ze s³ówkami musz¹ byæ zapisane w kodowaniu UTF-8!
+Pliki ze sÅ‚Ã³wkami muszÄ… byÄ‡ zapisane w kodowaniu UTF-8!
 
-  W pierwszej linijce znajdujê siê tylko i wy³¹cznie œcie¿ka do pliku bazowego kursu(4c) np:
+  W pierwszej linijce znajdujÄ™ siÄ™ tylko i wyÅ‚Ä…cznie Å›cieÅ¼ka do pliku bazowego kursu(4c) np:
     C:\Program Files\SuperMemo UX\Courses\testowy\override\course.xml
 
-  W drugiej linijce znajduje siê:
+  W drugiej linijce znajduje siÄ™:
     NAZWA_LEKCJI parametry parametry parametry parametry
 
-    NAZWA_LEKCJI - Nazwa lekcji pod która zostan¹ umieszczone s³ówka do zapamiêtania.
-	           Jeden plik zawiera s³ówka do jednej lekcji.
-		   Kilka ró¿nych plików mo¿e zawieraæ s³ówka do tego samego kursu.
+    NAZWA_LEKCJI - Nazwa lekcji pod ktÃ³ra zostanÄ… umieszczone sÅ‚Ã³wka do zapamiÄ™tania.
+	           Jeden plik zawiera sÅ‚Ã³wka do jednej lekcji.
+		   Kilka rÃ³Å¼nych plikÃ³w moÅ¼e zawieraÄ‡ sÅ‚Ã³wka do tego samego kursu.
 
-    Parametry s³u¿a do modyfikowania zachowania programu SMUXGEN. 
-    Parametry aktywuje siê poprzez wypisanie ich dok³adnej nazwy w drugiej linijce.
-    Deaktywacja nastêpujê przez modyfikacje nazwy np. dodanie znaku "#":
+    Parametry sÅ‚uÅ¼Ä… do modyfikowania zachowania programu SMUXGEN. 
+    Parametry aktywuje siÄ™ poprzez wypisanie ich dokÅ‚adnej nazwy w drugiej linijce.
+    Dezaktywacja nastÄ™pujÄ™ przez modyfikacje nazwy np. dodanie znaku "#":
 
-	Force - wymusza wygenerowania wszystkich æwiczeñ ponownie (wraz z mp3 i obrazkami)
-	Double- tworzy dodatkowo kurs alternatywny (jezyk obcy -> jezyk polski)
+	Force - wymusza wygenerowania wszystkich Ä‡wiczeÅ„ ponownie (wraz z mp3 i obrazkami)
+	Double- tworzy dodatkowo kurs alternatywny (jÄ™zyk obcy -> jÄ™zyk polski)
 	Voice - Tworzy pliki mp3 z lektorem (skrypt createMp3.bat)
 	Image - Tworzy pliki jpg (getGoogleHtml.bat i getImage.bat)
-	Clean - Usuwa z kursu æwiczenia które zosta³y usuniête z pliku ze s³ówkami.
-		(Mo¿e spowodowaæ problemy z dzia³aniem SuperMemo, opcja eksperymentalna)
+	Clean - Usuwa z kursu Ä‡wiczenia ktÃ³re zostaÅ‚y usuniÄ™te z pliku ze sÅ‚Ã³wkami.
+		(MoÅ¼e spowodowaÄ‡ problemy z dziaÅ‚aniem SuperMemo, opcja eksperymentalna)
 
-  W kolejnych linijkach znajduj¹ siê s³ówka wed³ug schematu A:B|C
-	A   - s³ówko w jêzyku polskim
-	B,C - alternatywne odpowiedzi w jêzyku obcym
+  W kolejnych linijkach znajdujÄ… siÄ™ sÅ‚Ã³wka wedÅ‚ug schematu A:B|C
+	A   - sÅ‚Ã³wko w jÄ™zyku polskim
+	B,C - alternatywne odpowiedzi w jÄ™zyku obcym
 
-  Przyk³ady:
-   	w koñcu(wreœcie):schließlich
+  PrzykÅ‚ady:
+   	w koÅ„cu(wreszcie):schlieÃŸlich
 	syrop na kaszel:der Hustensaft|der Hustensirup
 
 6. Mp3 z lektorem.
 
-SMUXGEN pozwala na generowania automatyczne mp3 z lektorem przy u¿yciu interfejsu SAPI.
+SMUXGEN pozwala na generowania automatyczne mp3 z lektorem przy uÅ¼yciu interfejsu SAPI.
 (np. darmowe demo http://cepstral.com/). Po zainstalowaniu takiego silnika,
-powinien on byæ widoczny do wyboru w panel sterowania->mowa.
+powinien on byÄ‡ widoczny do wyboru w panel sterowania->mowa.
 Skrypt createMp3.bat jest odpowiedzialny za:
-	- wygenerowanie odpowiedniego pliku wav dla danego s³ówka
-	- ewentualny postrpocessing pliku wav (np. obciêcie, podg³óœnienie)
-	- przekonwertowaniu wav na mp3
+	- wygenerowanie odpowiedniego pliku wav dla danego sÅ‚Ã³wka
+	- ewentualny postrpocessing pliku wav (np. obciÄ™cie, zwiÄ™kszenie gÅ‚oÅ›noÅ›ci)
+	- konwertowaniw wav na mp3
 	
  
-Oczywiœcie jakoœæ próbek z lektorem zale¿y tylko i wy³¹cznie od jakoœci u¿ytego silnika SAPI.
+OczywiÅ›cie jakoÅ›Ä‡ prÃ³bek z lektorem zaleÅ¼y tylko i wyÅ‚Ä…cznie od jakoÅ›ci uÅ¼ytego silnika SAPI.
 
 
 		

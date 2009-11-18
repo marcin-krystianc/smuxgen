@@ -1,3 +1,5 @@
-"%cd%/bin/smuxgen.exe" "%cd%/dat/testowy.smuxgen"
-
+set tmp=%cd%
+cd bin
+smuxgen.exe "%tmp%/dat/testowy.smuxgen"
+cd ..
 pause

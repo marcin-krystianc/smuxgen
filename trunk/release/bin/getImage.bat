@@ -7,7 +7,7 @@ REM parametr %2 - plik docelowy
 REM
 REM Poni¿sze operacja na zmiennej tmp, maj¹ na celu usuniêcie cudzys³owia i ostatniej spacji z przekazywanego parametru
 REM Spacja dodawana jest celowo, ¿eby argumenty zosta³y przekazane w cudzys³owie.
-REM Te zabiegi wynikaj¹ ze sposobu w jaki linia poleceñ interpretuje parametry 
+REM Te zabiegi wynikaj¹ ze sposobu, w jaki linia poleceñ interpretuje przekazywane parametry. 
 
 del img
 set tmp1=%1

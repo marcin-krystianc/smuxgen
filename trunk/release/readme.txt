@@ -18,7 +18,7 @@ Dodatkowo istnieje możliwość automatycznego pobierania obrazków z internetu
 i generowania pliku mp3 z lektorem. SMUXGEN nie posiada interfejsu graficznego,
 jego działanie opiera się o przetwarzanie wsadowe.
 
-2. Metoda SuperMemoczyli dlaczego warto. (http://www.supermemo.pl/opis_metody)
+2. Metoda SuperMemo, czyli dlaczego warto (http://www.supermemo.pl/opis_metody).
 
 SuperMemo to wspomagana komputerowo metoda uczenia się opracowana na bazie 
 długoletnich badań nad pamięcią długotrwałą i czynnikami odpowiedzialnymi 
@@ -30,7 +30,7 @@ i form gramatycznych) w czasie nie dłuższym niż jeden miesiąc.
 
 Program SuperMemo stale analizuje poziom zapominania i zapamiętywania materiału,
 co pozwala na dostosowanie planu powtórek do indywidualnych potrzeb każdego ucznia.
- Dzięki matematycznie zaawansowanym algorytmom, dla każdej informacji 
+Dzięki matematycznie zaawansowanym algorytmom, dla każdej informacji 
 zawartej w kursach SuperMemo tworzony jest oddzielny plan powtórek. 
 Uczeń nie traci zatem czasu na powtarzanie wiadomości, które dobrze pamięta,
 za to z większą intensywnością ćwiczy materiał, który stwarza mu większe problemy.

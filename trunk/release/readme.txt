@@ -69,7 +69,7 @@ W skład programu wchodzi:
 4. Tworzenie nowego kursu.
 
   a. Zainstaluj program SuperMemo UX (http://www.supermemo.pl/)
-  b. Pobierz aktualizacje
+  b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ)
   c. Utwórz nowy kurs w programie SuperMemo (kurs->dodaj->utwórz)
      W katalogu "C:\Program Files\SuperMemo UX\Courses\" zostanie stworzony katalog z nowym kursem.
   d. Utwórz plik kurs.smuxgen ze słówkami do zapamiętania

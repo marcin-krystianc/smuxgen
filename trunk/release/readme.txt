@@ -117,7 +117,7 @@ powinien on być widoczny do wyboru w panel sterowania->mowa.
 Skrypt createMp3.bat jest odpowiedzialny za:
 	- wygenerowanie odpowiedniego pliku wav dla danego słówka
 	- ewentualny postrpocessing pliku wav (np. obcięcie, zwiększenie głośności)
-	- konwertowaniw wav na mp3
+	- konwertowanie wav na mp3
 	
  
 Oczywiście jakość próbek z lektorem zależy tylko i wyłącznie od jakości użytego silnika SAPI.

@@ -1,31 +1,18 @@
-
-//-----------------------------------------------------
-//	Author	:	Marcin Krystianc
-//	Date	:	11/11/2009
-//	Contact	:	marcin.krystianc@gmail.com
-//------------------------------------------------------
-
-/*
-    This file is part of smuxgen.
-
-    Smuxgen is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Smuxgen is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Anncu.  If not, see <http://www.gnu.org/licenses/>.
+//============================================================================
+// Name         : main.cpp
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
 
 
- */
 
+#include "smuxgen.h"
 
 #include <QtCore/QCoreApplication>
+#include <QApplication>
 
 #include <qdom.h>
 #include <qfile.h>
@@ -36,27 +23,283 @@
 #include <QDate>
 #include <QTextCodec>
 #include <QProcess>
-
+#include <QSettings>
 #include <iostream>
 #include <list>
 #include <algorithm>
 #include <utility>
 
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlTableModel>
+#include <QSqlRecord>
+
 using namespace std;
 
 
-typedef union
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+bool getOptions (QString optionsString,USER_OPTIONS &options)
 {
-    unsigned int value;
-    struct
+    options.bit.oForce  = false;
+    options.bit.oVoice  = false;
+    options.bit.oImage  = false;
+    options.bit.oDouble = false;
+    options.bit.oTSQL   = false;
+    options.bit.oTXML   = false;
+    options.user.clear();
+    options.course.clear();
+    options.subname.clear();
+
+    QStringList chunks = optionsString.split(" ",QString::SkipEmptyParts);
+
+    int i=0;
+    while (i<chunks.count())
     {
-        unsigned int oForce  : 1; // force to create agian all course elements
-        unsigned int oDouble : 1; // make also alternative course
-        unsigned int oVoice  : 1; // make mp3 files
-        unsigned int oImage  : 1; // get Images
-        unsigned int oClean  : 1; // oClean
-    } bit;
-} tOPTIONS;
+        QString first = chunks.at(i++);
+
+        if (first==QString::fromUtf8("-Force")) {
+            options.bit.oForce = true;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-Double")) {
+            options.bit.oDouble = true;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-Voice")){
+            options.bit.oVoice = true;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-Image")){
+            options.bit.oImage = true;
+            continue;
+        }
+        if (first==QString::fromUtf8("-Tsql")){
+            options.bit.oTSQL = true;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-Txml")){
+            options.bit.oTXML = true;
+            continue;
+        }
+
+
+        if (i==chunks.count())
+        {
+            cout <<"No value after: "<<qPrintable(first)<<endl;
+            return false;
+        }
+
+        QString second = chunks.at(i++);
+
+        if (first==QString::fromUtf8("-course")) {
+            options.course = second;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-user")) {
+            options.user = second;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-subname")) {
+            options.subname = second;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-version")) {
+            if (second==VERSION)
+                continue;
+            cout<<qPrintable(QString::fromUtf8("Unsupportet version:"))<<qPrintable(second)<<endl;
+        }
+
+        cout <<qPrintable(QString::fromUtf8("Unknown parameter:"))<<qPrintable(first)<<endl;
+        return false;   // wrong parameters
+    }
+
+    cout<<endl;
+    cout<<qPrintable(QString::fromUtf8("User defined parameters:"))<<endl;
+    cout<<qPrintable(QString::fromUtf8("oForce:"))<<options.bit.oForce<<endl;
+    cout<<qPrintable(QString::fromUtf8("oDouble:"))<<options.bit.oDouble<<endl;
+    cout<<qPrintable(QString::fromUtf8("oImage:"))<<options.bit.oImage<<endl;
+    cout<<qPrintable(QString::fromUtf8("oVoice:"))<<options.bit.oVoice<<endl;
+    cout<<qPrintable(QString::fromUtf8("user:"))<<qPrintable(options.user)<<endl;
+    cout<<qPrintable(QString::fromUtf8("course:"))<<qPrintable(options.course)<<endl;
+    cout<<qPrintable(QString::fromUtf8("subname:"))<<qPrintable(options.subname)<<endl;
+    cout<<endl;
+
+    return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+bool getDatabaseSQL(const USER_OPTIONS &options, QSqlDatabase &database)
+{
+    QString smux =QString::fromUtf8("SuperMemo UX");
+    QString bf  = QString::fromUtf8("Repetitions.dat");
+
+    QSettings cfg(QSettings::IniFormat, QSettings::UserScope,"SuperMemo World", smux);
+    QString config_dir = QDir::toNativeSeparators(QFileInfo(cfg.fileName()).absolutePath()) ;
+    QString databaseFile =config_dir+QDir::separator()+"SuperMemo UX"+  QDir::separator()+options.user+ QDir::separator()+bf;
+    cout<<qPrintable(databaseFile)<<endl;
+
+    database=QSqlDatabase::addDatabase("QSQLITE");
+    database.setDatabaseName(databaseFile);
+    if (!database.open())
+    {
+        cout<<qPrintable(QString::fromUtf8("getDatabase: "))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+    if (options.bit.oTSQL)
+        cout<<qPrintable(QString::fromUtf8("getDatabase, OK:"))<<qPrintable(databaseFile)<<endl;
+
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString quotationString (QString s)
+{
+    s.prepend(QString::fromUtf8("'"));
+    s.append(QString::fromUtf8("'"));
+    return s;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool getCourseIdPathSQL (const USER_OPTIONS &options, QSqlDatabase &database,QString course, int &id,QString &path)
+{
+    QSqlTableModel model(0,database);
+    model.setTable("courses");
+    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model.setFilter(QString::fromUtf8("Title=")+quotationString(course));
+
+    if (!model.select())
+    {
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath: "))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+    if (model.rowCount()==0)
+    {
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath: Cannot find course with name:"))<<qPrintable(course)<<endl;
+        return false;    
+    }
+
+    QSqlRecord record   = model.record(0);
+    QVariant v1         = record.value(QString::fromUtf8("Id"));
+    QVariant v2         = record.value(QString::fromUtf8("Path"));
+
+    if (!v1.isValid())
+    {
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath: Cannot find Id:"))<<endl;
+        return false;
+    }
+
+    if (!v2.isValid())
+    {
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath: Cannot find Id:"))<<endl;
+        return false;
+    }
+
+    id  = v1.toInt();
+    path= v2.toString();
+
+    QFileInfo courseFileInfo(path);
+    path = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator()
+           +QString::fromUtf8("override")+QDir::separator()+QString::fromUtf8("course.xml");
+
+    if (options.bit.oTSQL)
+    {
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath ID:"))<<id<<endl;
+        cout<<qPrintable(QString::fromUtf8("getCourseIdPath Path:"))<<qPrintable(path)<<endl;
+    }
+
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool setElementSQL (const USER_OPTIONS &options, QSqlDatabase &database,QString elementName, int courseIDSQL,int elementIDSQL,int paretntIDSQL)
+{
+    QSqlTableModel model(0,database);
+    QString   filter;   // CourseID + PageNum - primary key
+    filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8("PageNum=")+QString::number(elementIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
+
+    model.setTable("items");
+    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model.setFilter(filter);
+
+    if (options.bit.oTSQL)
+           cout<<qPrintable(QString::fromUtf8("setElementSQL, filter:"))<<qPrintable(filter)<<endl;
+
+    if (!model.select())
+    {
+        cout<<qPrintable(QString::fromUtf8("setElementSQL: select:"))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+    QSqlRecord record=model.record(0);
+
+    if (model.rowCount()==0)
+    { // generate new record
+        record.setValue("CourseId",courseIDSQL);
+        record.setValue("elementName",elementName);
+        record.setValue("PageNum",elementIDSQL);
+        record.setValue("QueueOrder",elementIDSQL);
+        record.setValue("ParentId",paretntIDSQL);
+
+        if (paretntIDSQL>0)
+            record.setValue("Type",0);
+        else
+            record.setValue("Type",5);
+
+        if (options.bit.oTSQL)
+           cout<<qPrintable(QString::fromUtf8("setElementSQL, generate new record:"))
+            <<qPrintable(QString::fromUtf8(" CourseId:"))<<courseIDSQL
+            <<qPrintable(QString::fromUtf8(" elementName:"))<<qPrintable(elementName)
+            <<qPrintable(QString::fromUtf8(" PageNum:"))<<elementIDSQL
+            <<qPrintable(QString::fromUtf8(" QueueOrder:"))<<elementIDSQL
+            <<qPrintable(QString::fromUtf8(" ParentId:"))<<paretntIDSQL<<endl;
+
+        if (!model.insertRecord(-1,record)){ // to the end
+            cout<<qPrintable(QString::fromUtf8("setElementSQL insertRecord: "))<<qPrintable(database.lastError().text())<<endl;
+            return false;
+        }
+    }
+    else
+    {
+        record.setValue("elementName",elementName);
+        record.setValue("QueueOrder",elementIDSQL);
+
+        if (options.bit.oTSQL)
+            cout<<qPrintable(QString::fromUtf8("setElementSQL, modify record:"))
+            <<qPrintable(QString::fromUtf8(" elementName:"))<<qPrintable(elementName)
+            <<qPrintable(QString::fromUtf8(" QueueOrder:"))<<elementIDSQL<<endl;
+
+        model.setRecord(0,record);
+    }
+
+    model.database().transaction();
+    if (model.submitAll()) {
+        model.database().commit();
+    } else {
+        model.database().rollback();
+        cout<<qPrintable(QString::fromUtf8("setElementSQL submitAll: "))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+    return true;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 int  getGID (QDomElement &docElement)
@@ -118,7 +361,7 @@ QDomDocument createCourseItem (int templateId,QString chapter)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,tOPTIONS options,QString audioType)
+QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,USER_OPTIONS options,QString audioType)
 {
 
     QDomDocument doc = createCourseItem(templateId,chapter);
@@ -147,34 +390,32 @@ QDomDocument createCourseItem (int templateId,QString chapter,QString title,QStr
         QDomElement table= doc.createElement( "table" );
         table.setAttribute("width","100%");
 
-            QDomElement tbody= doc.createElement( "tbody" );
-                QDomElement tr = doc.createElement("tr");
+            QDomElement tr = doc.createElement("tr");
 
-                    QDomElement td= doc.createElement("td");
-                    td.setAttribute("align","center");
+                QDomElement td= doc.createElement("td");
+                td.setAttribute("align","center");
 
-                        QDomElement gfx= doc.createElement("gfx");
-                        gfx.setAttribute("file","m");
-                        gfx.setAttribute("space","10");
-                        gfx.setAttribute("width","333");
-                        gfx.setAttribute("height","333");
-                    td.appendChild(gfx);
+                    QDomElement gfx= doc.createElement("gfx");
+                    gfx.setAttribute("file","m");
+                    gfx.setAttribute("space","5");
+                    gfx.setAttribute("width","320");
+                    gfx.setAttribute("height","320");
+                td.appendChild(gfx);
 
-                tr.appendChild(td);
+            tr.appendChild(td);
 
-                    td= doc.createElement("td");
-                    td.setAttribute("align","center");
+                td= doc.createElement("td");
+                td.setAttribute("align","center");
 
-                        gfx= doc.createElement("gfx");
-                        gfx.setAttribute("file","n");
-                        gfx.setAttribute("space","10");
-                        gfx.setAttribute("width","333");
-                        gfx.setAttribute("height","333");
-                    td.appendChild(gfx);
+                    gfx= doc.createElement("gfx");
+                    gfx.setAttribute("file","n");
+                    gfx.setAttribute("space","5");
+                    gfx.setAttribute("width","320");
+                    gfx.setAttribute("height","320");
+                td.appendChild(gfx);
 
-                tr.appendChild(td);
-            tbody.appendChild(tr);
-        table.appendChild(tbody);
+            tr.appendChild(td);
+        table.appendChild(tr);
     tmpElement2.appendChild(table);
 
     }
@@ -342,13 +583,6 @@ QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QStri
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int &GID)
-{
-    int tmp;
-    return getNode (rootElement,nodeName,doc,courseFileDirectory,type,tmp,GID);
-}
-
-/////////////////////////////////////////////////////////////////////////////
 QString getKeyWord (QString iString)
 {
     static QString A=QString::fromUtf8("¥Æ¯ŒÑÓ£Ê¹æ¿ŸœBó³ê!@#$%^&*()_-=+,./<>?;':\"[]\{}|");
@@ -366,7 +600,7 @@ QString getKeyWord (QString iString)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void generateCourseElement(QString question,QString answer,QString topicName,QDomNode &topicNode,QDomDocument &doc,QString courseFileDirectory,tOPTIONS options,bool bMode,int &GID)
+bool generateCourseElement(const USER_OPTIONS &options,QSqlDatabase &database,int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID)
 {
     int     ID          = 0;
     bool    forceMedia  = options.bit.oForce;
@@ -382,13 +616,11 @@ void generateCourseElement(QString question,QString answer,QString topicName,QDo
         QString audio = bMode ? "question-audio" : "answer-audio";
         QDomDocument docItem=createCourseItem(1,topicName,QString::fromUtf8("Przet³umacz"),question,answer,ID,options,audio);
 
+        if (!setElementSQL(options, database,question,courseIDSQL,ID,topicID))
+            return false;
+
         writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(ID));
 
-        { // check media directory
-           QDir *pDir= new QDir(courseFileDirectory);
-           if (!pDir->exists("media"))
-               pDir->mkdir("media");
-        }
     }
 
     // create mp3
@@ -452,6 +684,7 @@ void generateCourseElement(QString question,QString answer,QString topicName,QDo
             fileUrls.removeFirst();
          }
     }
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -470,9 +703,18 @@ void  setDelete (QDomNode &topicNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void  doDelete (QDomNode &docElement)
+bool  doDelete (const USER_OPTIONS &options,QSqlDatabase &database,int courseIDSQL,int paretntIDSQL,QDomNode &docElement)
 {
     QDomNode n = docElement.firstChild();
+    list <int> listValidID;
+    list <int>::iterator it;
+
+    if (options.bit.oTXML || options.bit.oTSQL)
+        cout <<qPrintable(QString::fromUtf8("doDelete: id:"))
+            <<qPrintable(QString::fromUtf8(" CourseId:"))<<courseIDSQL
+            <<qPrintable(QString::fromUtf8(" ParetntId:"))<<paretntIDSQL<<endl;
+
+
     while(!n.isNull())
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
@@ -480,128 +722,210 @@ void  doDelete (QDomNode &docElement)
         {
             if (e.attribute("delete","none")=="true")
             {
-                cout <<"doDelete: "<<" id:"<<qPrintable(e.attribute("id","0"))<<" name:"<<qPrintable(e.attribute("name",""))<<endl;
+                if (options.bit.oTXML)
+                    cout <<qPrintable(QString::fromUtf8("doDelete: id:"))<<qPrintable(e.attribute("id","0"))<<" name:"<<qPrintable(e.attribute("name",""))<<endl;
                 QDomNode tmp = n;
                 n = n.nextSibling();
                 docElement.removeChild(tmp);
                 continue;
             }
+            listValidID.push_back(e.attribute("id","0").toInt());
+            if (options.bit.oTSQL)
+                cout<<qPrintable(QString::fromUtf8("validID:"))<<(e.attribute("id","0").toInt())<<endl;
         }
         n = n.nextSibling();
     }
+
+    // get all ID (PageNum) from database
+    QSqlTableModel model(0,database);
+    QString   filter;   // CourseID + PageNum - primary key
+    filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
+
+    model.setTable("items");
+    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model.setFilter(filter);
+
+    if (options.bit.oTSQL)
+        cout<<qPrintable(QString::fromUtf8("doDelete, filter"))<<qPrintable(filter)<<endl;
+
+    if (!model.select())
+    {
+        cout<<qPrintable(QString::fromUtf8("doDelete: select:"))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+
+    for (int i=0;i<model.rowCount();i++)
+    {
+       QSqlRecord record=model.record(i);
+       QVariant v1  = record.value(QString::fromUtf8("PageNum"));
+       if (!v1.isValid())
+       {
+            cout<<qPrintable(QString::fromUtf8("doDelete: Cannot get IDs from database:"))<<endl;
+            return false;
+       }
+
+       it = find(listValidID.begin(),listValidID.end(),v1.toInt());
+       if (it==listValidID.end())
+       {   // all elements that are not in XML will be removed from SQL
+           model.removeRows(i,1);
+           if (options.bit.oTSQL)
+             cout<<qPrintable(QString::fromUtf8("doDelete, remove:"))
+                <<qPrintable(QString::fromUtf8(" i:"))<<i
+                <<qPrintable(QString::fromUtf8(" PageNum:"))<<v1.toInt()<<endl;
+       }
+       else
+            if (options.bit.oTSQL)
+            cout<<qPrintable(QString::fromUtf8("doDelete, leave:"))
+                <<qPrintable(QString::fromUtf8(" i:"))<<i
+                <<qPrintable(QString::fromUtf8(" PageNum:"))<<v1.toInt()<<endl;
+
+
+    }
+
+    model.database().transaction();
+    if (model.submitAll()) {
+        model.database().commit();
+    } else {
+        model.database().rollback();
+        cout<<qPrintable(QString::fromUtf8("doDelete submitAll: "))<<qPrintable(database.lastError().text())<<endl;
+        return false;
+    }
+
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 int main (int argc, char* argv[])
 {
-  QDomDocument doc("mydocument");
-  QTextStream inputFileStream;
-  QString courseFile;
-  QString courseFileDirectory;
-  QFile inputFile;
-  tOPTIONS options ={0};
-  int GID = 0;
+    QApplication app(argc, argv);   // sql will not work without that
 
-  {
-      if (argc<2)
-      {
-          cout<<"Za ma³o argumentów"<<endl;
-          return 1;
-      }
-
-      inputFile.setFileName(argv[1]);
-
-     if (!inputFile.open(QIODevice::ReadOnly))
-     {
-         cout << " Nie mo¿na otworzyæ pliku: "<<argv[1]<<endl;
-         return 1;
-     }
-
-     inputFileStream.setDevice( &inputFile );
-     inputFileStream.setCodec("UTF-8");
-     courseFile=inputFileStream.readLine();
-
-    QFileInfo courseFileInfo(courseFile);
-    courseFileDirectory = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
-
-     QFile docFile(courseFile);
-
-     if (!doc.setContent(&docFile)) {
-         docFile.close();
-         cout << " Nie mo¿na odczytaæ pliku: "<<qPrintable(courseFile)<<endl;
-         return 1;
-     }
-     docFile.close();
-
- } // reading course.xml
-
- QDomElement rootElement = doc.documentElement();
- GID = getGID(rootElement);
+    QDomDocument doc("mydocument");
+    QTextStream inputFileStream;
+    QString courseFileDirectory;
+    QString courseFileName;
+    int courseIDSQL;
+    QFile inputFile;
+    USER_OPTIONS options;
+    QSqlDatabase database;
+    int GID = 0, topicAID =0, topicBID =0;
 
 
- QString  topicName;
+    cout<<qPrintable(QString::fromUtf8("SMUXGEN - SuperMemo UX generator v"))<<qPrintable(VERSION)<<endl;
 
-// parse options
- {
-    QString line=inputFileStream.readLine();
-    if (line.isNull()) return 0;  //end of file
-    QStringList list = line.split(" ");
-    if (list.count()<1)
+    // check SMUXGEN.exe arguments
+    if (argc<2)
     {
-         cout<<"B³¹d opcji:"<<qPrintable(line)<<endl;
-         return 1;
+        cout<<qPrintable(QString::fromUtf8("Too few arguments"))<<endl;
+        return 1;
     }
-    topicName = list.at(0);
-    for (int i=1;i<list.count();++i)
+    inputFile.setFileName(argv[1]);
+    if (!inputFile.open(QIODevice::ReadOnly))
     {
-        if (list.at(i)=="Force")    options.bit.oForce = true;
-        if (list.at(i)=="Double")   options.bit.oDouble= true;
-        if (list.at(i)=="Voice")    options.bit.oVoice = true;
-        if (list.at(i)=="Image")    options.bit.oImage = true;
-        if (list.at(i)=="Clean")    options.bit.oClean = true;
-    }
- }
-
- QString topicNameA = topicName;
- QString topicNameB = topicName+"*";
-
-
- QDomNode topicNodeA = getNode (rootElement,topicNameA,doc,courseFileDirectory,"pres",GID);
- QDomNode topicNodeB = getNode (rootElement,topicNameB,doc,courseFileDirectory,"pres",GID);
-
- if (options.bit.oClean)
- {
-     setDelete (topicNodeA);
-     setDelete (topicNodeB);
-}
-
- while (1)
- {
-    QString line=inputFileStream.readLine();
-    if (line.isNull()) break;  //end of file
-    QStringList list1 = line.split(":");
-    if (list1.count()<2)
-    {
-        cout<<"B³¹d danych:"<<qPrintable(line)<<endl;
+        cout << qPrintable(QString::fromUtf8("Cannot open file: "))<<argv[1]<<endl;
         return 1;
     }
 
-    generateCourseElement((list1.at(0)).trimmed(),(list1.at(1)).trimmed(),topicNameA,topicNodeA,doc,courseFileDirectory,options,false,GID);
+    // check media directory
+    QDir *pDir= new QDir(courseFileDirectory);
+    if (!pDir->exists("media"))
+       pDir->mkdir("media");
 
-    if (options.bit.oDouble)
+    cout<<qPrintable(QString::fromUtf8("Processing input file:"))<<argv[1]<<endl;
+
+    // get user file options   
+    inputFileStream.setDevice( &inputFile );
+    inputFileStream.setCodec("UTF-8");
+    if (!getOptions(inputFileStream.readLine(),options))
+        return 0;
+
+    if (!getDatabaseSQL(options,database))
+        return 0;
+
+    if (!getCourseIdPathSQL(options,database,options.course,courseIDSQL,courseFileName))
+        return 0;
+
+    QFileInfo courseFileInfo(courseFileName);
+    courseFileDirectory = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
+
+    QFile docFile(courseFileName);
+
+    if (!doc.setContent(&docFile)) {
+     docFile.close();
+     cout << qPrintable(QString::fromUtf8("Cannot open file: "))<<qPrintable(courseFileName)<<endl;
+     return 0;
+    }
+    docFile.close();
+
+    QDomElement rootElement = doc.documentElement();
+    GID = getGID(rootElement);
+
+    QString topicNameA = options.subname;
+    QString topicNameB = options.subname+"*";
+
+    QDomNode topicNodeA;
+    QDomNode topicNodeB;
+
+    // A course
+    topicNodeA = getNode (rootElement,topicNameA,doc,courseFileDirectory,"pres",topicAID,GID);
+    if (!setElementSQL(options, database,topicNameA,courseIDSQL,topicAID,0))
+        return 0;
+
+    setDelete (topicNodeA);
+
+    qint64 inputFilePos = inputFileStream.pos(); //save for B course
+
+    while (1)
     {
-        generateCourseElement((list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,doc,courseFileDirectory,options,true,GID);
+        QString line=(inputFileStream.readLine()).trimmed();
+        if (line.isNull()) break;  //end of file
+        if (line.length()==0) continue;
+        QStringList list1 = line.split(":");
+
+        if (list1.count()<2)
+        {
+            cout<<qPrintable(QString::fromUtf8("Input error:"))<<qPrintable(line)<<endl;
+            continue;
+        }
+        generateCourseElement(options,database,courseIDSQL,(list1.at(0)).trimmed(),(list1.at(1)).trimmed(),topicNameA,topicNodeA,topicAID,doc,courseFileDirectory,false,GID);
     }
 
- }// main loop
 
- if (options.bit.oClean)
- {
-     doDelete (topicNodeA);
-     doDelete (topicNodeB);
- }
+    doDelete (options,database,courseIDSQL,topicAID,topicNodeA);
 
- writeDomDoucumentToFile(doc,courseFile);
- return 0;
+
+    // B course
+    if (options.bit.oDouble)
+    {
+        topicNodeB = getNode (rootElement,topicNameB,doc,courseFileDirectory,"pres",topicBID,GID);
+        if (!setElementSQL (options, database,topicNameB,courseIDSQL,topicBID,0))
+            return 0;
+
+        setDelete (topicNodeB);
+
+        inputFileStream.seek(inputFilePos);
+
+        while (1)
+        {
+            QString line=(inputFileStream.readLine()).trimmed();
+            if (line.isNull()) break;  //end of file
+            if (line.length()==0) continue;
+            QStringList list1 = line.split(":");
+
+            if (list1.count()<2)
+            {
+                cout<<qPrintable(QString::fromUtf8("Input error: "))<<qPrintable(line)<<endl;
+                continue;
+            }
+             generateCourseElement(options,database,courseIDSQL,(list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,topicBID,doc,courseFileDirectory,true,GID);
+         }
+
+        doDelete (options,database,courseIDSQL,topicBID,topicNodeB);
+    }
+
+    writeDomDoucumentToFile(doc,courseFileName);
+    return 0;
 }
 

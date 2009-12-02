@@ -1,0 +1,58 @@
+#ifndef CCOURSEGENERATOR_H
+#define CCOURSEGENERATOR_H
+
+#include "coursetemplate.h"
+#include "cglobaltracer.h"
+#include "coursetemplateoptions.h"
+#include "csupermemosql.h"
+
+#include <QDomDocument>
+#include <QObject>
+#include <QThread>
+#include <QMutex>
+
+class cCourseGenerator : public QThread
+{
+    Q_OBJECT
+    public:
+        cCourseGenerator();
+        ~cCourseGenerator();
+
+        void generate (const cCourseTemplate &courseTemplate);
+
+    public slots:
+        void stop();
+
+    signals:
+        void finishedSignal (bool sucess);
+        void progressSignal (const QString&);
+
+    private:
+        cSuperMemoSQL database;
+        cCourseTemplate courseTemplate;
+
+        bool abortProces;;
+        QMutex mutex;
+
+        void trace (const QString &text,const int & flags = traceLevel1|0);
+        int  getGID (QDomElement &docElement);
+        QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int &retID,int &GID);
+        void setDelete (QDomNode &topicNode);
+        bool doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement);
+        bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID);
+        int writeDomDoucumentToFile (QDomDocument &document,QString path);
+        QDomDocument createCourseItem (int templateId,QString chapter);
+        QString getFileName (int i);
+        bool checkIfNewAnswers(QString fileName,QString answers);
+        QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,QString audioType);
+        QString getMediaFileName (int i);
+        bool checkIsFileOk(QString fileName);
+        void deleteFile (QString fileName);
+        QString getKeyWord (QString iString);
+        QStringList parseGoogleHtml (QString fileName);
+
+    protected:
+        void run();
+};
+
+#endif // CCOURSEGENERATOR_H

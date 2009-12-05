@@ -1,24 +1,16 @@
-﻿C:\Program Files\SuperMemo UX\Courses\testowy\override\course.xml
-Lekarz #Force Double Voice Image Clean
-apteka:die Apotheke|Apotheke
-środek przeciwko grypie:das Grippenmittel
-złapać:erwischen
-nagle:plötzlich
-zaledwie (prawie):kaum
-oddychać:atmen
-z trudem:mühsam
-szafka na leki:der Arzneischränkchen
-ciężki:schwer
-legitymacja ubezpieczeniowa:die Versicherungskarte
-około:vorbei
-wchodzić:betreten
-prywatna przychodnia:die Praxis
-pani w recepcji:die Sprechstundenhilfe
-gardło:der Hals
-rownież:ebenfalls
-przyłykać:schlucken
-przełykanie:das Schlucken
-sprawiać(przygotowywać):bereiten
-załatwiać(zakończyć):erledigen
-w końcu(wreszcie):schließlich
-syrop na kaszel:der Hustensaft|der Hustensirup
+-course "testowy" -database "C:/Documents and Settings/Ja/Dane aplikacji/SuperMemo World/SuperMemo UX/testowy/Repetitions.dat" -subname "Lektion 1" -trim 9.7 -vIndex 1 -gain 16 -Force -Double -Voice -Image 
+bez wyobraźni:einfallslos
+poważny:ernst
+leniwy, zepsuty:faul
+pilny, pilnie:fleißig
+uprzejmy, przyjazny:freundlich
+wesoły,radosny:froh
+pospolity,podły, niegodziwy:gemein
+szczęśliwy:glücklich
+inteligentny:intelligent
+mądry:klug
+zabawny, dziwaczny:komisch
+kreatywny:kreativ
+nudny:langweilig
+luźny,pulchny:locker
+śmieszny, wesoły:lustig

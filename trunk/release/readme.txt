@@ -1,9 +1,9 @@
 ﻿--------------------------------------------------------------------------------
-				SMUXGEN
+			SMUXGEN - SuperMemo UX Generator
 --------------------------------------------------------------------------------
-Version 1.0
-AUTOR	Marcin Krystianc (marcin.krystianc@gmail.com)
-OS	Windows XP
+Version 2.0 (Tested with SuperMemo UX 1.4.3.2)
+Author	Marcin Krystianc (marcin.krystianc@gmail.com)
+OS	Windows
 License GPL
 URL 	http://code.google.com/p/smuxgen/
 --------------------------------------------------------------------------------
@@ -15,8 +15,7 @@ URL 	http://code.google.com/p/smuxgen/
 SMUXGEN jest darmowym programem służącym do ułatwienia procesu tworzenia własnych 
 kursów w programie SuperMemo UX. Kursy generowane są na podstawie pliku tekstowego.
 Dodatkowo istnieje możliwość automatycznego pobierania obrazków z internetu 
-i generowania pliku mp3 z lektorem. SMUXGEN nie posiada interfejsu graficznego,
-jego działanie opiera się o przetwarzanie wsadowe.
+i generowania pliku mp3 z lektorem. 
 
 2. Metoda SuperMemo, czyli dlaczego warto (http://www.supermemo.pl/opis_metody).
 
@@ -40,7 +39,7 @@ za to z większą intensywnością ćwiczy materiał, który stwarza mu większe
 Program SMUXGEN nie wymaga instalacji, dlatego jest rozprowadzany tylko w postaci 
 archiwum 7z wraz z wszystkimi komponentami. W przypadku chęci korzystania z opcji mp3,
 należy zainstalować odpowiednie engine "text to speach". SMUXGEN opiera się 
-o standardowy interfejs "Microsoft Speach API" firmy Microsoft.
+o standardowy interfejs "Microsoft Speach API".
 
 W skład programu wchodzi:
 
@@ -63,44 +62,31 @@ W skład programu wchodzi:
   katalog dat:
    testowy.smuxgen      - przykładowy plik tekstowy dla kursu w języku niemieckim
 
- smuxgen.bat		- przykładowy skrypt startowy dla pliku testowy.smuxgen
+ smuxgen.bat		- uruchamia program smuxgen
+ smuxgen (batch).bat	- przykład uruchamiania programu smuxgen w trybie wsadowym, umożliwia automatyczne przetworzenie wielu plików
+
  readme.txt		- plik który właśnie czytasz
 
 4. Tworzenie nowego kursu.
 
   a. Zainstaluj program SuperMemo UX (http://www.supermemo.pl/)
-  b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ)
+  b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ, testowane z wersją 1.4.3.2)
   c. Utwórz nowy kurs w programie SuperMemo (kurs->dodaj->utwórz)
      W katalogu "C:\Program Files\SuperMemo UX\Courses\" zostanie stworzony katalog z nowym kursem.
-  d. Utwórz plik kurs.smuxgen ze słówkami do zapamiętania
-  e. uruchom program smuxgen (zobacz smuxgen.bat)
-  f. Po dodaniu nowych słówek, lub zmianie istniejęcyh uruchom jeszcze raz smuxgen.
+  d. uruchom program smuxgen (zobacz smuxgen.bat)
+  e. wzorując się na przykładzie, utwórz słówka dla nowego kursu
+  f. zapisz kurs i kliknij przycisk generuj
+  f. Po dodaniu nowych słówek, lub zmianie istniejęcyh kliknij ponownie generuj
      
-5. Struktura pliku smuxgen z kursem.
-
-Pliki ze słówkami muszą być zapisane w kodowaniu UTF-8!
-
-  W pierwszej linijce znajduję się tylko i wyłącznie ścieżka do pliku bazowego kursu(4c) np:
-    C:\Program Files\SuperMemo UX\Courses\testowy\override\course.xml
-
-  W drugiej linijce znajduje się:
-    NAZWA_LEKCJI parametry parametry parametry parametry
-
-    NAZWA_LEKCJI - Nazwa lekcji pod która zostaną umieszczone słówka do zapamiętania.
-	           Jeden plik zawiera słówka do jednej lekcji.
-		   Kilka różnych plików może zawierać słówka do tego samego kursu.
-
-    Parametry służą do modyfikowania zachowania programu SMUXGEN. 
-    Parametry aktywuje się poprzez wypisanie ich dokładnej nazwy w drugiej linijce.
-    Dezaktywacja następuję przez modyfikacje nazwy np. dodanie znaku "#":
-
-	Force - wymusza wygenerowania wszystkich ćwiczeń ponownie (wraz z mp3 i obrazkami)
-	Double- tworzy dodatkowo kurs alternatywny (język obcy -> język polski)
-	Voice - Tworzy pliki mp3 z lektorem (skrypt createMp3.bat)
-	Image - Tworzy pliki jpg (getGoogleHtml.bat i getImage.bat)
-	Clean - Usuwa z kursu ćwiczenia które zostały usunięte z pliku ze słówkami.
-		(Może spowodować problemy z działaniem SuperMemo, opcja eksperymentalna)
-
+5. Opcje.
+  
+  Regenerate 	- wumusza powtórne wygenerowanie wszystkich ćwiczeń
+  Alternate 	- generuje kurs lustrzany
+  Images	- dodaje obrazki do ćwiczeń
+  Lector	- dodaje lektora do ćwiczeń
+  
+ 
+  Course Template:
   W kolejnych linijkach znajdują się słówka według schematu A:B|C
 	A   - słówko w języku polskim
 	B,C - alternatywne odpowiedzi w języku obcym
@@ -118,7 +104,15 @@ Skrypt createMp3.bat jest odpowiedzialny za:
 	- wygenerowanie odpowiedniego pliku wav dla danego słówka
 	- ewentualny postrpocessing pliku wav (np. obcięcie, zwiększenie głośności)
 	- konwertowanie wav na mp3
-	
+
+Opcje lektora:
+
+  Voice index	- numer silnika SAPI
+  Gain		- wzmocnienie w decybelach
+  Trim		- obcięcie w sekundach od początku pliku
+   
+  Kliknięcie w przycisk testu, powinno spowodować odegranie tekstu wpisanego w pole poniżej.	  
+
  
 Oczywiście jakość próbek z lektorem zależy tylko i wyłącznie od jakości użytego silnika SAPI.
 

@@ -1,8 +1,17 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #include <QtGui>
 #include <QTextEdit>
 #include <QColorGroup>
 #include <QPalette>
 #include <QDateTime>
+#include <Phonon>
 
 #include "csmuxgenwidgets.h"
 #include "coursetemplateoptions.h"
@@ -86,11 +95,16 @@ cOptionsPage::cOptionsPage(QWidget *parent)
 
     setLayout(configLayout);
 
+    this->audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
+    this->mediaObject = new Phonon::MediaObject (this);
+
     connect(fileChooseButton, SIGNAL(clicked())                     ,this ,SLOT(fileButtonTriggered()));
     connect(this->fileEdit  , SIGNAL(textChanged(const QString & )) ,this ,SLOT(fileEditChanged(const QString &)));
     connect(voiceTestbutton , SIGNAL(clicked())                     ,this ,SLOT(voiceTestButtonTriggered()));
 
     connect(this->oVoiceCheckBox  , SIGNAL(stateChanged (int )) ,this ,SLOT(voiceCheckBoxChanged(int)));
+    connect(this->mediaObject     , SIGNAL(finished ()) ,this ,SLOT(testFileRemoveSlot()));
+
     this->voiceCheckBoxChanged(this->oVoiceCheckBox->checkState());
 }
 
@@ -133,6 +147,8 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
     this->voiceIndex    ->setValue(options.voiceIndex);
     this->voiceGain     ->setValue(options.voiceGain);
     this->voiceTrimBegin->setValue(options.voiceTrim);
+
+    this->fileEditChanged(this->fileEdit->text());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -141,21 +157,31 @@ void cOptionsPage::voiceTestButtonTriggered ()
     cCourseTemplateOptions options=this->getOptions();
 
     QStringList  arguments; // filename, text,trim,gain
-    arguments.append("test.mp3");
+    arguments.append("test");
     arguments.append(this->voiceTesttext->text());
     arguments.append(QString::number(options.voiceIndex));
     arguments.append(QString::number(options.voiceTrim));
     arguments.append(QString::number(options.voiceGain));
-
     trace(QString("createMp3.bat ")+arguments.join(" "),traceLevel1);
     QProcess myProcess;
 
     myProcess.start("createMp3.bat", arguments );
-    if (!myProcess.waitForStarted(-1))
+    if (!myProcess.waitForStarted())
+    {
          trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
-    myProcess.waitForFinished(-1);
+         return;
+    }
+    myProcess.waitForFinished();
     if (myProcess.exitCode())
+    {
         trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
+        return;
+    }
+
+    Phonon::createPath(mediaObject, audioOutput);
+    mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));
+    mediaObject->play();
+
 }
 /////////////////////////////////////////////////////////////////////////////
 cCourseTemplateOptions cOptionsPage::getOptions()
@@ -205,7 +231,7 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
         return;
     }
 
-    this->fileEdit->setPalette( this->subnameEdit->palette() ); // det fileEdit to default colour
+    this->fileEdit->setPalette( this->subnameEdit->palette() ); // fileEdit to default colour
 
     QString oldText=this->courseCombo->currentText();
 
@@ -220,13 +246,21 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
 
     if (pos == -1)  // text not found
     {
-        this->courseCombo->insertItem(0,QIcon(":/images/delete.png"),oldText);
+        this->courseCombo->insertItem(0,QIcon(":/images/warning.png"),oldText);
         this->courseCombo->setCurrentIndex(0);
     }
     else
         this->courseCombo->setCurrentIndex(pos);
 
     return;
+}
+
+////////////////////////////////////////////////////////////////////////////
+void cOptionsPage::testFileRemoveSlot()
+{
+    this->mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
+    if (!QFile::remove("test.mp3"))
+      trace(QString("cannot remove test.mp3 "),traceError);
 }
 
 /////////////////////////////////////////////////////////////////////////////

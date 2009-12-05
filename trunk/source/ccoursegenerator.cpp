@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #include "ccoursegenerator.h"
 
 #include <QDir>
@@ -55,14 +64,15 @@ void cCourseGenerator::generate (const cCourseTemplate &courseTemplate)
 void  cCourseGenerator::run ()
 {
 
+    this->status  = 1;
     if (!this->database.open(this->courseTemplate.options.database))
-        return emit this->finishedSignal(false);
+        return;
 
     int courseID;
     QString courseFileName,courseFileDirectoryName;
 
     if (!this->database.getCourseIdPath (this->courseTemplate.options.course, courseID, courseFileName))
-        return emit this->finishedSignal(false);
+        return;
 
     QFileInfo courseFileInfo(courseFileName);
     courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
@@ -80,7 +90,7 @@ void  cCourseGenerator::run ()
     if (!doc.setContent(&docFile)) {
         docFile.close();
         trace(QString("Cannot open file: ")+courseFileName,traceError);
-        return emit this->finishedSignal(false);
+        return;
     }
     docFile.close();
 
@@ -164,7 +174,7 @@ void  cCourseGenerator::run ()
 
 END:
     writeDomDoucumentToFile(doc,courseFileName);
-    emit this->finishedSignal(true);
+    this->status = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -244,7 +254,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
 {
     int     ID          = 0;
     bool    forceMedia  = this->courseTemplate.options.bit.oForce;
-
+    const int timeOut   = 6e4;
     QDomNode questionNode=getNode (topicNode,question,doc,courseFileDirectory,"exercise",ID,GID);
     QProcess myProcess;
     // create xml course file
@@ -281,9 +291,9 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         trace(QString("createMp3.bat ")+arguments.join(" "),traceLevel1);
 
         myProcess.start("createMp3.bat", arguments );
-        if (!myProcess.waitForStarted(-1))
+        if (!myProcess.waitForStarted())
              trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
-        myProcess.waitForFinished(-1);
+        myProcess.waitForFinished(timeOut);
         if (myProcess.exitCode())
             trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
 
@@ -302,9 +312,9 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             arguments.append("HTML");
 
             myProcess.start("getGoogleHtml.bat", arguments  );
-            if (!myProcess.waitForStarted(-1))
+            if (!myProcess.waitForStarted())
                 trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
-            myProcess.waitForFinished(-1);
+            myProcess.waitForFinished(timeOut);
             if (myProcess.exitCode())
                 trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
 
@@ -323,9 +333,9 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             trace(QString("getImage.bat ")+arguments.join(" "),traceLevel1);
 
             myProcess.start("getImage.bat", arguments  );
-            if (!myProcess.waitForStarted(-1))
+            if (!myProcess.waitForStarted())
                 trace(QString("Error:getImage.bat ")+arguments.join(" "),traceError);
-            myProcess.waitForFinished(-1);
+            myProcess.waitForFinished(timeOut);
             if (myProcess.exitCode())
                   trace(QString("Error:getImage.bat ")+arguments.join(" "),traceError);
 
@@ -345,8 +355,8 @@ bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &doc
     std::list <int>::iterator it;
 
     trace (QString("doDelete: id:")
-            + QString(" CourseId:")+courseIDSQL
-            + QString(" ParetntId:")+paretntIDSQL
+           + QString(" CourseId:")+QString::number(courseIDSQL)
+            + QString(" ParetntId:")+QString::number(paretntIDSQL)
             ,traceLevel2);
 
     while(!n.isNull())
@@ -656,4 +666,10 @@ QStringList cCourseGenerator::parseGoogleHtml (QString fileName)
      retList.append(tmp);
     }
     return retList;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+int cCourseGenerator::getStatus()
+{
+    return this->status;
 }

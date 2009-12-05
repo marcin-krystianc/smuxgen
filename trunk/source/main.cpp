@@ -1,12 +1,10 @@
 //============================================================================
-// Name         : main.cpp
 // Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
 // Version      : 2.0
 // License      : GPL
 // URL          : http://code.google.com/p/smuxgen/
 // Description  : SMUXGEN - SuperMemo UX generator
 //============================================================================
-
 
 
 #include "gui.h"
@@ -26,6 +24,7 @@ int main (int argc, char* argv[])
     Q_INIT_RESOURCE(gui);
 
     QApplication app(argc, argv);   // sql will not work without that
+    app.addLibraryPath(("plugins"));
 
     QStringList argList;
     while (argc >1)

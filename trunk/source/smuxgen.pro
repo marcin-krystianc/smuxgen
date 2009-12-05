@@ -3,6 +3,7 @@
 # -------------------------------------------------
 QT += sql
 QT += xml
+QT += phonon
 
 # CONFIG -= app_bundle
 # TEMPLATE = app

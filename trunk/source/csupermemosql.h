@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #ifndef CSUPERMEMOSQL_H
 #define CSUPERMEMOSQL_H
 

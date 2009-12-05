@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #ifndef COURSETEMPLATEOPTIONS_H
 #define COURSETEMPLATEOPTIONS_H
 
@@ -29,6 +38,7 @@ public:
 
     bool fromString  (const QString &line);
     QString toString () ;
+    void clear();
 
     private:
     void trace (const QString &text,const int & flags = traceLevel1|0);

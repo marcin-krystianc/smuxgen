@@ -1,3 +1,11 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #include "coursetemplateoptions.h"
 #include "cglobaltracer.h"
 
@@ -128,4 +136,20 @@ QString cCourseTemplateOptions::toString()
 void cCourseTemplateOptions::trace(const QString &text,const int & flags)
 {
      globalTracer.trace(text,flags);
+}
+/////////////////////////////////////////////////////////////////////////////
+void  cCourseTemplateOptions::clear()
+{
+    this->bit.oDouble = false;
+    this->bit.oForce  = false;
+    this->bit.oVoice  = false;
+    this->bit.oImage  = false;
+
+    this->course.clear();
+    this->database.clear();
+    this->subname.clear();
+
+    voiceIndex  = 0;
+    voiceGain   = 0;
+    voiceTrim   = 0;
 }

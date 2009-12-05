@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #ifndef CSMUXGENWIDGETS_H
 #define CSMUXGENWIDGETS_H
 
@@ -10,6 +19,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <Phonon>
 
 #include "coursetemplateoptions.h"
 #include "csupermemosql.h"
@@ -44,11 +54,15 @@ class cOptionsPage : public QWidget
         cSuperMemoSQL superMemoSQL;
         void trace (const QString &text,const int & flags = traceLevel1|0);
 
+        Phonon::AudioOutput *audioOutput;
+        Phonon::MediaObject *mediaObject;
+
     private slots:
         void fileButtonTriggered ();
         void fileEditChanged (const QString &fileName);
         void voiceCheckBoxChanged (int);
         void voiceTestButtonTriggered ();
+        void testFileRemoveSlot();
 };
 
 /////////////////////////////////////////////////////////////////////////////

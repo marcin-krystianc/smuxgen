@@ -1,3 +1,11 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #include <QtGui>
 
 #include "gui.h"
@@ -23,15 +31,22 @@ MainWindow::MainWindow(QStringList &inputFileList)
     this->setTitle();
     this->unlockInterface();
     this->resize(800,600);
+    this->setWindowIcon(QIcon(":/images/smuxgen.png"));
 
-
-    connect(&courseGenerator, SIGNAL(finishedSignal(bool))              , this , SLOT(generateCourseFinishedSlot(bool)));
+    connect(&courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
     connect(&courseGenerator, SIGNAL(progressSignal(const QString&))    , this , SLOT(progressSlot(const QString&)));
 
     if (this->batchMode)
         this->generateCourseBatch();
 }
-
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::about()
+{
+    QMessageBox::about(this, QString("SMUXGEN"),
+                       QString   (  "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
+                                    "<center><br/>License : GPL"
+                                    "<center><br/><a href=\"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
+}
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
 {
@@ -168,13 +183,15 @@ void MainWindow::openCourseTemplateSlot()
     if (fileName.isEmpty())
         return;
 
+
+
     if (!courseTemplate.open(fileName))
     {
         trace (tr("Error opening file:")+fileName,traceError);
         return;
     }
 
-    this->courseTemplateFileName = fileName;
+    this->courseTemplateFileName    = fileName;
     trace (QString("Opened: ")+this->courseTemplateFileName,traceLevel1);
 
     this->optionsPage->setOptions(courseTemplate.options);
@@ -260,7 +277,7 @@ void MainWindow::setTitle()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::unlockInterface()
 {
-    this->generateCourseAct->setIcon(QIcon(":/images/play.png"));
+    this->generateCourseAct->setIcon(QIcon(":/images/generate.png"));
     this->generateCourseAct->setStatusTip(tr("Generate course"));
     this->generateCourseAct->setText(tr("Generate "));
 }
@@ -268,23 +285,23 @@ void MainWindow::unlockInterface()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
-    this->generateCourseAct->setIcon(QIcon(":/images/exit.png"));
+    this->generateCourseAct->setIcon(QIcon(":/images/stop.png"));
     this->generateCourseAct->setStatusTip(tr("Stop"));
     this->generateCourseAct->setText(tr("Stop "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::generateCourseFinishedSlot(bool success)
+void MainWindow::generateCourseFinishedSlot()
 {
-    this->setTitle();
-    if (success)
+    if (this->courseGenerator.getStatus())
+         trace (QString("Course generation failed !"),traceLevel1);
+    else   
         trace (QString("Course generatad successfully"),traceLevel1);
-    else
-        trace (QString("Course generation failed !"),traceLevel1);
 
     this->unlockInterface();
     statusBar()->showMessage("");
 
+    this->setTitle();
     if (this->batchMode)
         this->generateCourseBatch();
 }
@@ -318,7 +335,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 
     if (this->contentChanged)
-        this->saveCourseTemplateSlot();
+        this->courseTemplateFileName.clear(),this->saveCourseTemplateSlot();
 
     close();
 }
@@ -354,6 +371,7 @@ void MainWindow::generateCourseBatch()
 
     this->inputFileList.removeFirst();
     this->courseGenerator.generate(this->courseTemplate);
+    trace (QString("generate started: "),traceLevel3);
     this->lockInterface();
     this->setTitle();
 }

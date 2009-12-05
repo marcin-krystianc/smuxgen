@@ -1,3 +1,11 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #include "coursetemplate.h"
 #include "coursetemplateoptions.h"
 #include <QFile>
@@ -7,12 +15,13 @@
 /////////////////////////////////////////////////////////////////////////////
 cCourseTemplate::cCourseTemplate()
 {
+    this->clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool cCourseTemplate::open(const QString &fileName)
 {
-    this->content.clear();
+    this->clear();
 
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -68,4 +77,11 @@ bool cCourseTemplate::save(const QString &fileName)
 void cCourseTemplate::trace (const QString &text,const int & flags)
 {
       globalTracer.trace(text,flags);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void cCourseTemplate::clear()
+{
+    this->options.clear();
+    this->content.clear();
 }

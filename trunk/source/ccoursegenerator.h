@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #ifndef CCOURSEGENERATOR_H
 #define CCOURSEGENERATOR_H
 
@@ -19,12 +28,12 @@ class cCourseGenerator : public QThread
         ~cCourseGenerator();
 
         void generate (const cCourseTemplate &courseTemplate);
+        int getStatus();
 
     public slots:
         void stop();
 
     signals:
-        void finishedSignal (bool sucess);
         void progressSignal (const QString&);
 
     private:
@@ -50,6 +59,7 @@ class cCourseGenerator : public QThread
         void deleteFile (QString fileName);
         QString getKeyWord (QString iString);
         QStringList parseGoogleHtml (QString fileName);
+        int status;
 
     protected:
         void run();

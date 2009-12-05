@@ -1,3 +1,12 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
+
 #ifndef GUI_H
 #define GUI_H
 
@@ -25,13 +34,14 @@ private slots:
     void saveCourseTemplateSlot();
     void saveAsCourseTemplateSlot();
     void generateCourseSlot();                  // start/stop generate course
-    void generateCourseFinishedSlot(bool);      // generate finished
+    void generateCourseFinishedSlot();          // generate finished
     void progressSlot(const QString &);
     void contentChangedSlot();
 
     void closeSlot();
     void unlockInterface();
     void lockInterface();
+    void about();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -71,6 +81,7 @@ private:
     cCourseGenerator courseGenerator;
     bool contentChanged;
     bool batchMode;
+   // bool isRunning;
     QStringList inputFileList;
     void generateCourseBatch();
 };

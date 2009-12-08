@@ -254,7 +254,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
 {
     int     ID          = 0;
     bool    forceMedia  = this->courseTemplate.options.bit.oForce;
-    const int timeOut   = 6e4;
+    const int timeOut   = -1; // no timeout
     QDomNode questionNode=getNode (topicNode,question,doc,courseFileDirectory,"exercise",ID,GID);
     QProcess myProcess;
     // create xml course file
@@ -283,6 +283,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         QStringList  arguments; // filename, text,trim,gain
         arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3);
         answer.replace("|"," ");
+        question.replace("|"," ");
         arguments.append(bMode ? question:answer);
         arguments.append(QString::number(this->courseTemplate.options.voiceIndex));
         arguments.append(QString::number(this->courseTemplate.options.voiceTrim));

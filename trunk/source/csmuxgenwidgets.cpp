@@ -304,6 +304,7 @@ cContentPage::cContentPage(QWidget *parent)
     : QWidget(parent)
 {
     this->contentTextEdit   = new QTextEdit;
+    this->contentTextEdit->setAcceptRichText(false);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(this->contentTextEdit);
     setLayout(mainLayout);

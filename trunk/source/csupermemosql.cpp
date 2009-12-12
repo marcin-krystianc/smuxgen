@@ -163,7 +163,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
     if (model.rowCount()==0)
     { // generate new record
         record.setValue("CourseId",courseIDSQL);
-        record.setValue("elementName",elementName);
+        record.setValue("Name",elementName);
         record.setValue("PageNum",elementIDSQL);
         record.setValue("QueueOrder",elementIDSQL);
         record.setValue("ParentId",paretntIDSQL);
@@ -175,7 +175,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
 
        trace(QString("setElementSQL, generate new record: ")
             + QString(" CourseId:")     +QString::number(courseIDSQL)
-            + QString(" elementName:")  +elementName
+            + QString(" Name:")         +elementName
             + QString(" PageNum:")      +QString::number(elementIDSQL)
             + QString(" QueueOrder:")   +QString::number(elementIDSQL)
             + QString(" ParentId:")     +QString::number(paretntIDSQL)
@@ -188,11 +188,11 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
     }
     else
     {
-        record.setValue("elementName",elementName);
+        record.setValue("Name",elementName);
         record.setValue("QueueOrder",elementIDSQL);
 
         trace(QString("setElementSQL, modify record:")
-            + QString(" elementName:") + elementName
+            + QString(" Name:") + elementName
             + QString(" QueueOrder:")  + QString::number(elementIDSQL)
             ,traceLevel3);
 

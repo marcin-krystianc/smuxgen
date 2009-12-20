@@ -47,7 +47,7 @@ class cCourseGenerator : public QThread
         int  getGID (QDomElement &docElement);
         QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int &retID,int &GID);
         void setDelete (QDomNode &topicNode);
-        bool doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement);
+        bool doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory);
         bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID);
         int writeDomDoucumentToFile (QDomDocument &document,QString path);
         QDomDocument createCourseItem (int templateId,QString chapter);
@@ -60,6 +60,7 @@ class cCourseGenerator : public QThread
         QString getKeyWord (QString iString);
         QStringList parseGoogleHtml (QString fileName);
         int status;
+        bool scalePicture (QString path,int x,int y);
 
     protected:
         void run();

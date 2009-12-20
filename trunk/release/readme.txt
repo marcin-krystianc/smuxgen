@@ -46,8 +46,6 @@ W skład programu wchodzi:
   katalog bin:
     smuxgen.exe         - główny komponent programu SMUXGEN
     createMp3.bat 	- skryot odpowiedzialny za generowanie plików mp3
-			  (można go edytować w celu dostosowania do potrzeb 
-			  zainstalowanego engine "text to speach"
     getGoogleHtml.bat 	- skrypt pobierający wyniki wyszukiwania z serwisie Google images
     getImage.bat	- skrypt pobierający obrazki z podanego adresu URL
 

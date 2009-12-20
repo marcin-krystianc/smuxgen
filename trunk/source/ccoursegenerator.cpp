@@ -19,9 +19,14 @@
 #include <QSqlRecord>
 #include <QTextStream>
 #include <QDate>
+#include <QImage>
 
 #include <algorithm>
 #include <list>
+
+const int IMG_WIDTH     = 320;
+const int IMG_HEIGHT    = 320;
+
 /////////////////////////////////////////////////////////////////////////////
 cCourseGenerator::cCourseGenerator()
 {
@@ -135,7 +140,7 @@ void  cCourseGenerator::run ()
     }
 
 
-    doDelete (courseID,topicAID,topicNodeA);
+    doDelete (courseID,topicAID,topicNodeA,courseFileDirectoryName);
 
 
     // B course
@@ -168,7 +173,7 @@ void  cCourseGenerator::run ()
             generateCourseElement(courseID,(list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true,GID);
          }
 
-        doDelete (courseID,topicBID,topicNodeB);
+        doDelete (courseID,topicBID,topicNodeB,courseFileDirectoryName);
     }
 
 
@@ -326,10 +331,12 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         int i=0; // download 2 images
         while ((fileUrls.count())>0&&(i<2))
         {
-            deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg");
+            QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i);
+            QString filrExt = ".jpg";
+            deleteFile(fileName+filrExt);
             arguments.clear();
             arguments.append(fileUrls.first()+QString(" "));
-            arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+QString(" "));
+            arguments.append(fileName+" ");
 
             trace(QString("getImage.bat ")+arguments.join(" "),traceLevel1);
 
@@ -340,7 +347,13 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             if (myProcess.exitCode())
                   trace(QString("Error:getImage.bat ")+arguments.join(" "),traceError);
 
-            if (checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg"))
+            if (!this->scalePicture(fileName+filrExt,IMG_WIDTH,IMG_HEIGHT))
+            {
+                trace(QString("Error:scalePicture ")+fileName+filrExt,traceError);
+                this->deleteFile(fileName+filrExt);
+            }
+
+            if (checkIsFileOk(fileName+filrExt))
                 i++;
             fileUrls.removeFirst();
          }
@@ -349,7 +362,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement)
+bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory)
 {
     QDomNode n = docElement.firstChild();
     std::list <int> listValidID;
@@ -368,6 +381,12 @@ bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &doc
             if (e.attribute("delete","none")=="true")
             {
                 trace(QString("doDelete: id:")+e.attribute("id","0")+QString(" name:")+e.attribute("name",""),traceLevel2);
+                int ID = e.attribute("id","0").toInt();
+                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"a.mp3");
+                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"q.mp3");
+                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg");
+                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg");
+
                 QDomNode tmp = n;
                 n = n.nextSibling();
                 docElement.removeChild(tmp);
@@ -550,9 +569,9 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 
                     QDomElement gfx= doc.createElement("gfx");
                     gfx.setAttribute("file","m");
-                    gfx.setAttribute("space","5");
-                    gfx.setAttribute("width","320");
-                    gfx.setAttribute("height","320");
+                    gfx.setAttribute("space","0");
+                    gfx.setAttribute("width"    ,QString::number(IMG_WIDTH));
+                    gfx.setAttribute("height"   ,QString::number(IMG_HEIGHT));
                 td.appendChild(gfx);
 
             tr.appendChild(td);
@@ -562,9 +581,9 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 
                     gfx= doc.createElement("gfx");
                     gfx.setAttribute("file","n");
-                    gfx.setAttribute("space","5");
-                    gfx.setAttribute("width","320");
-                    gfx.setAttribute("height","320");
+                    gfx.setAttribute("space","0");
+                    gfx.setAttribute("width"    ,QString::number(IMG_WIDTH));
+                    gfx.setAttribute("height"   ,QString::number(IMG_HEIGHT));
                 td.appendChild(gfx);
 
             tr.appendChild(td);
@@ -673,4 +692,24 @@ QStringList cCourseGenerator::parseGoogleHtml (QString fileName)
 int cCourseGenerator::getStatus()
 {
     return this->status;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool cCourseGenerator::scalePicture (QString path,int x,int y)
+{
+    QImage img;
+
+    if (!img.load(path))
+    {
+        trace(QString("Error:scalePicture load:")+path,traceError);
+        return false;
+    }
+
+    if (!img.scaled(x,y).save(path))
+    {
+        trace(QString("Error:scalePicture save:")+path,traceError);
+        return false;
+    }
+
+    return true;
 }

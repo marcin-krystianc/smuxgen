@@ -34,7 +34,7 @@ bool cSuperMemoSQL::open(const QString &fileName)
         (!this->database.isValid()) ||
         (!isValidSuperMemoDatabase()))
     {
-        trace(QString("cSuperMemoSQL::open - error: ")+(this->database.lastError().text()),traceError);
+        trace(QString("cSuperMemoSQL::open:")+fileName+QString(" Error:")+(this->database.lastError().text()),traceError);
         return false;
     }
 

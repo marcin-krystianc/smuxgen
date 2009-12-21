@@ -14,12 +14,12 @@
 #include <QFileInfo>
 #include <QDomDocument>
 #include <QProcess>
-#include <QSqlTableModel>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QTextStream>
 #include <QDate>
 #include <QImage>
+#include <QSqlQuery>
 
 #include <algorithm>
 #include <list>
@@ -398,58 +398,23 @@ bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &doc
         n = n.nextSibling();
     }
 
-    // get all ID (PageNum) from database
-    QSqlDatabase rawDatabase = database.getDatabase();
-    QSqlTableModel model(0,rawDatabase);
     QString   filter;   // CourseID + PageNum - primary key
+    filter  +=QString::fromUtf8("delete from items where ");
     filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
     filter  +=QString::fromUtf8(" and ");
     filter  +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    for (it=listValidID.begin();it!=listValidID.end();it++)
+        filter +=QString::fromUtf8 ("PageNum!=")+QString::number(*it)+QString(" and ");
 
-    model.setTable("items");
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model.setFilter(filter);
+    filter +="1=1";    // to finish qery
 
-    if (!model.select()) {
-        trace(QString("doDelete: select:")+rawDatabase.lastError().text(),traceError);
-        return false;
-    }
-
-
-    for (int i=0;i<model.rowCount();i++)
+    QSqlQuery query (this->database.getDatabase());
+    if (!query.exec(filter))    // delete all unknown course items
     {
-       QSqlRecord record=model.record(i);
-       QVariant v1  = record.value(QString::fromUtf8("PageNum"));
-       if (!v1.isValid()) {
-            trace(QString("doDelete: Cannot get IDs from database:"),traceError);
-            return false;
-       }
-
-       it = find(listValidID.begin(),listValidID.end(),v1.toInt());
-       if (it==listValidID.end())
-       {   // all elements that are not in XML will be removed from SQL
-           model.removeRows(i,1);
-             trace(QString("doDelete, remove:")
-                +QString(" i:")+QString::number(i)
-                +QString(" PageNum:")+QString::number(v1.toInt()),traceLevel2);
-       }
-       else
-            trace(QString("doDelete, leave:")
-                +QString(" i:")+QString::number(i)
-                +QString(" PageNum:")+QString::number(v1.toInt()),traceLevel2);
-
-
-    }
-
-    model.database().transaction();
-    if (model.submitAll()) {
-        model.database().commit();
-    } else {
-        model.database().rollback();
-        trace(QString("doDelete submitAll: ")+rawDatabase.lastError().text(),traceError);
+        trace(QString("doDelete error query.exec(): ")+query.lastError().text(),traceError);
         return false;
     }
-
     return true;
 }
 

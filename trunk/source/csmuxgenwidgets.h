@@ -20,10 +20,14 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <Phonon>
+#include <QListWidget>
+#include <QTimer>
+#include <QProgressBar>
 
 #include "coursetemplateoptions.h"
 #include "csupermemosql.h"
 #include "cglobaltracer.h"
+#include "cimagedownloader.h"
 
 /////////////////////////////////////////////////////////////////////////////
 class cOptionsPage : public QWidget
@@ -77,6 +81,7 @@ class cConsolePage : public QWidget
 
     private:
         QTextEdit *consoleText;
+        QMutex traceMutex;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,7 +98,86 @@ class cContentPage : public QWidget
     private:
         QTextEdit *contentTextEdit;
 
-     private slots:
+    private slots:
         void contentChangedSlot();
 };
+
+
+/////////////////////////////////////////////////////////////////////////////
+class cImageList : public QListWidget
+{
+    Q_OBJECT
+    public:
+
+        cImageList(QWidget *parent = 0,int maxCount = 128);
+        void addPiece(const QPixmap &pixmap);
+        void resetPosition();
+    public slots:
+        void addPieceSlot (const QPixmap &);
+
+    private:
+        int maxCount;
+        int rowIndex;
+
+        QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
+
+        static const unsigned int tileSizeX = 100;
+        static const unsigned int tileSizeY = 100;
+
+        void trace (const QString &text,const int & flags = traceLevel1|0);
+
+    protected:
+        void dragEnterEvent(QDragEnterEvent *event);
+        void dragMoveEvent(QDragMoveEvent *event);
+        void dropEvent(QDropEvent *event);
+        void startDrag(Qt::DropActions supportedActions);
+};
+
+/////////////////////////////////////////////////////////////////////////////
+class cImageSearch : public QWidget
+{
+    Q_OBJECT
+    public:
+        cImageSearch(QWidget *parent = 0);
+
+    public slots:
+        void newKeywordsChangedL   (const QString &txt);
+        void newKeywordsChangedR   (const QString &txt);
+        void newKeywordsL   ();
+        void newKeywordsR   ();
+
+    private:
+        QLineEdit       *leftEdit;
+        QLineEdit       *rightEdit;
+        QProgressBar    *leftProgress;
+        QProgressBar    *rightProgress;
+        QTimer          *timerL;
+        QTimer          *timerR;
+
+        QString textL;
+        QString textR;
+
+        cImageList  *imagelist;
+        cImageDownloader *imageDownloader[2];
+        void newKeywords    (const QString &txt,int id);
+
+        void trace (const QString &text,const int & flags = traceLevel1|0);
+
+    protected:
+
+};
+
+/////////////////////////////////////////////////////////////////////////////
+class cImageWidget : public QWidget
+{
+    Q_OBJECT
+    public:
+        cImageWidget (QWidget *parent = 0);
+
+    private:
+        cImageSearch *imageSearch;
+    protected:
+
+};
+
 #endif // CSMUXGENWIDGETS_H

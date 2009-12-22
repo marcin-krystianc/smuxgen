@@ -24,8 +24,9 @@
 #include <algorithm>
 #include <list>
 
-const int IMG_WIDTH     = 320;
-const int IMG_HEIGHT    = 320;
+#include "globalsmuxgentools.h"
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 cCourseGenerator::cCourseGenerator()
@@ -303,30 +304,28 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         if (myProcess.exitCode())
             trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
 
+    }
 
-        // create jpg
-        if (this->courseTemplate.options.bit.oImage&&
-            ((forceMedia)||
-            (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
-            (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg"))))
-        {
-            deleteFile("HTML");
-            QStringList  arguments;
-            arguments.clear();
+    // create jpg
+    if (this->courseTemplate.options.bit.oImage&&
+        ((forceMedia)||
+        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
+        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg"))))
+    {
+        deleteFile(tmpDir+"HTML");
+        QStringList  arguments;
 
-            arguments.append(getKeyWord(question));
-            arguments.append("HTML");
+        arguments.append(getKeyWord(question));
+        arguments.append(tmpDir+"HTML");
 
-            myProcess.start("getGoogleHtml.bat", arguments  );
-            if (!myProcess.waitForStarted())
-                trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
-            myProcess.waitForFinished(timeOut);
-            if (myProcess.exitCode())
-                trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
+        myProcess.start("getGoogleHtml.bat", arguments  );
+        if (!myProcess.waitForStarted())
+            trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
+        myProcess.waitForFinished(timeOut);
+        if (myProcess.exitCode())
+            trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "),traceError);
 
-        }
-
-        QStringList  fileUrls= parseGoogleHtml("HTML");
+        QStringList  fileUrls= parseGoogleHtml(tmpDir+"HTML");
 
         int i=0; // download 2 images
         while ((fileUrls.count())>0&&(i<2))
@@ -347,10 +346,10 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             if (myProcess.exitCode())
                   trace(QString("Error:getImage.bat ")+arguments.join(" "),traceError);
 
-            if (!this->scalePicture(fileName+filrExt,IMG_WIDTH,IMG_HEIGHT))
+            if (!scalePicture(fileName+filrExt,IMG_WIDTH,IMG_HEIGHT))
             {
                 trace(QString("Error:scalePicture ")+fileName+filrExt,traceError);
-                this->deleteFile(fileName+filrExt);
+                deleteFile(fileName+filrExt);
             }
 
             if (checkIsFileOk(fileName+filrExt))
@@ -358,6 +357,9 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             fileUrls.removeFirst();
          }
     }
+
+
+
     return true;
 }
 
@@ -382,10 +384,10 @@ bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &doc
             {
                 trace(QString("doDelete: id:")+e.attribute("id","0")+QString(" name:")+e.attribute("name",""),traceLevel2);
                 int ID = e.attribute("id","0").toInt();
-                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"a.mp3");
-                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"q.mp3");
-                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg");
-                this->deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg");
+                deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"a.mp3");
+                deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"q.mp3");
+                deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg");
+                deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg");
 
                 QDomNode tmp = n;
                 n = n.nextSibling();
@@ -581,100 +583,7 @@ QString cCourseGenerator::getMediaFileName (int i)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseGenerator::checkIsFileOk(QString fileName)
-{
-    QFile fileObject (fileName);
-    if (fileObject.size()>0)
-        return true;
-
-    trace(QString("NOT OK: ")+fileName,traceLevel2);
-    return false;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void cCourseGenerator::deleteFile (QString fileName)
-{
-    QFile fileObject (fileName);
-    fileObject.remove();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QString cCourseGenerator::getKeyWord (QString iString)
-{
-    static QString A=QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśBółę!@#$%^&*()_-=+,./<>?;':\"[]\{}|");
-    static QString B=QString::fromUtf8("ACZXSNOLEaczzsnole                               ");
-
-    for (int i=A.length()-1;i>=0;--i)
-        iString.replace(A.at(i),B.at(i));
-
-    QStringList tmp=iString.split(" ",QString::SkipEmptyParts);
-
-    if (tmp.count() > 1)
-        return (tmp.at(0)+QString(" ")+tmp.at(1));
-    else
-        return tmp.at(0);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QStringList cCourseGenerator::parseGoogleHtml (QString fileName)
-{
-    QFile inputFile;
-    QStringList retList;
-    QTextStream inputFileStream;
-    QString html;
-    inputFile.setFileName(fileName);
-    if (!inputFile.open(QIODevice::ReadOnly))  {
-         trace(QString("Cannot open file: ")+fileName,traceError);
-         return retList;
-     }
-
-    inputFileStream.setDevice( &inputFile );
-    inputFileStream.setCodec("UTF-8");
-    html=inputFileStream.readAll();
-
-    int pos=0,leftPos,rightPos;
-
-    QString  leftBound  ("/imgres?imgurl\\x3d");
-    QString  rightBound ("\\x26");
-    QString  tmp;
-
-    while ((leftPos=html.indexOf(leftBound,pos)) != -1)
-    {
-     rightPos=html.indexOf(rightBound,leftPos);
-     if (rightPos==-1)
-         break;
-
-     pos=rightPos;
-     tmp = html.mid(leftPos+leftBound.length(),rightPos-leftPos-leftBound.length());
-     if (tmp.indexOf("%")!=-1)
-         continue;
-     retList.append(tmp);
-    }
-    return retList;
-}
-
-/////////////////////////////////////////////////////////////////////////////
 int cCourseGenerator::getStatus()
 {
     return this->status;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-bool cCourseGenerator::scalePicture (QString path,int x,int y)
-{
-    QImage img;
-
-    if (!img.load(path))
-    {
-        trace(QString("Error:scalePicture load:")+path,traceError);
-        return false;
-    }
-
-    if (!img.scaled(x,y).save(path))
-    {
-        trace(QString("Error:scalePicture save:")+path,traceError);
-        return false;
-    }
-
-    return true;
 }

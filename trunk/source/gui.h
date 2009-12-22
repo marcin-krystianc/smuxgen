@@ -71,6 +71,7 @@ private:
     cOptionsPage *optionsPage;
     cConsolePage *consolePage;
     cContentPage *contentPage;
+    cImageWidget *imageWidget;
 
 private:
     cCourseTemplate courseTemplate;

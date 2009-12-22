@@ -15,12 +15,16 @@ SOURCES += main.cpp \
     csmuxgenwidgets.cpp \
     cglobaltracer.cpp \
     csupermemosql.cpp \
-    ccoursegenerator.cpp
+    ccoursegenerator.cpp \
+    cimagedownloader.cpp \
+    globalsmuxgentools.cpp
 HEADERS += gui.h \
     coursetemplate.h \
     coursetemplateoptions.h \
     csmuxgenwidgets.h \
     cglobaltracer.h \
     csupermemosql.h \
-    ccoursegenerator.h
+    ccoursegenerator.h \
+    cimagedownloader.h \
+    globalsmuxgentools.h
 RESOURCES += gui.qrc

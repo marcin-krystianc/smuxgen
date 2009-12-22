@@ -134,6 +134,7 @@ void MainWindow::createDockWindows()
     addDockWidget(Qt::LeftDockWidgetArea, dock);
     this->optionsPage =new cOptionsPage(dock);
     dock->setWidget(this->optionsPage);
+    dock->hide(); //temporary
 
     if (!this->batchMode)
         viewMenu->addAction(dock->toggleViewAction());
@@ -145,6 +146,7 @@ void MainWindow::createDockWindows()
     addDockWidget(Qt::RightDockWidgetArea, dock);
     this->contentPage = new cContentPage(dock);
     dock->setWidget(this->contentPage);
+    dock->hide(); //temporary
 
     if (!this->batchMode)
         viewMenu->addAction(dock->toggleViewAction());
@@ -159,8 +161,22 @@ void MainWindow::createDockWindows()
     dock->setWidget(this->consolePage);
     viewMenu->addAction(dock->toggleViewAction());
 
+    /*
     if (!this->batchMode)
         dock->hide();
+    */
+
+    dock = new QDockWidget(tr("ImageWidget"), this);
+    dock->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
+    this->imageWidget = new cImageWidget(dock);
+    dock->setWidget(this->imageWidget);
+    viewMenu->addAction(dock->toggleViewAction());
+
+    /*
+    if (!this->batchMode)
+        dock->hide();
+        */
 
     connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->consolePage , SLOT(traceSlot(const QString&,const int&)));
     connect( this->contentPage , SIGNAL(contentChangedSignal()),this, SLOT(contentChangedSlot()));

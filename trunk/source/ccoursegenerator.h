@@ -55,12 +55,7 @@ class cCourseGenerator : public QThread
         bool checkIfNewAnswers(QString fileName,QString answers);
         QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,QString audioType);
         QString getMediaFileName (int i);
-        bool checkIsFileOk(QString fileName);
-        void deleteFile (QString fileName);
-        QString getKeyWord (QString iString);
-        QStringList parseGoogleHtml (QString fileName);
         int status;
-        bool scalePicture (QString path,int x,int y);
 
     protected:
         void run();

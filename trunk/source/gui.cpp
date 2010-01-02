@@ -110,6 +110,8 @@ void MainWindow::createActions()
     pictureBrowserAct->setShortcuts(QKeySequence::UnknownKey);
     pictureBrowserAct->setStatusTip(tr("Picture browser"));
     connect(pictureBrowserAct, SIGNAL(triggered()), this, SLOT(pictureBrowserOpenCloseSlot()));
+    if (this->batchMode)
+        this->pictureBrowserAct->setVisible(false);
 
     quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcut(tr("Ctrl+Q"));

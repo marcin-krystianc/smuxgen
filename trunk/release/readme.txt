@@ -1,7 +1,7 @@
 ﻿--------------------------------------------------------------------------------
 			SMUXGEN - SuperMemo UX Generator
 --------------------------------------------------------------------------------
-Version 2.0 (Tested with SuperMemo UX 1.4.3.2)
+Version 2.1 (Tested with SuperMemo UX 1.4.3.2)
 Author	Marcin Krystianc (marcin.krystianc@gmail.com)
 OS	Windows
 License GPL

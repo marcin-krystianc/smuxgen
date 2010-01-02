@@ -330,9 +330,9 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         int i=0; // download 2 images
         while ((fileUrls.count())>0&&(i<2))
         {
-            QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i);
-            QString filrExt = ".jpg";
-            deleteFile(fileName+filrExt);
+            QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
+            //QString filrExt = ;
+            deleteFile(fileName);
             arguments.clear();
             arguments.append(fileUrls.first()+QString(" "));
             arguments.append(fileName+" ");
@@ -346,13 +346,13 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
             if (myProcess.exitCode())
                   trace(QString("Error:getImage.bat ")+arguments.join(" "),traceError);
 
-            if (!scalePicture(fileName+filrExt,IMG_WIDTH,IMG_HEIGHT))
+            if (!scalePicture(fileName,IMG_WIDTH,IMG_HEIGHT))
             {
-                trace(QString("Error:scalePicture ")+fileName+filrExt,traceError);
-                deleteFile(fileName+filrExt);
+                trace(QString("Error:scalePicture ")+fileName,traceError);
+                deleteFile(fileName);
             }
 
-            if (checkIsFileOk(fileName+filrExt))
+            if (checkIsFileOk(fileName))
                 i++;
             fileUrls.removeFirst();
          }
@@ -458,17 +458,6 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString cCourseGenerator::getFileName (int i)
-{
-    QString name;
-    name.fill('0',5);
-    name+=QString::number(i);
-    name+=".xml";
-    name=name.right(9);
-    return QString("item")+name;
-}
-
-/////////////////////////////////////////////////////////////////////////////
 bool cCourseGenerator::checkIfNewAnswers(QString fileName,QString answers)
 {
     QDomDocument doc("mydocument");
@@ -570,16 +559,6 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
     }
 
     return doc;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QString cCourseGenerator::getMediaFileName (int i)
-{
-    QString name;
-    name.fill('0',5);
-    name+=QString::number(i);
-    name=name.right(5);
-    return name;
 }
 
 /////////////////////////////////////////////////////////////////////////////

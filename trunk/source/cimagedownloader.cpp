@@ -1,3 +1,11 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #include <QString>
 #include <QDir>
 #include <Qprocess>
@@ -23,7 +31,7 @@ cImageDownloadHelper::~cImageDownloadHelper()
 /////////////////////////////////////////////////////////////////////////////
 QString cImageDownloadHelper::myFileName()
 {
-    return tmpDir+"IMG"+this->EXT;
+    return tmpDir+"IMG"+this->EXT+".jpg";
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +52,9 @@ void cImageDownloadHelper::run()
     const int timeOut   = -1; // no timeout
     QString fileName = this->myFileName();
 
-    QString fileExt = ".jpg";
-
     QStringList  arguments;
 
-    deleteFile(fileName+fileExt);
+    deleteFile(fileName);
 
     arguments.append(this->url+QString(" "));
     arguments.append(fileName+" ");
@@ -62,21 +68,21 @@ void cImageDownloadHelper::run()
     if (myProcess.exitCode())
           trace(QString("Error.exitCode() :getImage.bat ")+arguments.join(" "),traceError);
 
-    if (!scalePicture(fileName+fileExt,IMG_WIDTH,IMG_HEIGHT))
+    if (!scalePicture(fileName,IMG_WIDTH,IMG_HEIGHT))
     {
-        trace(QString("Error:scalePicture ")+fileName+fileExt,traceError);
-        deleteFile(fileName+fileExt);
+        trace(QString("Error:scalePicture ")+fileName,traceError);
+        deleteFile(fileName);
     }
 
-    if (checkIsFileOk(fileName+fileExt))
+    if (checkIsFileOk(fileName))
     {
-        QPixmap pixmap(fileName+fileExt);
-        emit this->finished (true,pixmap,this->ID);
+        QPixmap pixmap(fileName);
+        emit this->finished (true,pixmap,this->ID,this->url);
     }
     else
     {
         QPixmap pixmap;
-        emit this->finished (false,pixmap,this->ID);
+        emit this->finished (false,pixmap,this->ID,this->url);
     };
 }
 
@@ -95,7 +101,7 @@ cImageDownloader::cImageDownloader(const QString &id)
     for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
     {
         imageDownloadHelper[i] = new cImageDownloadHelper(this->ID+QString::number(i),i);
-        connect(imageDownloadHelper[i], SIGNAL(finished(bool,const QPixmap& ,int))   , this , SLOT(helpThredFinished(bool,const QPixmap& ,int)));
+        connect(imageDownloadHelper[i], SIGNAL(finished(bool,const QPixmap& ,int,const QString &))   , this , SLOT(helpThredFinished(bool,const QPixmap& ,int,const QString &)));
     }
 
 }
@@ -103,8 +109,10 @@ cImageDownloader::cImageDownloader(const QString &id)
 /////////////////////////////////////////////////////////////////////////////
 cImageDownloader::~cImageDownloader()
 {
+   /*
     for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
         delete imageDownloadHelper[i];
+   */
 
     deleteFile(this->myFileName());
 }
@@ -142,6 +150,10 @@ void cImageDownloader::run ()
 
     while (1)
     {
+        for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+            if (!imageDownloadHelper[i]->isRunning())
+                imageDownloadHelper[i]->terminate();
+
         this->newTask = false;
         QStringList  arguments;
 
@@ -173,7 +185,6 @@ void cImageDownloader::run ()
                    && (!this->urls.isEmpty()))
                 {
                     imageDownloadHelper[i]->getImage(this->urls.takeFirst());
-                    emit sProgressValue(++this->progressValue);
                 }
             }
             msleep(333);
@@ -182,9 +193,10 @@ void cImageDownloader::run ()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageDownloader::helpThredFinished(bool success,const QPixmap& pixmap,int id)
+void cImageDownloader::helpThredFinished(bool success,const QPixmap& pixmap,int id,const QString &url)
 {
+    emit sProgressValue(++this->progressValue);
     if (success)
-        emit this->signalImage (pixmap);
+        emit this->signalImage (pixmap,url);
 }
 

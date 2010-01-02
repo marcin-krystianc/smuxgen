@@ -14,6 +14,7 @@
 #include "csmuxgenwidgets.h"
 #include "coursetemplate.h"
 #include "ccoursegenerator.h"
+#include "courseimageseditor.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -28,12 +29,16 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QStringList &inputFileList);
+    ~MainWindow();
 
 private slots:
-    void openCourseTemplateSlot();
+    void openCourseTemplateSlot(QString filename="");
     void saveCourseTemplateSlot();
     void saveAsCourseTemplateSlot();
-    void generateCourseSlot();                  // start/stop generate course
+    void generateCourseSlot();                      // start/stop generate course
+    void pictureBrowserOpenCloseSlot();                  // start/stop picture browser
+    void pictureBrowserVisibleSlot(bool visible);   // picture browser
+
     void generateCourseFinishedSlot();          // generate finished
     void progressSlot(const QString &);
     void contentChangedSlot();
@@ -43,6 +48,7 @@ private slots:
     void lockInterface();
     void about();
 
+    void openRecentFile();
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -52,6 +58,8 @@ private:
     void createToolBars();
     void createStatusBar();
     void createDockWindows();
+    void updateRecentFileActions();
+    QString strippedName(const QString &fullFileName);
 
     QMenu *fileMenu;
     QMenu *viewMenu;
@@ -59,10 +67,14 @@ private:
 
     QToolBar *toolBar;
 
+    static const int MaxRecentFiles = 5;
+
     QAction *openCourseTemplateAct;
     QAction *saveCourseTemplateAct;
     QAction *saveAsCourseTemplateAct;
     QAction *generateCourseAct;
+    QAction *pictureBrowserAct;
+    QAction *recentFileActs[MaxRecentFiles];
 
     QAction *aboutAct;
     QAction *aboutQtAct;
@@ -71,7 +83,13 @@ private:
     cOptionsPage *optionsPage;
     cConsolePage *consolePage;
     cContentPage *contentPage;
-    cImageWidget *imageWidget;
+    cCourseImageEditor *imageWidget;
+
+    QDockWidget *dockOptionsPage;
+    QDockWidget *dockConsolePage;
+    QDockWidget *dockContentPage;
+    QDockWidget *dockPictureBrowser;
+
 
 private:
     cCourseTemplate courseTemplate;

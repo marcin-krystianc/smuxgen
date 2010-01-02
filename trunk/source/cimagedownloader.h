@@ -1,3 +1,11 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
+
 #ifndef CIMAGEDOWNLOADER_H
 #define CIMAGEDOWNLOADER_H
 
@@ -34,7 +42,7 @@ class cImageDownloadHelper : public QThread
         void run();
 
     signals:
-        void finished (bool success,const QPixmap& pixmap,int id);
+        void finished (bool success,const QPixmap& pixmap,int id,const QString &url);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +56,7 @@ class cImageDownloader : public QThread
         void getImages(const QString &keyWords);
 
     public slots:
-        void helpThredFinished(bool success,const QPixmap& pixmap,int id);
+        void helpThredFinished(bool success,const QPixmap& pixmap,int id,const QString &url);
 
     private:
         QString ID;
@@ -69,7 +77,7 @@ class cImageDownloader : public QThread
         void run();
 
     signals:
-        void signalImage    (const QPixmap& pixmap);
+        void signalImage    (const QPixmap& pixmap,const QString &url);
         void sProgressRange (int min,int max);
         void sProgressValue (int value);
 };

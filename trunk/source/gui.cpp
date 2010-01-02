@@ -17,7 +17,6 @@
 /////////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow(QStringList &inputFileList)
 {
-
     this->batchMode     = !inputFileList.isEmpty();
     this->inputFileList = inputFileList;
 
@@ -40,6 +39,12 @@ MainWindow::MainWindow(QStringList &inputFileList)
         this->generateCourseBatch();
 }
 /////////////////////////////////////////////////////////////////////////////
+
+MainWindow::~MainWindow()
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void MainWindow::about()
 {
     QMessageBox::about(this, QString("SMUXGEN"),
@@ -58,7 +63,12 @@ void MainWindow::createMenus()
         fileMenu->addAction(saveAsCourseTemplateAct);
 
         fileMenu->addSeparator();
+        for (int i = 0; i < MaxRecentFiles; ++i)
+            fileMenu->addAction(recentFileActs[i]);
+
+        fileMenu->addSeparator();
         fileMenu->addAction(generateCourseAct);
+        fileMenu->addAction(pictureBrowserAct);
         fileMenu->addSeparator();
         fileMenu->addSeparator();
     }
@@ -70,6 +80,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
 
+    this->updateRecentFileActions();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +106,11 @@ void MainWindow::createActions()
     generateCourseAct->setShortcuts(QKeySequence::UnknownKey);
     connect(generateCourseAct, SIGNAL(triggered()), this, SLOT(generateCourseSlot()));
 
+    pictureBrowserAct = new QAction(QIcon(":/images/imgedit.png"), tr("&Picture browser"), this);
+    pictureBrowserAct->setShortcuts(QKeySequence::UnknownKey);
+    pictureBrowserAct->setStatusTip(tr("Picture browser"));
+    connect(pictureBrowserAct, SIGNAL(triggered()), this, SLOT(pictureBrowserOpenCloseSlot()));
+
     quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcut(tr("Ctrl+Q"));
     quitAct->setStatusTip(tr("Quit the application"));
@@ -108,6 +124,12 @@ void MainWindow::createActions()
     aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        connect(recentFileActs[i], SIGNAL(triggered()),
+                this, SLOT(openRecentFile()));
+    }
 
 }
 
@@ -123,60 +145,57 @@ void MainWindow::createToolBars()
         this->toolBar->addSeparator();
     }
     this->toolBar->addAction(generateCourseAct);
+    this->toolBar->addAction(pictureBrowserAct);
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createDockWindows()
 {
-    QDockWidget *dock;
+    //QDockWidget *dock;
 
-    dock = new QDockWidget(tr("Parameters"), this);
-    dock->setAllowedAreas( Qt::LeftDockWidgetArea );
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
-    this->optionsPage =new cOptionsPage(dock);
-    dock->setWidget(this->optionsPage);
-    dock->hide(); //temporary
+    this->dockOptionsPage = new QDockWidget(tr("Options"), this);
+    this->dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
+    this->addDockWidget(Qt::LeftDockWidgetArea, this->dockOptionsPage);
+    this->optionsPage =new cOptionsPage(this->dockOptionsPage);
+    this->dockOptionsPage->setWidget(this->optionsPage);
 
     if (!this->batchMode)
-        viewMenu->addAction(dock->toggleViewAction());
+        viewMenu->addAction(this->dockOptionsPage->toggleViewAction());
     else
-        dock->hide();
+        this->dockOptionsPage->hide();
 
-    dock = new QDockWidget(tr("Course template"), this);
-    dock->setAllowedAreas(Qt::RightDockWidgetArea );
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    this->contentPage = new cContentPage(dock);
-    dock->setWidget(this->contentPage);
-    dock->hide(); //temporary
+    this->dockContentPage = new QDockWidget(tr("Word list"), this);
+    this->dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
+    addDockWidget(Qt::RightDockWidgetArea, this->dockContentPage);
+    this->contentPage = new cContentPage(this->dockContentPage);
+    this->dockContentPage->setWidget(this->contentPage);
+
 
     if (!this->batchMode)
-        viewMenu->addAction(dock->toggleViewAction());
+        viewMenu->addAction(this->dockContentPage->toggleViewAction());
     else
-        dock->hide();
+        this->dockContentPage->hide();
 
 
-    dock = new QDockWidget(tr("Console"), this);
-    dock->setAllowedAreas(Qt::BottomDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, dock);
-    this->consolePage = new cConsolePage(dock);
-    dock->setWidget(this->consolePage);
-    viewMenu->addAction(dock->toggleViewAction());
+    this->dockConsolePage = new QDockWidget(tr("Console"), this);
+    this->dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, this->dockConsolePage);
+    this->consolePage = new cConsolePage(this->dockConsolePage);
+    this->dockConsolePage->setWidget(this->consolePage);
+    viewMenu->addAction(this->dockConsolePage->toggleViewAction());
 
-    /*
+
     if (!this->batchMode)
-        dock->hide();
-    */
+        this->dockConsolePage->hide();
 
-    dock = new QDockWidget(tr("ImageWidget"), this);
-    dock->setAllowedAreas(Qt::BottomDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, dock);
-    this->imageWidget = new cImageWidget(dock);
-    dock->setWidget(this->imageWidget);
-    viewMenu->addAction(dock->toggleViewAction());
 
-    /*
-    if (!this->batchMode)
-        dock->hide();
-        */
+    this->dockPictureBrowser = new QDockWidget(tr("Picture browser"), this);
+    this->dockPictureBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, this->dockPictureBrowser);
+    this->imageWidget = new cCourseImageEditor(this->dockPictureBrowser);
+    this->dockPictureBrowser->setWidget(this->imageWidget);
+    this->dockPictureBrowser->hide();
+    connect( this->dockPictureBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(pictureBrowserVisibleSlot(bool)));
+
 
     connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->consolePage , SLOT(traceSlot(const QString&,const int&)));
     connect( this->contentPage , SIGNAL(contentChangedSignal()),this, SLOT(contentChangedSlot()));
@@ -190,16 +209,17 @@ void MainWindow::createStatusBar()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::openCourseTemplateSlot()
+void MainWindow::openCourseTemplateSlot(QString fileName)
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                tr("Open file"),
-                                "",
-                                tr("Smuxgen files (*.smuxgen);;All Files (*)"));
     if (fileName.isEmpty())
-        return;
-
-
+    {
+        fileName = QFileDialog::getOpenFileName(this,
+                                    tr("Open file"),
+                                    "",
+                                    tr("Smuxgen files (*.smuxgen);;All Files (*)"));
+        if (fileName.isEmpty())
+            return;
+    }
 
     if (!courseTemplate.open(fileName))
     {
@@ -213,10 +233,17 @@ void MainWindow::openCourseTemplateSlot()
     this->optionsPage->setOptions(courseTemplate.options);
     this->contentPage->setContent(courseTemplate.content);
 
+    QSettings settings("SMUXGEN", "SMUXGEN");
+        QStringList files = settings.value("recentFileList").toStringList();
+        files.removeAll(fileName);
+        files.prepend(fileName);
+        while (files.size() > MaxRecentFiles)
+            files.removeLast();
+    settings.setValue("recentFileList", files);
+    this->updateRecentFileActions();
 
     this->contentChanged = false;
     this->setTitle();
-
 
 }
 
@@ -272,6 +299,42 @@ void MainWindow::generateCourseSlot()
     this->lockInterface();
     this->setTitle();
 }
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::pictureBrowserOpenCloseSlot()
+{
+    if (this->dockPictureBrowser->isVisible())
+        this->dockPictureBrowser->hide();
+    else
+        this->dockPictureBrowser->show();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::pictureBrowserVisibleSlot(bool visible)
+{
+    if (!visible)
+    {   
+        this->generateCourseAct->setEnabled(true);
+        this->dockContentPage->show();
+        this->dockOptionsPage->show();
+        this->dockContentPage->toggleViewAction()->setEnabled(true);
+        this->dockOptionsPage->toggleViewAction()->setEnabled(true);
+
+    }
+    else
+    {
+        this->courseTemplate.options = this->optionsPage->getOptions();
+        this->courseTemplate.content = this->contentPage->getContent();
+        this->imageWidget->workWith(this->courseTemplate);
+
+        this->generateCourseAct->setEnabled(false);
+        this->dockContentPage->hide();
+        this->dockOptionsPage->hide();
+        this->dockContentPage->toggleViewAction()->setEnabled(false);
+        this->dockOptionsPage->toggleViewAction()->setEnabled(false);
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::setTitle()
 {
@@ -293,6 +356,7 @@ void MainWindow::setTitle()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::unlockInterface()
 {
+    this->pictureBrowserAct->setEnabled(true);
     this->generateCourseAct->setIcon(QIcon(":/images/generate.png"));
     this->generateCourseAct->setStatusTip(tr("Generate course"));
     this->generateCourseAct->setText(tr("Generate "));
@@ -301,6 +365,7 @@ void MainWindow::unlockInterface()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
+    this->pictureBrowserAct->setEnabled(false);
     this->generateCourseAct->setIcon(QIcon(":/images/stop.png"));
     this->generateCourseAct->setStatusTip(tr("Stop"));
     this->generateCourseAct->setText(tr("Stop "));
@@ -398,3 +463,35 @@ void MainWindow::trace (const QString& text,const unsigned int& flags= traceLeve
 }
 
 /////////////////////////////////////////////////////////////////////////////
+void MainWindow::updateRecentFileActions()
+{
+    QSettings settings("SMUXGEN", "SMUXGEN");
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setStatusTip(files[i]);
+        recentFileActs[i]->setVisible(true);
+    }
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+        recentFileActs[j]->setVisible(false);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString MainWindow::strippedName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        this->openCourseTemplateSlot(action->data().toString());
+}

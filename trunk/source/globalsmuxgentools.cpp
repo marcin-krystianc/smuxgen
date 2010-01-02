@@ -1,3 +1,10 @@
+//============================================================================
+// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version      : 2.0
+// License      : GPL
+// URL          : http://code.google.com/p/smuxgen/
+// Description  : SMUXGEN - SuperMemo UX generator
+//============================================================================
 
 #include <QFile>
 #include <QTextStream>
@@ -107,4 +114,25 @@ bool checkIsFileOk(const QString &fileName)
 
     globalTracer.trace(QString("NOT OK: ")+fileName,traceLevel2);
     return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString getFileName (int i)
+{
+    QString name;
+    name.fill('0',5);
+    name+=QString::number(i);
+    name+=".xml";
+    name=name.right(9);
+    return QString("item")+name;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString getMediaFileName (int i)
+{
+    QString name;
+    name.fill('0',5);
+    name+=QString::number(i);
+    name=name.right(5);
+    return name;
 }

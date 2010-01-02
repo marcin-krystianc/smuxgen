@@ -51,10 +51,8 @@ class cCourseGenerator : public QThread
         bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID);
         int writeDomDoucumentToFile (QDomDocument &document,QString path);
         QDomDocument createCourseItem (int templateId,QString chapter);
-        QString getFileName (int i);
         bool checkIfNewAnswers(QString fileName,QString answers);
         QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,QString audioType);
-        QString getMediaFileName (int i);
         int status;
 
     protected:

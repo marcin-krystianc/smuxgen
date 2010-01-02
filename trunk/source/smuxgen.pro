@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     csupermemosql.cpp \
     ccoursegenerator.cpp \
     cimagedownloader.cpp \
-    globalsmuxgentools.cpp
+    globalsmuxgentools.cpp \
+    courseimageseditor.cpp
 HEADERS += gui.h \
     coursetemplate.h \
     coursetemplateoptions.h \
@@ -26,5 +27,7 @@ HEADERS += gui.h \
     csupermemosql.h \
     ccoursegenerator.h \
     cimagedownloader.h \
-    globalsmuxgentools.h
+    globalsmuxgentools.h \
+    courseimageseditor.h
 RESOURCES += gui.qrc
+FORMS += 

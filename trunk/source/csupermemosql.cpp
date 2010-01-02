@@ -14,6 +14,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QSqlQuery>
 
 #include "cglobaltracer.h"
 #include "csupermemosql.h"
@@ -210,6 +211,36 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
 
     return true;
 }
+
+/////////////////////////////////////////////////////////////////////////////
+bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, const QString elementName,int &retID)
+{
+
+    QString   filter;   // CourseID + PageNum - primary key
+    filter  +=QString::fromUtf8("select PageNum from items where ");
+    filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8("ParentID=")+QString::number(parentID);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8(" Name =\"")+elementName+QString::fromUtf8("\"");
+
+    QSqlQuery query (this->database);
+    if (!query.exec(filter))    // delete all unknown course items
+    {
+        trace(QString("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text(),traceError);
+        return false;
+    }
+    query.first();
+    QVariant tmp=query.value(0);
+
+    if (!tmp.isValid())
+        return false;
+
+    retID = tmp.toInt();
+    return true;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 QSqlDatabase cSuperMemoSQL::getDatabase()
 {

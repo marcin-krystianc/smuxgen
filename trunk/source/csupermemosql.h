@@ -22,6 +22,7 @@ public:
     bool getCourses (QStringList &retList);
     bool getCourseIdPath (QString course, int &id,QString &path);
     bool setElementSQL (QString elementName, int courseIDSQL,int elementIDSQL,int paretntIDSQL);
+    bool getElementID  (int courseIDSQL,int parentID, const QString elementName,int &retID);
     QSqlDatabase getDatabase();
 
 private:

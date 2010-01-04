@@ -21,6 +21,7 @@
 #include <QProgressBar>
 #include <QToolButton>
 #include <QLabel>
+#include <QScrollBar>
 
 #include "coursetemplateoptions.h"
 #include "csupermemosql.h"
@@ -42,7 +43,12 @@ class cImageList : public QListWidget
         void addPiece(const QPixmap &pixmap,const QString &hint="");
         void resetPosition();
     public slots:
-        void addPieceSlot (const QPixmap &,const QString &hint="");
+        void addPieceSlot       (const QPixmap &,const QString &hint="");
+        void setIconSizeSlot    (int size );
+
+    private slots:
+        void itemClickedSlot ( QListWidgetItem * item );
+
 
     private:
         int maxCount;
@@ -62,6 +68,7 @@ class cImageList : public QListWidget
         void dropEvent(QDropEvent *event);
         */
         void startDrag(Qt::DropActions supportedActions);
+
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,6 +95,8 @@ class cImageSearch : public QWidget
         QProgressBar    *rightProgress;
         QTimer          *timerL;
         QTimer          *timerR;
+
+        QSlider      *zoomSlider;
 
         QString textL;
         QString textR;

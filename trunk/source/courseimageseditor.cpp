@@ -139,6 +139,9 @@ cImageList::cImageList(QWidget *parent,int maxCount )
     this->maxCount = maxCount;
     this->resetPosition();
     this->setMouseTracking(true);
+
+    connect (   this,   SIGNAL  (itemClicked        (QListWidgetItem* )),
+                this,   SLOT    (itemClickedSlot    (QListWidgetItem* )));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -154,7 +157,8 @@ void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
     pieceItem->setStatusTip(hint);
 
     this->insertItem(this->rowIndex++,pieceItem);
-    pieceItem->setIcon(QIcon(pixmap.scaled(tileSizeX,tileSizeY)));
+    pieceItem->setIcon(QIcon(pixmap));
+
     pieceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable
                         | Qt::ItemIsDragEnabled);
     pieceItem->setData(Qt::UserRole, QVariant(pixmap));
@@ -198,6 +202,23 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
 }
 
 /////////////////////////////////////////////////////////////////////////////
+void cImageList::itemClickedSlot(  QListWidgetItem * item )
+{
+    /*
+    if (!item)
+        return;
+    trace ("cImageList::itemClickedSlot ");
+    QPixmap pixmap = qVariantValue<QPixmap>(item->data(Qt::UserRole));
+    item->setIcon(QIcon(pixmap.scaled(tileSizeX*2,tileSizeY*2)));
+    */
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void cImageList::setIconSizeSlot    (int size )
+{
+    setIconSize(QSize(size, size));
+}
+/////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 cImageSearch::cImageSearch(QWidget *parent)
@@ -217,10 +238,18 @@ cImageSearch::cImageSearch(QWidget *parent)
     l2->addWidget(this->leftProgress);
     l2->addWidget(this->rightProgress);
 
+    this->zoomSlider = new QSlider(Qt::Horizontal);
+    this->zoomSlider->setMinimum(100);
+    this->zoomSlider->setMaximum(500);
+    QHBoxLayout *l3 = new QHBoxLayout;
+    l3->addWidget(new QLabel("Zoom:"));
+    l3->addWidget(this->zoomSlider,1);
+
     this->imagelist = new cImageList();
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addLayout(l1);
     l0->addLayout(l2);
+    l0->addLayout(l3);
     l0->addWidget(this->imagelist);
 
     setLayout(l0);
@@ -250,6 +279,7 @@ cImageSearch::cImageSearch(QWidget *parent)
     connect(this->imageDownloader[0]    ,SIGNAL(sProgressValue(int))  , this->leftProgress    , SLOT(setValue(int)));
     connect(this->imageDownloader[1]    ,SIGNAL(sProgressValue(int))  , this->rightProgress   , SLOT(setValue(int)));
 
+    connect (this->zoomSlider           ,SIGNAL(valueChanged(int))      ,this->imagelist    , SLOT(setIconSizeSlot(int)));
 /*
     QHBoxLayout *textFiledsLayout = new QHBoxLayout;
     textFiledsLayout->addWidget(courseLabel);

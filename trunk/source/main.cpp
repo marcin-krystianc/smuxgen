@@ -38,6 +38,7 @@ int main (int argc, char* argv[])
 
     MainWindow mainWin (argList);
     mainWin.show();
+
     return app.exec();
 }
 

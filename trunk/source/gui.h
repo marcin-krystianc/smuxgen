@@ -59,15 +59,20 @@ private:
     void createStatusBar();
     void createDockWindows();
     void updateRecentFileActions();
-    QString strippedName(const QString &fullFileName);
+    QString strippedFile(const QString &fullFileName);
+    QString strippedDir (const QString &fullFileName);
+    QString getLastDir ();
+    void setLastDir (const QString &dir);
+
 
     QMenu *fileMenu;
+    QMenu *recentMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
 
     QToolBar *toolBar;
 
-    static const int MaxRecentFiles = 5;
+    static const int MaxRecentFiles = 15;
 
     QAction *openCourseTemplateAct;
     QAction *saveCourseTemplateAct;

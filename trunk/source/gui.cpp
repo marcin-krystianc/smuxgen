@@ -55,7 +55,8 @@ void MainWindow::about()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu    = menuBar()->addMenu(tr("&File"));
+
     if (!this->batchMode)
     {
         fileMenu->addAction(openCourseTemplateAct);
@@ -63,8 +64,9 @@ void MainWindow::createMenus()
         fileMenu->addAction(saveAsCourseTemplateAct);
 
         fileMenu->addSeparator();
+        recentMenu  = fileMenu->addMenu("&Recent");
         for (int i = 0; i < MaxRecentFiles; ++i)
-            fileMenu->addAction(recentFileActs[i]);
+            recentMenu->addAction(recentFileActs[i]);
 
         fileMenu->addSeparator();
         fileMenu->addAction(generateCourseAct);
@@ -217,10 +219,12 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     {
         fileName = QFileDialog::getOpenFileName(this,
                                     tr("Open file"),
-                                    "",
+                                    this->getLastDir(),
                                     tr("Smuxgen files (*.smuxgen);;All Files (*)"));
         if (fileName.isEmpty())
             return;
+
+        this->setLastDir(this->strippedDir(fileName));
     }
 
     if (!courseTemplate.open(fileName))
@@ -235,7 +239,7 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     this->optionsPage->setOptions(courseTemplate.options);
     this->contentPage->setContent(courseTemplate.content);
 
-    QSettings settings("SMUXGEN", "SMUXGEN");
+    QSettings settings("Smuxgen", "Smuxgen");
         QStringList files = settings.value("recentFileList").toStringList();
         files.removeAll(fileName);
         files.prepend(fileName);
@@ -273,11 +277,12 @@ void MainWindow::saveAsCourseTemplateSlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                 tr("Save file"),
-                                "",
+                                this->getLastDir(),
                                 tr("Smuxgen files (*.smuxgen);;All Files (*)"));
     if (fileName.isEmpty())
         return;
 
+    this->setLastDir(this->strippedDir(fileName));
     this->courseTemplateFileName = fileName;
     this->setTitle();
 ;
@@ -467,13 +472,13 @@ void MainWindow::trace (const QString& text,const unsigned int& flags= traceLeve
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::updateRecentFileActions()
 {
-    QSettings settings("SMUXGEN", "SMUXGEN");
+    QSettings settings("Smuxgen", "Smuxgen");
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedFile(files[i]));
         recentFileActs[i]->setText(text);
         recentFileActs[i]->setData(files[i]);
         recentFileActs[i]->setStatusTip(files[i]);
@@ -485,15 +490,35 @@ void MainWindow::updateRecentFileActions()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString MainWindow::strippedName(const QString &fullFileName)
+QString MainWindow::strippedFile(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
 }
 
+/////////////////////////////////////////////////////////////////////////////
+QString MainWindow::strippedDir (const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).dir().canonicalPath();
+}
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
         this->openCourseTemplateSlot(action->data().toString());
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString MainWindow::getLastDir ()
+{
+    QSettings settings("Smuxgen", "Smuxgen");
+    return settings.value("recentDir").toString();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::setLastDir (const QString &dir)
+{
+    QSettings settings("Smuxgen", "Smuxgen");
+    settings.setValue("recentDir", dir);
+
 }

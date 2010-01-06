@@ -124,6 +124,7 @@ class cImageButtonWidget : public QWidget
     private:
 
         QLabel   *label;
+        QPixmap pixmap;
 
         QString filePath;
         QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}

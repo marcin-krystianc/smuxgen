@@ -28,12 +28,15 @@ cCourseImageEditor::cCourseImageEditor(QWidget *parent)
     this->imageTargetWidget         = new cImageTargetWidget;
     this->imageSearch               = new cImageSearch;
 
+    QSplitter *splitter             = new QSplitter(Qt::Horizontal);
+
+    splitter->setChildrenCollapsible(false);
+    splitter->addWidget(this->readyCourseElementList);
+    splitter->addWidget(this->imageTargetWidget );
+    splitter->addWidget(this->imageSearch);
 
     QHBoxLayout *l0 = new QHBoxLayout;
-
-    l0->addWidget(this->readyCourseElementList,1);
-    l0->addWidget(this->imageTargetWidget,1 );
-    l0->addWidget(this->imageSearch,2);
+    l0->addWidget(splitter);
 
     setLayout(l0);
 
@@ -153,8 +156,23 @@ void cImageList::resetPosition()
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
 {
+    if (this->count()>=this->maxCount)
+        delete takeItem(this->count()-1);
+
     QListWidgetItem *pieceItem = new QListWidgetItem();
     pieceItem->setStatusTip(hint);
+
+    if (!hint.isNull())
+    {
+        for (int i=0;i<this->count();i++)
+        {
+            if(this->item(i)->data(Qt::UserRole+1).toString()==hint)
+            {
+                 this->insertItem(this->rowIndex++,this->takeItem(i));  // move to the beginning of list
+                 return;
+            }
+        }
+    }
 
     this->insertItem(this->rowIndex++,pieceItem);
     pieceItem->setIcon(QIcon(pixmap));
@@ -162,9 +180,9 @@ void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
     pieceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable
                         | Qt::ItemIsDragEnabled);
     pieceItem->setData(Qt::UserRole, QVariant(pixmap));
+    pieceItem->setData(Qt::UserRole+1, QVariant(hint));
 
-   if (this->count()>this->maxCount)
-       delete takeItem(this->count()-1);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -204,13 +222,7 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::itemClickedSlot(  QListWidgetItem * item )
 {
-    /*
-    if (!item)
-        return;
-    trace ("cImageList::itemClickedSlot ");
-    QPixmap pixmap = qVariantValue<QPixmap>(item->data(Qt::UserRole));
-    item->setIcon(QIcon(pixmap.scaled(tileSizeX*2,tileSizeY*2)));
-    */
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -225,6 +237,7 @@ cImageSearch::cImageSearch(QWidget *parent)
     : QWidget (parent)
 {
 
+    this->setMinimumWidth(200);
 
     this->leftEdit  = new QLineEdit;
     this->rightEdit = new QLineEdit;
@@ -358,18 +371,14 @@ cImageButtonWidget::cImageButtonWidget(QWidget *parent)
     : QWidget (parent)
 {
 
-    this->label   = new QLabel;
-    this->label->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
-    this->label->setMinimumSize(QSize(50,50));
-    this->label->setMaximumSize(QSize(500,500));
-
+    this->label     = new QLabel;
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addWidget(this->label);
     l0->setMargin(0);
     setLayout(l0);
-
     setAcceptDrops(true);
 
+    this->resize(1,1);
     this->setFile("");
 }
 
@@ -389,12 +398,16 @@ bool cImageButtonWidget::setFile(const QString &path)
     {
         trace(QString("cImageButtonWidget::setFile cannot open file:")+filePath,traceError);
         this->setStatusTip(QString("Cannot open file:")+filePath);
-        this->setPixmap(QPixmap(":/images/monkey_off.png"));
+        this->pixmap = QPixmap(":/images/monkey_off.png");
+        this->setPixmap(this->pixmap);
+
         return false;
     }
 
     this->setStatusTip(filePath);
-    this->setPixmap(QPixmap(this->filePath));
+    this->pixmap = QPixmap(this->filePath);
+    this->setPixmap(this->pixmap);
+
     return true;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -447,7 +460,7 @@ void cImageButtonWidget::dropEvent(QDropEvent *event)
 /////////////////////////////////////////////////////////////////////////////
 void cImageButtonWidget::resizeEvent(QResizeEvent *event)
 {
-   this->setPixmap(*this->label->pixmap());
+   this->setPixmap(this->pixmap);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -468,7 +481,6 @@ cImageTargetWidget::cImageTargetWidget(QWidget *parent)
     l1->addWidget(imageButtonWidget[1][1],1);
 
     setLayout(l1);
-    //this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 }
 
@@ -483,7 +495,11 @@ void cImageTargetWidget::setFiles (const QStringList &list)
 /////////////////////////////////////////////////////////////////////////////
 void cImageTargetWidget::resizeEvent ( QResizeEvent * event )
 {
-   //this->setMinimumSize(QSize(0,0));
+   this->setMaximumWidth(this->imageButtonWidget[0][0]->height()*2);
+   this->setMinimumWidth(this->imageButtonWidget[0][0]->height()*1);
+
+   this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -497,6 +513,7 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addWidget(this->listWidget);
     setLayout(l0);
+    this->setMinimumWidth(200);
 
     connect(this->listWidget    ,SIGNAL(currentItemChanged( QListWidgetItem*,QListWidgetItem*))  , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
 

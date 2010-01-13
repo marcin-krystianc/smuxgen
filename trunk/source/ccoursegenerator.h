@@ -44,11 +44,10 @@ class cCourseGenerator : public QThread
         QMutex mutex;
 
         void trace (const QString &text,const int & flags = traceLevel1|0);
-        int  getGID (QDomElement &docElement);
-        QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int &retID,int &GID);
+        QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int retID);
         void setDelete (QDomNode &topicNode);
         bool doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory);
-        bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID);
+        bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode);
         int writeDomDoucumentToFile (QDomDocument &document,QString path);
         QDomDocument createCourseItem (int templateId,QString chapter);
         bool checkIfNewAnswers(QString fileName,QString answers);

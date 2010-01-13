@@ -62,13 +62,14 @@ QStringList parseGoogleHtml (const QString &fileName)
 void deleteFile (const QString &fileName)
 {
     QFile fileObject (fileName);
+    globalTracer.trace(QString("deleteFile: ")+fileName,traceLevel3);
     fileObject.remove();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString getKeyWord (QString iString)
 {
-    static QString A=QString::fromUtf8("�Ư���ӣʹ濟�B��!@#$%^&*()_-=+,./<>?;':\"[]\{}|");
+    static QString A=QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_-=+,./<>?;':\"[]\{}|");
     static QString B=QString::fromUtf8("ACZXSNOLEaczzsnole                               ");
 
     for (int i=A.length()-1;i>=0;--i)

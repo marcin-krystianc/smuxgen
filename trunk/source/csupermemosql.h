@@ -21,14 +21,17 @@ public:
     bool open(const QString &fileName);
     bool getCourses (QStringList &retList);
     bool getCourseIdPath (QString course, int &id,QString &path);
-    bool setElementSQL (QString elementName, int courseIDSQL,int elementIDSQL,int paretntIDSQL);
+    bool setElementSQL (QString elementName, int courseIDSQL,int paretntIDSQL,int &elementIDSQL);
     bool getElementID  (int courseIDSQL,int parentID, const QString elementName,int &retID);
+    bool getCourseMaxId (int courseId);
+
     QSqlDatabase getDatabase();
 
 private:
     QSqlDatabase database;
     void trace (const QString &text,const int & flags = traceLevel1|0);
     bool isValidSuperMemoDatabase();
+    int GID; // last ID (PageNum) for this course - get with getCourseMaxId
     QString quotationString (QString s);
 };
 

@@ -9,12 +9,13 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QStringList>
-#include <QSqlTableModel>
 #include <QSqlRecord>
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
 #include <QSqlQuery>
+#include <QVariant>
+#include <QSqlTableModel>
 
 #include "cglobaltracer.h"
 #include "csupermemosql.h"
@@ -63,21 +64,19 @@ bool cSuperMemoSQL::isValidSuperMemoDatabase ()
 /////////////////////////////////////////////////////////////////////////////
 bool cSuperMemoSQL::getCourses (QStringList &retList)
 {
-    QSqlTableModel model(0,database);
-    model.setTable("Courses");
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    if (!model.select())
+    QSqlQuery query (this->database);
+    QString filter = "Select Title from Courses";
+    if (!query.exec(filter))
     {
-        this->trace(QString("cSuperMemoSQL::getCourses: ")+database.lastError().text(),traceError);
+        trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(),traceError);
         return false;
     }
 
+
     retList.clear();
-    for (int i=0;i<model.rowCount();i++)
+    for (query.first();query.isValid();query.next())
     {
-        QSqlRecord record   = model.record(i);
-        QVariant v1         = record.value("Title");
-        retList.append(v1.toString());
+        retList.append(query.value(0).toString());
     }
     return true;
 }
@@ -86,24 +85,22 @@ bool cSuperMemoSQL::getCourses (QStringList &retList)
 bool cSuperMemoSQL::getCourseIdPath (QString course, int &id,QString &path)
 {
 
-    QSqlTableModel model(0,database);
-    model.setTable("Courses");
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model.setFilter(QString::fromUtf8("Title=")+quotationString(course));
-
-    if (!model.select()) {
-        this->trace(QString("cSuperMemoSQL::getCourseIdPath: ")+database.lastError().text(),traceError);
+    QSqlQuery query (this->database);
+    QString filter = "Select Id,Path from Courses where Title="+quotationString(course);
+    if (!query.exec(filter))
+    {
+        trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(),traceError);
         return false;
     }
 
-    if (model.rowCount()==0) {
+    if (!query.first())
+    {
         this->trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+course,traceWarning);
         return false;
     }
 
-    QSqlRecord record   = model.record(0);
-    QVariant v1         = record.value(QString::fromUtf8("Id"));
-    QVariant v2         = record.value(QString::fromUtf8("Path"));
+    QVariant v1 = query.value(0);
+    QVariant v2 = query.value(1);
 
     if (!v1.isValid()) {
         this->trace(QString("cSuperMemoSQL::getCourseIdPath Cannot find Id: "),traceError);
@@ -137,15 +134,15 @@ QString cSuperMemoSQL::quotationString (QString s)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elementIDSQL,int paretntIDSQL)
+bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int paretntIDSQL,int &elementIDSQL)
 {
     QSqlTableModel model(0,this->database);
     QString   filter;   // CourseID + PageNum - primary key
     filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
     filter  +=QString::fromUtf8(" and ");
-    filter  +=QString::fromUtf8("PageNum=")+QString::number(elementIDSQL);
-    filter  +=QString::fromUtf8(" and ");
     filter  +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
+    filter  +=QString::fromUtf8(" and ");
+    filter  +=QString::fromUtf8(" Name=\"")+elementName+QString::fromUtf8("\"");
 
     model.setTable("items");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -163,6 +160,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
 
     if (model.rowCount()==0)
     { // generate new record
+        elementIDSQL= ++this->GID;
         record.setValue("CourseId",courseIDSQL);
         record.setValue("Name",elementName);
         record.setValue("PageNum",elementIDSQL);
@@ -188,17 +186,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int elem
         }
     }
     else
-    {
-        record.setValue("Name",elementName);
-        record.setValue("QueueOrder",elementIDSQL);
-
-        trace(QString("setElementSQL, modify record:")
-            + QString(" Name:") + elementName
-            + QString(" QueueOrder:")  + QString::number(elementIDSQL)
-            ,traceLevel3);
-
-        model.setRecord(0,record);
-    }
+        elementIDSQL = record.value("PageNum").toInt();
 
     model.database().transaction();
     if (model.submitAll()) {
@@ -240,6 +228,26 @@ bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, const QString e
     return true;
 }
 
+/////////////////////////////////////////////////////////////////////////////
+bool cSuperMemoSQL::getCourseMaxId (int courseID)
+{
+    QString   filter;   // CourseID
+    filter  +=QString::fromUtf8("select PageNum from items where ");
+    filter  +=QString::fromUtf8("CourseId=")+QString::number(courseID);
+
+
+    QSqlQuery query (this->database);
+    if (!query.exec(filter))    // delete all unknown course items
+    {
+        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ")+query.lastError().text(),traceError);
+        return false;
+    }
+
+    for (this->GID = 1,query.first();query.value(0).isValid();query.next())
+        GID=std::max(query.value(0).toInt(),this->GID);
+
+    return true;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 QSqlDatabase cSuperMemoSQL::getDatabase()

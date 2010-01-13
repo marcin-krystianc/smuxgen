@@ -377,7 +377,7 @@ cImageButtonWidget::cImageButtonWidget(QWidget *parent)
     l0->setMargin(0);
     setLayout(l0);
     setAcceptDrops(true);
-
+    this->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     this->resize(1,1);
     this->setFile("");
 }
@@ -498,7 +498,7 @@ void cImageTargetWidget::resizeEvent ( QResizeEvent * event )
    this->setMaximumWidth(this->imageButtonWidget[0][0]->height()*2);
    this->setMinimumWidth(this->imageButtonWidget[0][0]->height()*1);
 
-   this->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+   //this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 }
 

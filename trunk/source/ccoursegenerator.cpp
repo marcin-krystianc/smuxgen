@@ -102,7 +102,11 @@ void  cCourseGenerator::run ()
 
 
     QDomElement rootElement = doc.documentElement();
-    int GID = getGID(rootElement);
+    if (!this->database.getCourseMaxId(courseID))
+    {
+        trace(QString("Cannot getCourseMaxId"),traceError);
+        return;
+    }
 
     QString topicNameA = this->courseTemplate.options.subname;
     QString topicNameB = this->courseTemplate.options.subname+"*";
@@ -111,11 +115,10 @@ void  cCourseGenerator::run ()
     QDomNode topicNodeB;
 
     int topicAID,topicBID;
-
     // A course
-    topicNodeA = getNode (rootElement,topicNameA,doc,courseFileDirectoryName,"pres",topicAID,GID);
-    if (!database.setElementSQL(topicNameA,courseID,topicAID,0))
+    if (!database.setElementSQL(topicNameA,courseID,0,topicAID))
         goto END;
+    topicNodeA = getNode (rootElement,topicNameA,doc,courseFileDirectoryName,"pres",topicAID);
 
     setDelete (topicNodeA);
 
@@ -137,7 +140,7 @@ void  cCourseGenerator::run ()
         if (this->abortProces)
          goto END;
 
-        generateCourseElement(courseID,(list1.at(0)).trimmed(),(list1.at(1)).trimmed(),topicNameA,topicNodeA,topicAID,doc,courseFileDirectoryName,false,GID);
+        generateCourseElement(courseID,(list1.at(0)).trimmed(),(list1.at(1)).trimmed(),topicNameA,topicNodeA,topicAID,doc,courseFileDirectoryName,false);
     }
 
 
@@ -147,9 +150,9 @@ void  cCourseGenerator::run ()
     // B course
     if (this->courseTemplate.options.bit.oDouble)
     {
-        topicNodeB = getNode (rootElement,topicNameB,doc,courseFileDirectoryName,"pres",topicBID,GID);
-        if (!database.setElementSQL (topicNameB,courseID,topicBID,0))
+        if (!database.setElementSQL(topicNameB,courseID,0,topicBID))
             goto END;
+        topicNodeB = getNode (rootElement,topicNameB,doc,courseFileDirectoryName,"pres",topicBID);
 
         setDelete (topicNodeB);
 
@@ -171,7 +174,7 @@ void  cCourseGenerator::run ()
             if (this->abortProces)
                 goto END;
 
-            generateCourseElement(courseID,(list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true,GID);
+            generateCourseElement(courseID,(list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true);
          }
 
         doDelete (courseID,topicBID,topicNodeB,courseFileDirectoryName);
@@ -184,29 +187,7 @@ END:
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int  cCourseGenerator::getGID (QDomElement &docElement)
-{
-    int retID=0;
-    QDomNode n = docElement.firstChild();
-    while(!n.isNull())
-    {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
-        if(!e.isNull())
-        {
-            if (e.hasAttribute("id"))
-             {
-                QString id = e.attribute("id","0");
-                retID = std::max (retID,id.toInt());
-            }
-            retID = std::max(retID,getGID (e)); // requrence
-        }
-        n = n.nextSibling();
-    }
-    return retID;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int &retID,int &GID)
+QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int nodeID)
 {
     QDomNode node = rootElement.firstChild();
     while(!node.isNull())
@@ -214,9 +195,10 @@ QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomD
         QDomElement e = node.toElement(); // try to convert the node to an element.
         if(!e.isNull())
         {
-            if ((e.attribute("type","none")==type)&&(e.attribute("name","none")==nodeName))
+            if ((e.attribute("type","none")==type)      &&
+                (e.attribute("name","none")==nodeName)  &&
+                (e.attribute("id","0").toInt()==nodeID))
             {
-                retID=(e.attribute("id","0")).toInt();
                 e.setAttribute("delete","false");
                 break; // topic Found
             }
@@ -229,12 +211,12 @@ QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomD
         QDomElement tmpElement = doc.createElement( "element" );
         tmpElement.setAttribute("name",nodeName);
         tmpElement.setAttribute("type",type);
-        tmpElement.setAttribute("id",QString::number(retID=++GID));
+        tmpElement.setAttribute("id",QString::number(nodeID));
         tmpElement.setAttribute("delete","false");
         node = rootElement.appendChild(tmpElement);
         QDomDocument docItem=createCourseItem(1,nodeName);
-        writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(retID));
-        trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+retID,traceLevel2);
+        writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(nodeID));
+        trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+nodeID,traceLevel2);
     }
 
     return node;
@@ -256,25 +238,26 @@ void  cCourseGenerator::setDelete (QDomNode &topicNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode,int &GID)
+bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode)
 {
     int     ID          = 0;
     bool    forceMedia  = this->courseTemplate.options.bit.oForce;
     const int timeOut   = -1; // no timeout
-    QDomNode questionNode=getNode (topicNode,question,doc,courseFileDirectory,"exercise",ID,GID);
     QProcess myProcess;
+
+    if (!this->database.setElementSQL(question,courseIDSQL,topicID,ID))
+        return false;
+
+    QDomNode questionNode=getNode (topicNode,question,doc,courseFileDirectory,"exercise",ID);
+
     // create xml course file
     if ((this->courseTemplate.options.bit.oForce)||
     (checkIfNewAnswers(courseFileDirectory+getFileName(ID),answer)))
     {
-
         forceMedia=true;
 
         QString audio = bMode ? "question-audio" : "answer-audio";
         QDomDocument docItem=createCourseItem(1,topicName,QString::fromUtf8("Przetłumacz"),question,answer,ID,audio);
-
-        if (!this->database.setElementSQL(question,courseIDSQL,ID,topicID))
-            return false;
 
         writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(ID));
 

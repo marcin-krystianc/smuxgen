@@ -115,32 +115,4 @@ Opcje lektora:
 Oczywiście jakość próbek z lektorem zależy tylko i wyłącznie od jakości użytego silnika SAPI.
 
 
-		
-
-
-	
-
-		
-
-	 
-
-  
-    
-
-  
-
-
-
-
-
-
-
-
-		
- 
-
-
-
-
-
  

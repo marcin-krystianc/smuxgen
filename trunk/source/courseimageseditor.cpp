@@ -77,8 +77,11 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
     if (!this->database.getElementID(courseID,0,topicNameA,topicIDA))
         return;
 
-    if (!this->database.getElementID(courseID,0,topicNameB,topicIDB))
-        return;
+    if (courseTemplate.options.bit.oDouble)
+    {
+        if (!this->database.getElementID(courseID,0,topicNameB,topicIDB))
+            return;
+    }
 
     mediaDirectoryName = courseFileDirectoryName+"media"+QDir::separator();
 
@@ -89,7 +92,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
         if (line.length()==0) continue;
         QStringList list1 = line.split(":");
 
-        if (list1.count()<2)
+        if (list1.count()< (courseTemplate.options.bit.oDouble? 2:1 ))
         {
             trace(QString("cCourseImageEditor::workWith Input error: ")+line,traceWarning);
             continue;
@@ -98,15 +101,21 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
         if (!this->database.getElementID(courseID,topicIDA,list1.at(0),id1))
             continue;
 
-        if (!this->database.getElementID(courseID,topicIDB,list1.at(1),id2))
-            continue;
-
         QString f1 = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
         QString f2 = mediaDirectoryName+getMediaFileName(id1)+"n.jpg";
-        QString f3 = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
-        QString f4 = mediaDirectoryName+getMediaFileName(id2)+"n.jpg";
 
-        this->readyCourseElementList->addItem(line,getKeyWord(list1.at(0)),f1,f2,getKeyWord(list1.at(1)),f3,f4);
+        if (courseTemplate.options.bit.oDouble)
+        {
+            if (!this->database.getElementID(courseID,topicIDB,list1.at(1),id2))
+                continue;
+            QString f3 = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
+            QString f4 = mediaDirectoryName+getMediaFileName(id2)+"n.jpg";
+
+            this->readyCourseElementList->addItem(line,getKeyWord(list1.at(0)),f1,f2,getKeyWord(list1.at(1)),f3,f4);
+        }
+        else
+            this->readyCourseElementList->addItem(line,getKeyWord(list1.at(0)),f1,f2,"","","");
+
     }
 }
 
@@ -119,8 +128,11 @@ void cCourseImageEditor::trace(const QString &text,const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void cCourseImageEditor::elementSelectedSlot (const QString &keyword1,const QString &file1m,const QString &file1n,const QString &keyword2,const QString &file2m,const QString &file2n)
 {
-    this->imageSearch->setNewKeywordsChangedL(keyword1);
-    this->imageSearch->setNewKeywordsChangedR(keyword2);
+    if (!keyword1.isEmpty())
+        this->imageSearch->setNewKeywordsChangedL(keyword1);
+
+    if (!keyword2.isEmpty())
+        this->imageSearch->setNewKeywordsChangedR(keyword2);
 
     QStringList list;
     list<<file1m<<file1n<<file2m<<file2n;

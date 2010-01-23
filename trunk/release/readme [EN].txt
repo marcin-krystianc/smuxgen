@@ -103,8 +103,8 @@ To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
 
-V 2.14 		
-V 2.13 		- English readme
+V 2.13 		- Picture Browser for single courses too
+V 2.13 		- Import/Export Q&A		
 V 2.12 		- SQL database as source of ID numbers
 V 2.12 		- Picture Browser, QSplitter,unique images on the list
 V 2.11 		- Picture Browser , recent files

@@ -126,8 +126,8 @@ Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów do
 
 8. Changelog
 
-V 2.14 		
-V 2.13 		- English readme
+V 2.13 		- Picture Browser for single courses too
+V 2.13 		- Import/Export Q&A		
 V 2.12 		- SQL database as source of ID numbers
 V 2.12 		- Picture Browser, QSplitter,unique images on the list
 V 2.11 		- Picture Browser , recent files
@@ -136,8 +136,4 @@ V 2.0.3 	- Some deleted items weren't removed from database (QSqlTableModel issu
 V 2.0.3 	- Better image handling (scaling and deleting)
 V 2.0.2 	- Disable RichText generate.mp3 - added replace for "|" character disabled timeout in waiting for process end
 V 2.0	 	- Support for SuperMemo Ux 1.4.3.2 (SQLite)
-
-
-Initial directory structure.
-
  

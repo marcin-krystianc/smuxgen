@@ -54,19 +54,22 @@ Archive contain:
      in directory "C:\Program Files\SuperMemo UX\Courses\" new direcotry with course name will be created .
   d. Start SMUXGEN (smuxgen.bat)
   e. See example file and create Your own file
-  f. Save it and press generate.
-  f. After any change just generate course again 
+  f. Set correct path to database file and select correct course name (see options)
+  g. Save it and press GENERATE button (See conole window for diagnostics).
+  h. After any change just generate course again 
      
 5. Options.
   
-  Regenerate 	- create again all flash cards
-  Alternate 	- create mirrored course
+  Database file: - path to  SuperMemo UX dataabse file name ("C:/Documents and Settings/????/Application Data/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
+  Course	     - Course name to which current lesson will be added
+  Regenerate 	 - create again all flash cards
+  Alternate 	 - create mirrored course
   Images	- add pictures
   Lector	- add mp3 with sample  pronunciation
   
  
-  Course Template:
-     In following lines enter A:B|C
+  Word List:
+    In following lines enter A:B|C
 	A   - word in native language
 	B,C - words in foreign language
 
@@ -87,10 +90,27 @@ Script createMp3.bat is responsible for:
 
 Options:
   Voice index	- index of SAPI engine
-  Gain		- gain
-  Trim		- trim in seconds
+  Gain			- gain
+  Trim			- trim in seconds
    
 With test button You can check this settings (text from edit box will be read).
  
+7. Picture Browser
 
+This is function which allows to change pictures for already generated course.
+New pictures are downloaded from Internet. When default results are insufficient, it is possible to use custom key words.
+To change unwanted picture just use "drag and drop" technique.
+
+8. Changelog
+
+V 2.14 		
+V 2.13 		- English readme
+V 2.12 		- SQL database as source of ID numbers
+V 2.12 		- Picture Browser, QSplitter,unique images on the list
+V 2.11 		- Picture Browser , recent files
+V 2.1 		- Picture Browser (ready)
+V 2.0.3 	- Some deleted items weren't removed from database (QSqlTableModel issue)
+V 2.0.3 	- Better image handling (scaling and deleting)
+V 2.0.2 	- Disable RichText generate.mp3 - added replace for "|" character disabled timeout in waiting for process end
+V 2.0	 	- Support for SuperMemo Ux 1.4.3.2 (SQLite)
  

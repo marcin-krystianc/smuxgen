@@ -34,6 +34,8 @@ public:
 private slots:
     void openCourseTemplateSlot(QString filename="");
     void saveCourseTemplateSlot();
+    void importQASlot();
+    void exportQASlot();
     void saveAsCourseTemplateSlot();
     void generateCourseSlot();                      // start/stop generate course
     void pictureBrowserOpenCloseSlot();                  // start/stop picture browser
@@ -76,6 +78,8 @@ private:
 
     QAction *openCourseTemplateAct;
     QAction *saveCourseTemplateAct;
+    QAction *importQAAct;
+    QAction *exportQAAct;
     QAction *saveAsCourseTemplateAct;
     QAction *generateCourseAct;
     QAction *pictureBrowserAct;

@@ -71,20 +71,23 @@ W skład programu wchodzi:
   b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ, testowane z wersją 1.4.3.2)
   c. Utwórz nowy kurs w programie SuperMemo (kurs->dodaj->utwórz)
      W katalogu "C:\Program Files\SuperMemo UX\Courses\" zostanie stworzony katalog z nowym kursem.
-  d. uruchom program smuxgen (zobacz smuxgen.bat)
-  e. wzorując się na przykładzie, utwórz słówka dla nowego kursu
-  f. zapisz kurs i kliknij przycisk generuj
-  f. Po dodaniu nowych słówek, lub zmianie istniejęcyh kliknij ponownie generuj
+  d. Uruchom program smuxgen (zobacz smuxgen.bat)
+  e. Wzorując się na przykładzie, utwórz słówka dla nowego kursu
+  f. Ustaw odpowiedni plik bazy danych i wybierz nazwę kursu (patrz punkt Opcje)
+  g. Zapisz kurs i kliknij przycisk GENERATE (Informacje diagnostyczne znajdziesz w okienku "Consloe")
+  h. Po dodaniu nowych słówek, lub zmianie istniejęcyh kliknij ponownie przycisk GENERATE
      
 5. Opcje.
   
-  Regenerate 	- wumusza powtórne wygenerowanie wszystkich ćwiczeń
-  Alternate 	- generuje kurs lustrzany
+  Database file: - ściezka do pliku bazy danych SuperMemo UX ("C:/Documents and Settings/????/Dane aplikacji/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
+  Course		 - Nazwa kursu do którego chemy dodać aktualną lekcję  
+  Regenerate 	 - wymusza powtórne wygenerowanie wszystkich ćwiczeń
+  Alternate 	 - generuje kurs lustrzany
   Images	- dodaje obrazki do ćwiczeń
   Lector	- dodaje lektora do ćwiczeń
   
  
-  Course Template:
+  Word List:
   W kolejnych linijkach znajdują się słówka według schematu A:B|C
 	A   - słówko w języku polskim
 	B,C - alternatywne odpowiedzi w języku obcym
@@ -114,5 +117,27 @@ Opcje lektora:
  
 Oczywiście jakość próbek z lektorem zależy tylko i wyłącznie od jakości użytego silnika SAPI.
 
+7. Picture Browser
+
+Jest to funkcja pozwalająca na przeglądanie i zmianę obrazów dla już wygenerowanego kursu.
+Nowe obrazki na bieżąco pobierane są z Internetu.
+Gdy domyślne wyniki wyszukiwania są niezadowalające można użyć własnych słów kluczowych.
+Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów docelowych ("drag and drop").
+
+8. Changelog
+
+V 2.14 		
+V 2.13 		- English readme
+V 2.12 		- SQL database as source of ID numbers
+V 2.12 		- Picture Browser, QSplitter,unique images on the list
+V 2.11 		- Picture Browser , recent files
+V 2.1 		- Picture Browser (ready)
+V 2.0.3 	- Some deleted items weren't removed from database (QSqlTableModel issue)
+V 2.0.3 	- Better image handling (scaling and deleting)
+V 2.0.2 	- Disable RichText generate.mp3 - added replace for "|" character disabled timeout in waiting for process end
+V 2.0	 	- Support for SuperMemo Ux 1.4.3.2 (SQLite)
+
+
+Initial directory structure.
 
  

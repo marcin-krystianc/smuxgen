@@ -62,6 +62,9 @@ void MainWindow::createMenus()
         fileMenu->addAction(openCourseTemplateAct);
         fileMenu->addAction(saveCourseTemplateAct);
         fileMenu->addAction(saveAsCourseTemplateAct);
+        fileMenu->addSeparator();
+        fileMenu->addAction(importQAAct);
+        fileMenu->addAction(exportQAAct);
 
         fileMenu->addSeparator();
         recentMenu  = fileMenu->addMenu("&Recent");
@@ -98,6 +101,16 @@ void MainWindow::createActions()
     saveCourseTemplateAct->setShortcuts(QKeySequence::Save);
     saveCourseTemplateAct->setStatusTip(tr("Save"));
     connect(saveCourseTemplateAct, SIGNAL(triggered()), this, SLOT(saveCourseTemplateSlot()));
+
+    importQAAct = new QAction(QIcon(":/images/redo.png"), tr("&Import Q&A"), this);
+    importQAAct->setShortcuts(QKeySequence::UnknownKey);
+    importQAAct->setStatusTip(tr("Import from Q&A"));
+    connect(importQAAct, SIGNAL(triggered()), this, SLOT(importQASlot()));
+
+    exportQAAct = new QAction(QIcon(":/images/undo.png"), tr("&Export to Q&A"), this);
+    exportQAAct->setShortcuts(QKeySequence::UnknownKey);
+    exportQAAct->setStatusTip(tr("Export to Q&A"));
+    connect(exportQAAct, SIGNAL(triggered()), this, SLOT(exportQASlot()));
 
     saveAsCourseTemplateAct = new QAction(QIcon(":/images/save.png"), tr("&Save As..."), this);
     saveAsCourseTemplateAct->setShortcuts(QKeySequence::SaveAs);
@@ -146,6 +159,8 @@ void MainWindow::createToolBars()
     {
         this->toolBar->addAction(openCourseTemplateAct);
         this->toolBar->addAction(saveCourseTemplateAct);
+        this->toolBar->addAction(importQAAct);
+        this->toolBar->addAction(exportQAAct);
         this->toolBar->addSeparator();
     }
     this->toolBar->addAction(generateCourseAct);
@@ -270,6 +285,46 @@ void MainWindow::saveCourseTemplateSlot()
     trace (QString("Saved: ")+this->courseTemplateFileName,traceLevel1);
     this->setTitle();
 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::importQASlot()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                tr("Open file"),
+                                this->getLastDir(),
+                                tr("Q&A files (*)"));
+    if (fileName.isEmpty())
+        return;
+
+    this->setLastDir(this->strippedDir(fileName));
+    this->courseTemplate.content = this->contentPage->getContent();
+    if (!courseTemplate.importQA(fileName)) {
+        trace (tr("Error importing Q&A file:")+fileName,traceError);
+        return;
+    }
+    this->contentPage->setContent(courseTemplate.content);
+    trace (QString::fromUtf8("Imported Q&A:")+fileName,traceLevel1);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::exportQASlot()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                tr("Save file"),
+                                this->getLastDir(),
+                                tr("Q&A files (*)"));
+    if (fileName.isEmpty())
+        return;
+
+    this->setLastDir(this->strippedDir(fileName));
+
+    this->courseTemplate.content = this->contentPage->getContent();
+    if (!courseTemplate.exportQA(fileName)) {
+        trace (tr("Error exporting Q&A file:")+fileName,traceError);
+        return;
+    }
+    trace (QString::fromUtf8("Exported Q&A:")+fileName,traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////

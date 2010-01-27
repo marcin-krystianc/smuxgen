@@ -126,6 +126,7 @@ Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów do
 
 8. Changelog
 
+V 2.14 	 	- Improved editor
 V 2.13 		- Picture Browser for single courses too
 V 2.13 		- Import/Export Q&A		
 V 2.12 		- SQL database as source of ID numbers

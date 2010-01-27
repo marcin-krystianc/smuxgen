@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     ccoursegenerator.cpp \
     cimagedownloader.cpp \
     globalsmuxgentools.cpp \
-    courseimageseditor.cpp
+    courseimageseditor.cpp \
+    ccodeeditor.cpp
 HEADERS += gui.h \
     coursetemplate.h \
     coursetemplateoptions.h \
@@ -28,6 +29,7 @@ HEADERS += gui.h \
     ccoursegenerator.h \
     cimagedownloader.h \
     globalsmuxgentools.h \
-    courseimageseditor.h
+    courseimageseditor.h \
+    ccodeeditor.h
 RESOURCES += gui.qrc
 FORMS += 

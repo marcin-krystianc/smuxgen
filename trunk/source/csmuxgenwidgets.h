@@ -24,11 +24,34 @@
 #include <QTimer>
 #include <QProgressBar>
 #include <QToolButton>
+#include <QPlainTextEdit>
 
 #include "coursetemplateoptions.h"
 #include "csupermemosql.h"
 #include "cglobaltracer.h"
 #include "cimagedownloader.h"
+
+/////////////////////////////////////////////////////////////////////////////
+class cFindToolbar : public QWidget
+{
+    Q_OBJECT
+public:
+    cFindToolbar(QWidget *parent = 0);
+    void setFindFocus();
+private:
+    QLineEdit       *lineEdit;
+    QPushButton     *forwardButton;
+    QPushButton     *backwardButton;
+
+signals:
+    void findNext (const QString &text);
+    void findPrev (const QString &text);
+
+private slots:
+    void nextSlot();
+    void prevSlot();
+
+};
 
 /////////////////////////////////////////////////////////////////////////////
 class cOptionsPage : public QWidget
@@ -97,12 +120,16 @@ class cContentPage : public QWidget
         void contentChangedSignal ();
 
     private:
-        QTextEdit *contentTextEdit;
-
+        QPlainTextEdit *contentTextEdit;
+        cFindToolbar *findToolbar;
     private slots:
-        void contentChangedSlot();
-};
+        void findNext(const QString &txt);
+        void findPrev(const QString &txt);
 
+        void contentChangedSlot();
+        void keyPressEvent ( QKeyEvent * event );
+
+};
 
 
 #endif // CSMUXGENWIDGETS_H

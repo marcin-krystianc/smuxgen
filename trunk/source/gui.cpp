@@ -159,6 +159,7 @@ void MainWindow::createToolBars()
     {
         this->toolBar->addAction(openCourseTemplateAct);
         this->toolBar->addAction(saveCourseTemplateAct);
+        this->toolBar->addSeparator();
         this->toolBar->addAction(importQAAct);
         this->toolBar->addAction(exportQAAct);
         this->toolBar->addSeparator();
@@ -575,5 +576,4 @@ void MainWindow::setLastDir (const QString &dir)
 {
     QSettings settings("Smuxgen", "Smuxgen");
     settings.setValue("recentDir", dir);
-
 }

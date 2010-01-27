@@ -15,8 +15,9 @@
 
 #include "csmuxgenwidgets.h"
 #include "coursetemplateoptions.h"
+#include "ccodeeditor.h"
 
-
+/////////////////////////////////////////////////////////////////////////////
 cOptionsPage::cOptionsPage(QWidget *parent)
     : QWidget(parent)
 {
@@ -309,22 +310,24 @@ void cConsolePage::traceSlot(const QString &txt,const int & flags)
 cContentPage::cContentPage(QWidget *parent)
     : QWidget(parent)
 {
-    this->contentTextEdit   = new QTextEdit;
-    this->contentTextEdit->setAcceptRichText(false);
+    this->contentTextEdit   = new cCodeEditor;
+    this->findToolbar       = new cFindToolbar;
+    this->findToolbar->layout()->setMargin(0);
+    //this->contentTextEdit->setAcceptRichText(false);
     QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget( this->findToolbar);
     mainLayout->addWidget(this->contentTextEdit);
     setLayout(mainLayout);
 
     connect (this->contentTextEdit,SIGNAL(textChanged()),this,SLOT(contentChangedSlot()));
+
+    connect (this->findToolbar  ,SIGNAL(findNext(const QString& ))  ,this,SLOT(findNext(const QString& )));
+    connect (this->findToolbar  ,SIGNAL(findPrev(const QString& ))  ,this,SLOT(findPrev(const QString& )));
+
 }
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::setContent (const QStringList & content)
 {
-    /*
-    this->contentTextEdit->clear();
-    for (int i=0;i<content.count();++i)
-        this->contentTextEdit->append(content.at(i));
-        */
     this->contentTextEdit->setPlainText(content.join(QString("\n")));
 }
 
@@ -339,8 +342,81 @@ QStringList cContentPage::getContent ()
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::contentChangedSlot()
 {
+    this->setToolTip    (QString::number(this->contentTextEdit->blockCount())+QString(" lines"));
+    this->findToolbar->hide();
     emit this->contentChangedSignal();
 }
 
+/////////////////////////////////////////////////////////////////////////////
+void cContentPage::keyPressEvent ( QKeyEvent * event )
+{
+    if ((event->modifiers()&Qt::ControlModifier) &&
+        (event->key()==Qt::Key_F))
+    {
+        this->findToolbar->show();
+        this->findToolbar->setFindFocus();
+    }
+    else
+        QWidget::keyPressEvent(event);
+}
 
+/////////////////////////////////////////////////////////////////////////////
+void cContentPage::findNext(const QString &txt )
+{
+    this->contentTextEdit->find(txt);
+}
 
+/////////////////////////////////////////////////////////////////////////////
+void cContentPage::findPrev(const QString &txt )
+{
+    this->contentTextEdit->find(txt,QTextDocument::FindBackward);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+cFindToolbar::cFindToolbar(QWidget *parent)
+    : QWidget(parent)
+{
+    this->lineEdit      = new QLineEdit;
+    this->forwardButton = new QPushButton (QIcon(":/images/next.png"),"");
+    this->backwardButton= new QPushButton (QIcon(":/images/prev.png"),"");
+
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->addWidget(new QLabel("Find:"));
+    mainLayout->addWidget(this->lineEdit);
+    mainLayout->addWidget(this->backwardButton);
+    mainLayout->addWidget(this->forwardButton);
+    setLayout(mainLayout);
+
+    connect (this->lineEdit         ,SIGNAL(returnPressed()),this   ,SLOT(nextSlot()));
+    connect (this->forwardButton    ,SIGNAL(clicked())      ,this   ,SLOT(nextSlot()));
+    connect (this->backwardButton   ,SIGNAL(clicked())      ,this   ,SLOT(prevSlot()));
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void cFindToolbar::nextSlot()
+{
+    QString txt = this->lineEdit->text();
+    if (txt.isEmpty())
+        return;
+
+    emit findNext(txt);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void cFindToolbar::prevSlot()
+{
+    QString txt = this->lineEdit->text();
+    if (txt.isEmpty())
+        return;
+
+    emit findPrev(txt);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void cFindToolbar::setFindFocus ()
+{
+    this->lineEdit->setFocus();
+}

@@ -10,5 +10,7 @@
         <file>images/monkey_off.png</file>
         <file>images/redo.png</file>
         <file>images/undo.png</file>
+        <file>images/prev.png</file>
+        <file>images/next.png</file>
     </qresource>
 </RCC>

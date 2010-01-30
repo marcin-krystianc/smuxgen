@@ -90,6 +90,11 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
+        if (first==QString::fromUtf8("-instruction")) {
+            this->instruction = second.remove("\"");
+            continue;
+        }
+
         if (first==QString::fromUtf8("-trim")) {
             this->voiceTrim = second.toDouble();
             continue;
@@ -117,9 +122,11 @@ QString cCourseTemplateOptions::toString()
 {
     QString ret;
 
-    ret+=QString("-course ")    +"\""+this->course      +"\" ";
-    ret+=QString("-database ")  +"\""+this->database    +"\" ";
-    ret+=QString("-subname ")   +"\""+this->subname     +"\" ";
+    ret+=QString("-course ")        +"\""+this->course      +"\" ";
+    ret+=QString("-database ")      +"\""+this->database    +"\" ";
+    ret+=QString("-subname ")       +"\""+this->subname     +"\" ";
+    ret+=QString("-instruction ")   +"\""+this->instruction +"\" ";
+
     ret+=QString("-trim ")      +QString::number(this->voiceTrim) +" ";
     ret+=QString("-vIndex ")    +QString::number(this->voiceIndex)+" ";
     ret+=QString("-gain ")      +QString::number(this->voiceGain) +" ";
@@ -148,6 +155,7 @@ void  cCourseTemplateOptions::clear()
     this->course.clear();
     this->database.clear();
     this->subname.clear();
+    this->instruction.clear();
 
     voiceIndex  = 0;
     voiceGain   = 0;

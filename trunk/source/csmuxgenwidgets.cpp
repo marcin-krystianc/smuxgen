@@ -57,6 +57,14 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     subnameLayout->addWidget(subnameLabel);
     subnameLayout->addWidget(subnameEdit);
 
+    QLabel *instructionLabel    = new QLabel(tr("Instruction"));
+    instructionEdit             = new QLineEdit;
+
+    QHBoxLayout *instructionLayout = new QHBoxLayout;
+    instructionLayout->addWidget(instructionLabel);
+    instructionLayout->addWidget(instructionEdit);
+
+
 
     voiceIndex     = new QSpinBox;
     voiceGain      = new QSpinBox;
@@ -88,6 +96,7 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     configLayout->addSpacing(10);
     configLayout->addLayout(courseLayout);
     configLayout->addLayout(subnameLayout);
+    configLayout->addLayout(instructionLayout);
     configLayout->addSpacing(10);
     configLayout->addLayout(checkLayout);
     configLayout->addSpacing(20);
@@ -145,6 +154,7 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
     this->courseCombo->clear();
     this->courseCombo->insertItem(0,options.course);
     this->subnameEdit->setText(options.subname);
+    this->instructionEdit->setText(options.instruction);
 
     this->voiceIndex    ->setValue(options.voiceIndex);
     this->voiceGain     ->setValue(options.voiceGain);
@@ -196,6 +206,8 @@ cCourseTemplateOptions cOptionsPage::getOptions()
 
     options.database    = this->fileEdit->text();
     options.subname     = this->subnameEdit->text();
+    options.instruction = this->instructionEdit->text();
+
     options.course      = this->courseCombo->currentText();
 
     options.voiceIndex  = this->voiceIndex->value();

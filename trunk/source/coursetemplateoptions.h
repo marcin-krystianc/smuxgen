@@ -22,6 +22,7 @@ public:
     QString course;
     QString database;
     QString subname;
+    QString instruction;
 
     int voiceIndex;
     int voiceGain;

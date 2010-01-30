@@ -71,6 +71,8 @@ class cOptionsPage : public QWidget
         QLineEdit *fileEdit ;
         QComboBox *courseCombo;
         QLineEdit *subnameEdit;
+        QLineEdit *instructionEdit;
+
 
         QSpinBox        *voiceIndex;
         QSpinBox        *voiceGain;

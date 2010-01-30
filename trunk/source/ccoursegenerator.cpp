@@ -257,7 +257,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         forceMedia=true;
 
         QString audio = bMode ? "question-audio" : "answer-audio";
-        QDomDocument docItem=createCourseItem(1,topicName,QString::fromUtf8("Przetłumacz"),question,answer,ID,audio);
+        QDomDocument docItem=createCourseItem(1,topicName,this->courseTemplate.options.instruction,question,answer,ID,audio);
 
         writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(ID));
 

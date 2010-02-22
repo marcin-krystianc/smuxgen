@@ -309,8 +309,13 @@ cImageSearch::cImageSearch(QWidget *parent)
     l0->addLayout(l3);
     l0->addWidget(this->imagelist);
 
-    l0->setMargin(0);
-    setLayout(l0);
+    QGroupBox *groubBox=new QGroupBox ("Picture search");
+    groubBox->setLayout(l0);
+
+    QVBoxLayout *l4 = new QVBoxLayout;
+    l4->addWidget(groubBox);
+    l4->setMargin(0);
+    setLayout(l4);
 
     this->timerL = new QTimer;
     this->timerR = new QTimer;
@@ -525,8 +530,14 @@ cImageTargetWidget::cImageTargetWidget(QWidget *parent)
     l1->addWidget(imageButtonWidget[1][0],1);
     l1->addWidget(imageButtonWidget[1][1],1);
 
-    l1->setMargin(0);
-    setLayout(l1);
+    QGroupBox  *groupBox =new QGroupBox ("Picture panel");
+    groupBox->setLayout(l1);
+
+    QVBoxLayout *l2 = new QVBoxLayout;
+    l2->addWidget(groupBox);
+    l2->setMargin(0);
+    setLayout(l2);
+
 
 }
 
@@ -543,9 +554,6 @@ void cImageTargetWidget::resizeEvent ( QResizeEvent * event )
 {
    this->setMaximumWidth(this->imageButtonWidget[0][0]->height()*2);
    this->setMinimumWidth(this->imageButtonWidget[0][0]->height()*1);
-
-   //this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -558,8 +566,15 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
     this->listWidget =new QListWidget;
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addWidget(this->listWidget);
-    l0->setMargin(0);
-    setLayout(l0);
+
+    QGroupBox  *groupBox =new QGroupBox ("Course items");
+    groupBox->setLayout(l0);
+
+    QVBoxLayout *l1 = new QVBoxLayout;
+    l1->addWidget(groupBox);
+    l1->setMargin(0);
+    setLayout(l1);
+
     this->setMinimumWidth(200);
 
     connect(this->listWidget    ,SIGNAL(currentItemChanged( QListWidgetItem*,QListWidgetItem*))  , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
@@ -687,6 +702,7 @@ void cMp3Widget::openFile()
 cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
     : QWidget (parent)
 {
+
     mp3Widget[0]    = new cMp3Widget;
     mp3Widget[1]    = new cMp3Widget;
     mp3Widget[2]    = new cMp3Widget;
@@ -695,10 +711,17 @@ cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addWidget(mp3Widget[0]);
     l0->addWidget(mp3Widget[1]);
+    l0->addSpacing(10);
     l0->addWidget(mp3Widget[2]);
     l0->addWidget(mp3Widget[3]);
 
-    setLayout(l0);
+    QGroupBox  *groupBox =new QGroupBox ("Mp3 panel");
+    groupBox->setLayout(l0);
+
+    QVBoxLayout *l1 = new QVBoxLayout;
+    l1->addWidget(groupBox);
+    l1->setMargin(0);
+    setLayout(l1);
 }
 
 /////////////////////////////////////////////////////////////////////////////

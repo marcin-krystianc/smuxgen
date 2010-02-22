@@ -553,14 +553,14 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 
     rootElement.appendChild(tmpElement2);
 
-    if (this->courseTemplate.options.bit.oVoiceQ)
+    if (this->courseTemplate.options.bit.oVoiceA)
     {
         QDomElement tmpElement4 = doc.createElement( bMode ? "question-audio" : "answer-audio" );
         tmpElement4.appendChild(doc.createTextNode("true"));
         rootElement.appendChild(tmpElement4);
     }
 
-    if (this->courseTemplate.options.bit.oVoiceA)
+    if (this->courseTemplate.options.bit.oVoiceQ)
     {
         QDomElement tmpElement4 = doc.createElement( bMode ?  "answer-audio" : "question-audio");
         tmpElement4.appendChild(doc.createTextNode("true"));

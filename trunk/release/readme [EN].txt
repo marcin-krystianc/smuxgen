@@ -95,15 +95,16 @@ Options:
    
 With test button You can check this settings (text from edit box will be read).
  
-7. Picture Browser
+7. Course Browser
 
-This is function which allows to change pictures for already generated course.
+This is function which allows to change pictures and mp3 files for already generated course.
 New pictures are downloaded from Internet. When default results are insufficient, it is possible to use custom key words.
 To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
 
-V 2.14      - Possible to define instruction for course element
+V 2.15          - mp3 for Q&A , mp3 browser
+V 2.14          - Possible to define instruction for course element
 V 2.14 	 	- Improved editor
 V 2.13 		- Picture Browser for single courses too
 V 2.13 		- Import/Export Q&A		

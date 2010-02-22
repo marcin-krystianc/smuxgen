@@ -117,16 +117,17 @@ Opcje lektora:
  
 Oczywiście jakość próbek z lektorem zależy tylko i wyłącznie od jakości użytego silnika SAPI.
 
-7. Picture Browser
+7. Course Browser
 
-Jest to funkcja pozwalająca na przeglądanie i zmianę obrazów dla już wygenerowanego kursu.
+Jest to funkcja pozwalająca na przeglądanie i zmianę obrazów dla już wygenerowanego kursu, oraz na przeglądanie plików mp3.
 Nowe obrazki na bieżąco pobierane są z Internetu.
 Gdy domyślne wyniki wyszukiwania są niezadowalające można użyć własnych słów kluczowych.
 Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów docelowych ("drag and drop").
 
 8. Changelog
 
-V 2.14      - Possible to define instruction for course element
+V 2.15          - mp3 for Q&A , mp3 browser
+V 2.14          - Possible to define instruction for course element
 V 2.14 	 	- Improved editor
 V 2.13 		- Picture Browser for single courses too
 V 2.13 		- Import/Export Q&A		

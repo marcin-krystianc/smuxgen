@@ -119,7 +119,6 @@ class cImageButtonWidget : public QWidget
     public:
         cImageButtonWidget (QWidget *parent = 0);
         bool setFile (const QString &path);
-        void setPixmap (const QPixmap &pixmap);
 
     private:
 
@@ -129,6 +128,7 @@ class cImageButtonWidget : public QWidget
         QString filePath;
         QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
         void trace (const QString &text,const int & flags = traceLevel1|0);
+        void setPixmap (const QPixmap &pixmap);
 
     protected:
         void dragEnterEvent(QDragEnterEvent *event);
@@ -160,10 +160,11 @@ class cReadyCourseElementList : public QWidget
     public:
         cReadyCourseElementList (QWidget *parent = 0);
         void clear();
-        void addItem (const QString &text,const QString &keyword1,const QString &file1m,const QString &file1n,const QString &keyword2,const QString &file2m,const QString &file2n);
+        void addItem (const QString &text,const QStringList &imgData,const QStringList &mp3Data);
 
     signals:
-        void elementSelectedSignal (const QString &keyword1,const QString &file1m,const QString &file1n,const QString &keyword2,const QString &file2m,const QString &file2n);
+        void elementSelectedImgSignal   (const QStringList &list);
+        void elementSelectedMP3Signal   (const QStringList &list);
 
     private:
         QListWidget *listWidget;
@@ -174,6 +175,41 @@ class cReadyCourseElementList : public QWidget
     protected:
 };
 
+/////////////////////////////////////////////////////////////////////////////
+class cMp3Widget : public QWidget
+{
+    Q_OBJECT
+    public:
+        cMp3Widget (QWidget *parent = 0);
+        void setData (const QString &label,const QString &path);
+
+    private:
+        QLabel          *label;
+        QPushButton     *playButton;
+        QPushButton     *openButton;
+        QString         filePath;
+
+        Phonon::AudioOutput *audioOutput;
+        Phonon::MediaObject *mediaObject;
+    private slots:
+       void play();
+       void openFile();
+};
+
+/////////////////////////////////////////////////////////////////////////////
+class cMp3TargetWidget : public QWidget
+{
+    Q_OBJECT
+    public:
+        cMp3TargetWidget (QWidget *parent = 0);
+        void setData (const QStringList &list);
+
+    private:
+        cMp3Widget   *mp3Widget[4];
+
+    private slots:
+        void elementSelectedMp3Slot (const QStringList& mp3Data);
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // widget which allows to view and modify images for each exercise
@@ -193,10 +229,13 @@ class cCourseImageEditor : public QWidget
         cReadyCourseElementList *readyCourseElementList;
         cImageTargetWidget      *imageTargetWidget;
         cImageSearch            *imageSearch;
+        cMp3TargetWidget        *mp3TargetWidget;
 
     private slots:
-        void elementSelectedSlot (const QString &keyword1,const QString &file1m,const QString &file1n,const QString &keyword2,const QString &file2m,const QString &file2n);
+        void elementSelectedImgSlot (const QStringList &imgData);
 
 protected:
 };
+
+
 #endif // COURSEIMAGESEDITOR_H

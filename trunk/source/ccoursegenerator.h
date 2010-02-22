@@ -51,7 +51,7 @@ class cCourseGenerator : public QThread
         int writeDomDoucumentToFile (QDomDocument &document,QString path);
         QDomDocument createCourseItem (int templateId,QString chapter);
         bool checkIfNewAnswers(QString fileName,QString answers);
-        QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,QString audioType);
+        QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,bool bMode);
         int status;
 
     protected:

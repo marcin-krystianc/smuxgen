@@ -13,6 +13,7 @@
 #include "coursetemplate.h"
 #include "cglobaltracer.h"
 #include "ccoursegenerator.h"
+#include "globalsmuxgentools.h"
 
 /////////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow(QStringList &inputFileList)
@@ -73,7 +74,7 @@ void MainWindow::createMenus()
 
         fileMenu->addSeparator();
         fileMenu->addAction(generateCourseAct);
-        fileMenu->addAction(pictureBrowserAct);
+        fileMenu->addAction(courseBrowserAct);
         fileMenu->addSeparator();
         fileMenu->addSeparator();
     }
@@ -121,12 +122,12 @@ void MainWindow::createActions()
     generateCourseAct->setShortcuts(QKeySequence::UnknownKey);
     connect(generateCourseAct, SIGNAL(triggered()), this, SLOT(generateCourseSlot()));
 
-    pictureBrowserAct = new QAction(QIcon(":/images/imgedit.png"), tr("&Picture browser"), this);
-    pictureBrowserAct->setShortcuts(QKeySequence::UnknownKey);
-    pictureBrowserAct->setStatusTip(tr("Picture browser"));
-    connect(pictureBrowserAct, SIGNAL(triggered()), this, SLOT(pictureBrowserOpenCloseSlot()));
+    courseBrowserAct = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
+    courseBrowserAct->setShortcuts(QKeySequence::UnknownKey);
+    courseBrowserAct->setStatusTip(tr("Course browser"));
+    connect(courseBrowserAct, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
     if (this->batchMode)
-        this->pictureBrowserAct->setVisible(false);
+        this->courseBrowserAct->setVisible(false);
 
     quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcut(tr("Ctrl+Q"));
@@ -165,7 +166,7 @@ void MainWindow::createToolBars()
         this->toolBar->addSeparator();
     }
     this->toolBar->addAction(generateCourseAct);
-    this->toolBar->addAction(pictureBrowserAct);
+    this->toolBar->addAction(courseBrowserAct);
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createDockWindows()
@@ -208,13 +209,13 @@ void MainWindow::createDockWindows()
         this->dockConsolePage->hide();
 
 
-    this->dockPictureBrowser = new QDockWidget(tr("Picture browser"), this);
-    this->dockPictureBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
-    addDockWidget(Qt::TopDockWidgetArea, this->dockPictureBrowser);
-    this->imageWidget = new cCourseImageEditor(this->dockPictureBrowser);
-    this->dockPictureBrowser->setWidget(this->imageWidget);
-    this->dockPictureBrowser->hide();
-    connect( this->dockPictureBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(pictureBrowserVisibleSlot(bool)));
+    this->dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
+    this->dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, this->dockCourseBrowser);
+    this->imageWidget = new cCourseImageEditor(this->dockCourseBrowser);
+    this->dockCourseBrowser->setWidget(this->imageWidget);
+    this->dockCourseBrowser->hide();
+    connect( this->dockCourseBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(courseBrowserVisibleSlot(bool)));
 
 
     connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->consolePage , SLOT(traceSlot(const QString&,const int&)));
@@ -235,12 +236,12 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     {
         fileName = QFileDialog::getOpenFileName(this,
                                     tr("Open file"),
-                                    this->getLastDir(),
+                                    getLastDir(),
                                     tr("Smuxgen files (*.smuxgen);;All Files (*)"));
         if (fileName.isEmpty())
             return;
 
-        this->setLastDir(this->strippedDir(fileName));
+        setLastDir(strippedDir(fileName));
     }
 
     if (!courseTemplate.open(fileName))
@@ -293,12 +294,12 @@ void MainWindow::importQASlot()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                 tr("Open file"),
-                                this->getLastDir(),
+                                getLastDir(),
                                 tr("Q&A files (*)"));
     if (fileName.isEmpty())
         return;
 
-    this->setLastDir(this->strippedDir(fileName));
+    setLastDir(strippedDir(fileName));
     this->courseTemplate.content = this->contentPage->getContent();
     if (!courseTemplate.importQA(fileName)) {
         trace (tr("Error importing Q&A file:")+fileName,traceError);
@@ -313,12 +314,12 @@ void MainWindow::exportQASlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                 tr("Save file"),
-                                this->getLastDir(),
+                                getLastDir(),
                                 tr("Q&A files (*)"));
     if (fileName.isEmpty())
         return;
 
-    this->setLastDir(this->strippedDir(fileName));
+    setLastDir(strippedDir(fileName));
 
     this->courseTemplate.content = this->contentPage->getContent();
     if (!courseTemplate.exportQA(fileName)) {
@@ -333,12 +334,12 @@ void MainWindow::saveAsCourseTemplateSlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                 tr("Save file"),
-                                this->getLastDir(),
+                                getLastDir(),
                                 tr("Smuxgen files (*.smuxgen);;All Files (*)"));
     if (fileName.isEmpty())
         return;
 
-    this->setLastDir(this->strippedDir(fileName));
+    setLastDir(strippedDir(fileName));
     this->courseTemplateFileName = fileName;
     this->setTitle();
 ;
@@ -364,16 +365,16 @@ void MainWindow::generateCourseSlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::pictureBrowserOpenCloseSlot()
+void MainWindow::courseBrowserOpenCloseSlot()
 {
-    if (this->dockPictureBrowser->isVisible())
-        this->dockPictureBrowser->hide();
+    if (this->dockCourseBrowser->isVisible())
+        this->dockCourseBrowser->hide();
     else
-        this->dockPictureBrowser->show();
+        this->dockCourseBrowser->show();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::pictureBrowserVisibleSlot(bool visible)
+void MainWindow::courseBrowserVisibleSlot(bool visible)
 {
     if (!visible)
     {   
@@ -419,7 +420,7 @@ void MainWindow::setTitle()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::unlockInterface()
 {
-    this->pictureBrowserAct->setEnabled(true);
+    this->courseBrowserAct->setEnabled(true);
     this->generateCourseAct->setIcon(QIcon(":/images/generate.png"));
     this->generateCourseAct->setStatusTip(tr("Generate course"));
     this->generateCourseAct->setText(tr("Generate "));
@@ -428,7 +429,7 @@ void MainWindow::unlockInterface()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
-    this->pictureBrowserAct->setEnabled(false);
+    this->courseBrowserAct->setEnabled(false);
     this->generateCourseAct->setIcon(QIcon(":/images/stop.png"));
     this->generateCourseAct->setStatusTip(tr("Stop"));
     this->generateCourseAct->setText(tr("Stop "));
@@ -546,34 +547,9 @@ void MainWindow::updateRecentFileActions()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString MainWindow::strippedFile(const QString &fullFileName)
-{
-    return QFileInfo(fullFileName).fileName();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QString MainWindow::strippedDir (const QString &fullFileName)
-{
-    return QFileInfo(fullFileName).dir().canonicalPath();
-}
-/////////////////////////////////////////////////////////////////////////////
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
         this->openCourseTemplateSlot(action->data().toString());
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QString MainWindow::getLastDir ()
-{
-    QSettings settings("Smuxgen", "Smuxgen");
-    return settings.value("recentDir").toString();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void MainWindow::setLastDir (const QString &dir)
-{
-    QSettings settings("Smuxgen", "Smuxgen");
-    settings.setValue("recentDir", dir);
 }

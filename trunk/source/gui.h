@@ -38,8 +38,8 @@ private slots:
     void exportQASlot();
     void saveAsCourseTemplateSlot();
     void generateCourseSlot();                      // start/stop generate course
-    void pictureBrowserOpenCloseSlot();                  // start/stop picture browser
-    void pictureBrowserVisibleSlot(bool visible);   // picture browser
+    void courseBrowserOpenCloseSlot();                  // start/stop picture browser
+    void courseBrowserVisibleSlot(bool visible);   // picture browser
 
     void generateCourseFinishedSlot();          // generate finished
     void progressSlot(const QString &);
@@ -61,11 +61,6 @@ private:
     void createStatusBar();
     void createDockWindows();
     void updateRecentFileActions();
-    QString strippedFile(const QString &fullFileName);
-    QString strippedDir (const QString &fullFileName);
-    QString getLastDir ();
-    void setLastDir (const QString &dir);
-
 
     QMenu *fileMenu;
     QMenu *recentMenu;
@@ -82,7 +77,7 @@ private:
     QAction *exportQAAct;
     QAction *saveAsCourseTemplateAct;
     QAction *generateCourseAct;
-    QAction *pictureBrowserAct;
+    QAction *courseBrowserAct;
     QAction *recentFileActs[MaxRecentFiles];
 
     QAction *aboutAct;
@@ -97,7 +92,7 @@ private:
     QDockWidget *dockOptionsPage;
     QDockWidget *dockConsolePage;
     QDockWidget *dockContentPage;
-    QDockWidget *dockPictureBrowser;
+    QDockWidget *dockCourseBrowser;
 
 
 private:

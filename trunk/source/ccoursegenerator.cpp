@@ -255,28 +255,24 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
     (checkIfNewAnswers(courseFileDirectory+getFileName(ID),answer)))
     {
         forceMedia=true;
-
-        QString audio = bMode ? "question-audio" : "answer-audio";
-        QDomDocument docItem=createCourseItem(1,topicName,this->courseTemplate.options.instruction,question,answer,ID,audio);
-
+        QDomDocument docItem=createCourseItem(1,topicName,this->courseTemplate.options.instruction,question,answer,ID,bMode);
         writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(ID));
-
     }
 
     // create mp3
-    QString mp3 = bMode ? "q" : "a";
-    if (this->courseTemplate.options.bit.oVoice&&
+    QString mp3Q = bMode ? "a" : "q";
+    if (this->courseTemplate.options.bit.oVoiceQ&&
      ((forceMedia)||
-    (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3+".mp3"))))
+    (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3"))))
     {
         QStringList  arguments; // filename, text,trim,gain
-        arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3);
+        arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
         answer.replace("|"," ");
         question.replace("|"," ");
-        arguments.append(bMode ? question:answer);
-        arguments.append(QString::number(this->courseTemplate.options.voiceIndex));
-        arguments.append(QString::number(this->courseTemplate.options.voiceTrim));
-        arguments.append(QString::number(this->courseTemplate.options.voiceGain));
+        arguments.append(bMode ? answer:question);
+        arguments.append(QString::number(this->courseTemplate.options.voiceIndexQ));
+        arguments.append(QString::number(this->courseTemplate.options.voiceTrimQ));
+        arguments.append(QString::number(this->courseTemplate.options.voiceGainQ));
 
         trace(QString("createMp3.bat ")+arguments.join(" "),traceLevel1);
 
@@ -286,7 +282,30 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         myProcess.waitForFinished(timeOut);
         if (myProcess.exitCode())
             trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
+    }
 
+    QString mp3A = bMode ? "q" : "a";
+    if (this->courseTemplate.options.bit.oVoiceA&&
+     ((forceMedia)||
+    (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A+".mp3"))))
+    {
+        QStringList  arguments; // filename, text,trim,gain
+        arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A);
+        answer.replace("|"," ");
+        question.replace("|"," ");
+        arguments.append(bMode ? question:answer);
+        arguments.append(QString::number(this->courseTemplate.options.voiceIndexA));
+        arguments.append(QString::number(this->courseTemplate.options.voiceTrimA));
+        arguments.append(QString::number(this->courseTemplate.options.voiceGainA));
+
+        trace(QString("createMp3.bat ")+arguments.join(" "),traceLevel1);
+
+        myProcess.start("createMp3.bat", arguments );
+        if (!myProcess.waitForStarted())
+             trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
+        myProcess.waitForFinished(timeOut);
+        if (myProcess.exitCode())
+            trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
     }
 
     // create jpg
@@ -472,7 +491,7 @@ bool cCourseGenerator::checkIfNewAnswers(QString fileName,QString answers)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,QString audioType)
+QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,bool bMode)
 {
 
     QDomDocument doc = createCourseItem(templateId,chapter);
@@ -534,13 +553,19 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 
     rootElement.appendChild(tmpElement2);
 
-    if (this->courseTemplate.options.bit.oVoice)
+    if (this->courseTemplate.options.bit.oVoiceQ)
     {
-        QDomElement tmpElement4 = doc.createElement( audioType );
+        QDomElement tmpElement4 = doc.createElement( bMode ? "question-audio" : "answer-audio" );
         tmpElement4.appendChild(doc.createTextNode("true"));
         rootElement.appendChild(tmpElement4);
     }
 
+    if (this->courseTemplate.options.bit.oVoiceA)
+    {
+        QDomElement tmpElement4 = doc.createElement( bMode ?  "answer-audio" : "question-audio");
+        tmpElement4.appendChild(doc.createTextNode("true"));
+        rootElement.appendChild(tmpElement4);
+    }
     return doc;
 }
 

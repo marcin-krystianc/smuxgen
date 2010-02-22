@@ -12,5 +12,7 @@
         <file>images/undo.png</file>
         <file>images/prev.png</file>
         <file>images/next.png</file>
+        <file>images/play.png</file>
+        <file>images/up.png</file>
     </qresource>
 </RCC>

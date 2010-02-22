@@ -11,6 +11,7 @@
 #include <QString>
 #include <QDir>
 #include <QImage>
+#include <QSettings>
 
 #include "globalsmuxgentools.h"
 #include "cglobaltracer.h"
@@ -136,4 +137,30 @@ QString getMediaFileName (int i)
     name+=QString::number(i);
     name=name.right(5);
     return name;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString getLastDir ()
+{
+    QSettings settings("Smuxgen", "Smuxgen");
+    return settings.value("recentDir").toString();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void setLastDir (const QString &dir)
+{
+    QSettings settings("Smuxgen", "Smuxgen");
+    settings.setValue("recentDir", dir);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString strippedFile(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString strippedDir (const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).dir().canonicalPath();
 }

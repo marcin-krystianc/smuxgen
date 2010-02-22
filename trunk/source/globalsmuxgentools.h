@@ -24,4 +24,9 @@ bool checkIsFileOk(const QString &fileName);
 QString getFileName (int i);
 QString getMediaFileName (int i);
 
+QString strippedFile(const QString &fullFileName);
+QString strippedDir (const QString &fullFileName);
+QString getLastDir ();
+void setLastDir (const QString &dir);
+
 #endif // GLOBALSMUXGENTOOLS_H

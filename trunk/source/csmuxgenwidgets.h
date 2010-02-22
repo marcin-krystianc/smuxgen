@@ -66,20 +66,26 @@ class cOptionsPage : public QWidget
         QCheckBox *oForceCheckBox ;
         QCheckBox *oDoubleCheckBox;
         QCheckBox *oImageCheckBox ;
-        QCheckBox *oVoiceCheckBox ;
+        QCheckBox *oVoiceCheckBoxQ ;
+        QCheckBox *oVoiceCheckBoxA ;
 
         QLineEdit *fileEdit ;
         QComboBox *courseCombo;
         QLineEdit *subnameEdit;
         QLineEdit *instructionEdit;
 
+        QSpinBox        *voiceIndexQ;
+        QSpinBox        *voiceGainQ;
+        QDoubleSpinBox  *voiceTrimBeginQ;
+        QLineEdit       *voiceTesttextQ;
+        QPushButton     *voiceTestbuttonQ;
 
-        QSpinBox        *voiceIndex;
-        QSpinBox        *voiceGain;
-        QDoubleSpinBox  *voiceTrimBegin;
+        QSpinBox        *voiceIndexA;
+        QSpinBox        *voiceGainA;
+        QDoubleSpinBox  *voiceTrimBeginA;
+        QLineEdit       *voiceTesttextA;
+        QPushButton     *voiceTestbuttonA;
 
-        QLineEdit       *voiceTesttext;
-        QPushButton     *voiceTestbutton;
     private:
         cSuperMemoSQL superMemoSQL;
         void trace (const QString &text,const int & flags = traceLevel1|0);
@@ -90,7 +96,8 @@ class cOptionsPage : public QWidget
     private slots:
         void fileButtonTriggered ();
         void fileEditChanged (const QString &fileName);
-        void voiceCheckBoxChanged (int);
+        void voiceCheckBoxChangedQ (int);
+        void voiceCheckBoxChangedA (int);
         void voiceTestButtonTriggered ();
         void testFileRemoveSlot();
 };

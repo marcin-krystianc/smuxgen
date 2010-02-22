@@ -43,8 +43,13 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
-        if (first==QString::fromUtf8("-Voice")){
-            this->bit.oVoice = true;
+        if (first==QString::fromUtf8("-VoiceQ")){
+            this->bit.oVoiceQ = true;
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-VoiceA")){
+            this->bit.oVoiceA = true;
             continue;
         }
 
@@ -95,24 +100,37 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
-        if (first==QString::fromUtf8("-trim")) {
-            this->voiceTrim = second.toDouble();
+        if (first==QString::fromUtf8("-trimQ")) {
+            this->voiceTrimQ = second.toDouble();
             continue;
         }
 
-        if (first==QString::fromUtf8("-vIndex")) {
-            this->voiceIndex = second.toInt();
+        if (first==QString::fromUtf8("-vIndexQ")) {
+            this->voiceIndexQ = second.toInt();
             continue;
         }
 
-        if (first==QString::fromUtf8("-gain")) {
-            this->voiceGain = second.toInt();
+        if (first==QString::fromUtf8("-gainQ")) {
+            this->voiceGainQ = second.toInt();
+            continue;
+        }
+        if (first==QString::fromUtf8("-trimA")) {
+            this->voiceTrimA = second.toDouble();
             continue;
         }
 
+        if (first==QString::fromUtf8("-vIndexA")) {
+            this->voiceIndexA = second.toInt();
+            continue;
+        }
+
+        if (first==QString::fromUtf8("-gainA")) {
+            this->voiceGainA = second.toInt();
+            continue;
+        }
 
         trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first,traceError);
-        return false;   // wrong parameters
+        continue;   // wrong parameters
     }
     return true;
 }
@@ -127,14 +145,19 @@ QString cCourseTemplateOptions::toString()
     ret+=QString("-subname ")       +"\""+this->subname     +"\" ";
     ret+=QString("-instruction ")   +"\""+this->instruction +"\" ";
 
-    ret+=QString("-trim ")      +QString::number(this->voiceTrim) +" ";
-    ret+=QString("-vIndex ")    +QString::number(this->voiceIndex)+" ";
-    ret+=QString("-gain ")      +QString::number(this->voiceGain) +" ";
+    ret+=QString("-trimQ ")     +QString::number(this->voiceTrimQ) +" ";
+    ret+=QString("-vIndexQ ")   +QString::number(this->voiceIndexQ)+" ";
+    ret+=QString("-gainQ ")     +QString::number(this->voiceGainQ) +" ";
 
-    if ( this->bit.oForce)    ret+="-Force ";
-    if ( this->bit.oDouble)   ret+="-Double ";
-    if ( this->bit.oVoice)    ret+="-Voice ";
-    if ( this->bit.oImage)    ret+="-Image ";
+    ret+=QString("-trimA ")     +QString::number(this->voiceTrimA) +" ";
+    ret+=QString("-vIndexA ")   +QString::number(this->voiceIndexA)+" ";
+    ret+=QString("-gainA ")     +QString::number(this->voiceGainA) +" ";
+
+    if ( this->bit.oForce)  ret+="-Force ";
+    if ( this->bit.oDouble) ret+="-Double ";
+    if ( this->bit.oVoiceQ) ret+="-VoiceQ ";
+    if ( this->bit.oVoiceA) ret+="-VoiceA ";
+    if ( this->bit.oImage)  ret+="-Image ";
 
     return ret;
 }
@@ -149,7 +172,8 @@ void  cCourseTemplateOptions::clear()
 {
     this->bit.oDouble = false;
     this->bit.oForce  = false;
-    this->bit.oVoice  = false;
+    this->bit.oVoiceQ = false;
+    this->bit.oVoiceA = false;
     this->bit.oImage  = false;
 
     this->course.clear();
@@ -157,7 +181,11 @@ void  cCourseTemplateOptions::clear()
     this->subname.clear();
     this->instruction.clear();
 
-    voiceIndex  = 0;
-    voiceGain   = 0;
-    voiceTrim   = 0;
+    voiceIndexQ = 0;
+    voiceGainQ  = 0;
+    voiceTrimQ  = 0;
+
+    voiceIndexA = 0;
+    voiceGainA  = 0;
+    voiceTrimA  = 0;
 }

@@ -24,16 +24,20 @@ public:
     QString subname;
     QString instruction;
 
-    int voiceIndex;
-    int voiceGain;
-    double voiceTrim;
+    int voiceIndexQ;
+    int voiceGainQ;
+    double voiceTrimQ;
 
+    int voiceIndexA;
+    int voiceGainA;
+    double voiceTrimA;
 
     struct
     {
         unsigned int oForce  : 1; // force to create agian all course elements
         unsigned int oDouble : 1; // make also alternative course
-        unsigned int oVoice  : 1; // make mp3 files
+        unsigned int oVoiceQ : 1; // make mp3 files (Questions)
+        unsigned int oVoiceA : 1; // make mp3 files (Answers)
         unsigned int oImage  : 1; // get Images
     } bit;
 

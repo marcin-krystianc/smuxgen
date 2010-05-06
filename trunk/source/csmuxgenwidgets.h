@@ -74,13 +74,13 @@ class cOptionsPage : public QWidget
         QLineEdit *subnameEdit;
         QLineEdit *instructionEdit;
 
-        QSpinBox        *voiceIndexQ;
+        QComboBox       *voiceComboQ;
         QSpinBox        *voiceGainQ;
         QDoubleSpinBox  *voiceTrimBeginQ;
         QLineEdit       *voiceTesttextQ;
         QPushButton     *voiceTestbuttonQ;
 
-        QSpinBox        *voiceIndexA;
+        QComboBox       *voiceComboA;
         QSpinBox        *voiceGainA;
         QDoubleSpinBox  *voiceTrimBeginA;
         QLineEdit       *voiceTesttextA;

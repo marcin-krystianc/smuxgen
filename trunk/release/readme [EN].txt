@@ -60,27 +60,32 @@ Archive contain:
      
 5. Options.
   
-  Database file: - path to  SuperMemo UX dataabse file name ("C:/Documents and Settings/????/Application Data/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
-  Course	     - Course name to which current lesson will be added
-  Regenerate 	 - create again all flash cards
-  Alternate 	 - create mirrored course
-  Images	- add pictures
-  Lector	- add mp3 with sample  pronunciation
+  Database file:	- path to  SuperMemo UX dataabse file name ("C:/Documents and Settings/????/Application Data/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
+  Course			- Course name to which current lesson will be added
+  Regenerate 	 	- create again all flash cards
+  Alternate 	 	- create mirrored course
+  Images			- add pictures
+  Lector			- add mp3 with sample  pronunciation
   
  
   Word List:
     In following lines enter A:B|C
 	A   - word in native language
 	B,C - words in foreign language
-
-  Example:
+	
+	()	- everything included in round brackets will be shown, but not read by lector.
+	[] 	- everything included in square brackets will be shown and used as keaywors for image searching
+	{} 	- everything included in curly brackets won't be shown
+	
+  Examples:
    	w koñcu(wreszcie):schließlich
 	syrop na kaszel:der Hustensaft|der Hustensirup
-
+	Wer ist das {[wasser]}?(Kind) :Das ist das Kind.
+	
 6. Mp3
 
 SMUXGEN is able to add automatically sample pronunciation using SAPI interface.
-You need to install such engine separately (like http://cepstral.com/) 
+You need to install such engine separately (like http://nextup.com/TextAloud/SpeechEngine/voices.html) 
 After installing it it should be visible in control panel->Speech
 
 Script createMp3.bat is responsible for:
@@ -89,9 +94,9 @@ Script createMp3.bat is responsible for:
 	- converting to mp3
 
 Options:
-  Voice index	- index of SAPI engine
-  Gain			- gain
-  Trim			- trim in seconds
+  Voice	- name of SAPI engine
+  Gain	- gain
+  Trim	- trim in seconds
    
 With test button You can check this settings (text from edit box will be read).
  
@@ -103,8 +108,10 @@ To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
 
-V 2.15          - mp3 for Q&A , mp3 browser
-V 2.14          - Possible to define instruction for course element
+V 2.17      - extended elements definition (),[],{}
+V 2.16    	- voice engine by name
+V 2.15    	- mp3 for Q&A , mp3 browser
+V 2.14    	- Possible to define instruction for course element
 V 2.14 	 	- Improved editor
 V 2.13 		- Picture Browser for single courses too
 V 2.13 		- Import/Export Q&A		

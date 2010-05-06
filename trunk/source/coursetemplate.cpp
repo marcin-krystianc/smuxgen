@@ -8,6 +8,7 @@
 
 #include "coursetemplate.h"
 #include "coursetemplateoptions.h"
+#include "globalsmuxgentools.h"
 #include <QFile>
 #include <QString>
 #include <QTextStream>
@@ -149,9 +150,9 @@ bool cCourseTemplate::exportQA (const QString &fileName)
         if (l2.count()<1)
             continue;
 
-        outputFileStream<<QString::fromUtf8("Q: ")<<l1.at(0)<<endl;
+        outputFileStream<<QString::fromUtf8("Q: ")<<getTextToPrint(l1.at(0))<<endl;
         for (int j=0;j<l2.count();++j)
-            outputFileStream<<QString("A: ")<<l2.at(j)<<endl;
+            outputFileStream<<QString("A: ")<<getTextToPrint(l2.at(j))<<endl;
 
         outputFileStream<<endl;
     }

@@ -18,11 +18,20 @@ extern const int IMG_HEIGHT;
 
 QStringList parseGoogleHtml (const QString &fileName);
 void deleteFile (const QString &fileName);
-QString getKeyWord (QString iString);
 bool scalePicture (QString path,int x,int y);
 bool checkIsFileOk(const QString &fileName);
 QString getFileName (int i);
 QString getMediaFileName (int i);
+
+QString removeAllBetween            (const QString &input,const QString &first,const QString &second);
+QStringList getAllBetween           (const QString &input,const QString &first,const QString &second);
+QString removeAllSpecialCharacters  (const QString &input,const QStringList &list);
+
+QString getKeyWord      (const QString &input); // get keywords for google search
+QString getTranscript   (const QString &input); // get text to read
+QString getTextToPrint  (const QString &input); // get text to show to user
+
+
 
 QString strippedFile(const QString &fullFileName);
 QString strippedDir (const QString &fullFileName);

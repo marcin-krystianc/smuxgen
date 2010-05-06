@@ -1,4 +1,4 @@
--course "testowy" -database "C:/Documents and Settings/Ja/Dane aplikacji/SuperMemo World/SuperMemo UX/testowy/Repetitions.dat" -subname "Lektion 1" -instruction "Translate" -trimQ 9.7 -vIndexQ 1 -gainQ 15 -trimA 9.7 -vIndexA 1 -gainA 15 -Force -Double -VoiceA 
+-course "testowy" -database "C:/Documents and Settings/Ja/Dane aplikacji/SuperMemo World/SuperMemo UX/testowy/Repetitions.dat" -subname "Lektion 1" -instruction "Translate" -trimQ 9.7 -gainQ 15 -trimA 9.7 -gainA 15 -Force -Double -VoiceA 
 bez wyobraźni:einfallslos
 poważny:ernst
 leniwy, zepsuty:faul

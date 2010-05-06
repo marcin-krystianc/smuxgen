@@ -80,9 +80,9 @@ W skład programu wchodzi:
 5. Opcje.
   
   Database file: - ściezka do pliku bazy danych SuperMemo UX ("C:/Documents and Settings/????/Dane aplikacji/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
-  Course		 - Nazwa kursu do którego chemy dodać aktualną lekcję  
-  Regenerate 	 - wymusza powtórne wygenerowanie wszystkich ćwiczeń
-  Alternate 	 - generuje kurs lustrzany
+  Course	- Nazwa kursu do którego chemy dodać aktualną lekcję  
+  Regenerate 	- wymusza powtórne wygenerowanie wszystkich ćwiczeń
+  Alternate 	- generuje kurs lustrzany
   Images	- dodaje obrazki do ćwiczeń
   Lector	- dodaje lektora do ćwiczeń
   
@@ -92,14 +92,19 @@ W skład programu wchodzi:
 	A   - słówko w języku polskim
 	B,C - alternatywne odpowiedzi w języku obcym
 
+	()	- wszystko co znajduje się w nawiasach okragłych będzie wyświetlane, ale nie będzie czytane przez lektora
+	[] 	- wszystko co znajduje się w nawiasach kwadratowych będzie wyświetlane (bez nawiasów) i użyte jako słowo kluczowe do wyszukiwania obrazków
+	{} 	- wszystko co znajduje się w nawiasach klamrowych nie będzie wyświetlane
+	
   Przykłady:
    	w końcu(wreszcie):schließlich
 	syrop na kaszel:der Hustensaft|der Hustensirup
-
+	Wer ist das {[wasser]}?(Kind) :Das ist das Kind.
+	
 6. Mp3 z lektorem.
 
 SMUXGEN pozwala na generowania automatyczne mp3 z lektorem przy użyciu interfejsu SAPI.
-(np. darmowe demo http://cepstral.com/). Po zainstalowaniu takiego silnika,
+(np. http://nextup.com/TextAloud/SpeechEngine/voices.html). Po zainstalowaniu takiego silnika,
 powinien on być widoczny do wyboru w panel sterowania->mowa.
 Skrypt createMp3.bat jest odpowiedzialny za:
 	- wygenerowanie odpowiedniego pliku wav dla danego słówka
@@ -108,7 +113,7 @@ Skrypt createMp3.bat jest odpowiedzialny za:
 
 Opcje lektora:
 
-  Voice index	- numer silnika SAPI
+  Voice 	- nazwa silnika SAPI
   Gain		- wzmocnienie w decybelach
   Trim		- obcięcie w sekundach od początku pliku
    
@@ -126,8 +131,10 @@ Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów do
 
 8. Changelog
 
-V 2.15          - mp3 for Q&A , mp3 browser
-V 2.14          - Possible to define instruction for course element
+V 2.17      - extended elements definition (),[],{}
+V 2.16      - voice engine by name
+V 2.15      - mp3 for Q&A , mp3 browser
+V 2.14      - Possible to define instruction for course element
 V 2.14 	 	- Improved editor
 V 2.13 		- Picture Browser for single courses too
 V 2.13 		- Import/Export Q&A		

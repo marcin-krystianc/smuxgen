@@ -24,10 +24,12 @@ public:
     QString subname;
     QString instruction;
 
+    QString voiceNameQ;
     int voiceIndexQ;
     int voiceGainQ;
     double voiceTrimQ;
 
+    QString voiceNameA;
     int voiceIndexA;
     int voiceGainA;
     double voiceTrimA;

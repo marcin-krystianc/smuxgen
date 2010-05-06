@@ -105,8 +105,8 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
-        if (first==QString::fromUtf8("-vIndexQ")) {
-            this->voiceIndexQ = second.toInt();
+        if (first==QString::fromUtf8("-vNameQ")) {
+            this->voiceNameQ = second.remove("\"");
             continue;
         }
 
@@ -119,8 +119,8 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
-        if (first==QString::fromUtf8("-vIndexA")) {
-            this->voiceIndexA = second.toInt();
+        if (first==QString::fromUtf8("-vNameA")) {
+            this->voiceNameA = second.remove("\"");
             continue;
         }
 
@@ -146,11 +146,11 @@ QString cCourseTemplateOptions::toString()
     ret+=QString("-instruction ")   +"\""+this->instruction +"\" ";
 
     ret+=QString("-trimQ ")     +QString::number(this->voiceTrimQ) +" ";
-    ret+=QString("-vIndexQ ")   +QString::number(this->voiceIndexQ)+" ";
+    ret+=QString("-vNameQ ")    +"\""+this->voiceNameQ+"\" ";
     ret+=QString("-gainQ ")     +QString::number(this->voiceGainQ) +" ";
 
     ret+=QString("-trimA ")     +QString::number(this->voiceTrimA) +" ";
-    ret+=QString("-vIndexA ")   +QString::number(this->voiceIndexA)+" ";
+    ret+=QString("-vNameA ")    +"\""+this->voiceNameA+"\" ";
     ret+=QString("-gainA ")     +QString::number(this->voiceGainA) +" ";
 
     if ( this->bit.oForce)  ret+="-Force ";
@@ -181,11 +181,11 @@ void  cCourseTemplateOptions::clear()
     this->subname.clear();
     this->instruction.clear();
 
-    voiceIndexQ = 0;
+    voiceNameQ.clear();
     voiceGainQ  = 0;
     voiceTrimQ  = 0;
 
-    voiceIndexA = 0;
+    voiceNameA.clear();
     voiceGainA  = 0;
     voiceTrimA  = 0;
 }

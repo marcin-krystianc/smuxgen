@@ -109,7 +109,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
             continue;
         }
 
-        if (!this->database.getElementID(courseID,topicIDA,list1.at(0),id1))
+        if (!this->database.getElementID(courseID,topicIDA,getTextToPrint(list1.at(0)),id1))
             continue;
 
         QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
@@ -117,8 +117,8 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
         QString f1a = mediaDirectoryName+getMediaFileName(id1)+"a.mp3";
         QString f1q = mediaDirectoryName+getMediaFileName(id1)+"q.mp3";
         QString k1  = getKeyWord(list1.at(0));
-        QString q1  = list1.at(0);
-        QString a1  = list1.at(1);
+        QString q1  = getTextToPrint(list1.at(0));
+        QString a1  = getTextToPrint(list1.at(1));
 
         QString f2m;
         QString f2n;
@@ -130,7 +130,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
         if (courseTemplate.options.bit.oDouble)
         {
-            if (!this->database.getElementID(courseID,topicIDB,list1.at(1),id2))
+            if (!this->database.getElementID(courseID,topicIDB,getTextToPrint(list1.at(1)),id2))
                 continue;
 
             f2m = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
@@ -138,8 +138,8 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
             f2a = mediaDirectoryName+getMediaFileName(id2)+"a.mp3";
             f2q = mediaDirectoryName+getMediaFileName(id2)+"q.mp3";
             k2  = getKeyWord(list1.at(1));
-            q2  = list1.at(1);
-            a2  = list1.at(0);
+            q2  = getTextToPrint(list1.at(1));
+            a2  = getTextToPrint(list1.at(0));
         }
 
         QStringList imgList,mp3List;

@@ -66,25 +66,121 @@ void deleteFile (const QString &fileName)
     globalTracer.trace(QString("deleteFile: ")+fileName,traceLevel3);
     fileObject.remove();
 }
+/////////////////////////////////////////////////////////////////////////////
+QString getTranscript   (const QString &input) // get text to read
+{
+    QStringList special;
+    special<<"("<<")"<<"["<<"]"<<"{"<<"}";
+    QString ret =removeAllBetween (input,"(",")");
+    return removeAllSpecialCharacters(ret,special);
+}
 
 /////////////////////////////////////////////////////////////////////////////
-QString getKeyWord (QString iString)
+QString getTextToPrint  (const QString &input) // get text to show to user
+{
+    QStringList special;
+    special<<"["<<"]"<<"{"<<"}";
+    QString ret =removeAllBetween (input,"{","}");
+    return (removeAllSpecialCharacters(ret,special)).trimmed();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+QString getKeyWord (const QString &input)
 {
     static QString A=QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_-=+,./<>?;':\"[]\{}|");
     static QString B=QString::fromUtf8("ACZXSNOLEaczzsnole                               ");
 
+    QString temp =input;
+
     for (int i=A.length()-1;i>=0;--i)
-        iString.replace(A.at(i),B.at(i));
+        temp.replace(A.at(i),B.at(i));
 
-    QStringList tmp=iString.split(" ",QString::SkipEmptyParts);
+    QStringList tmp=temp.split(" ",QString::SkipEmptyParts);
 
-    if (tmp.count()==0)
-        return QString::fromUtf8("");
+    QStringList retList;
 
-    if (tmp.count() > 1)
-        return (tmp.at(0)+QString(" ")+tmp.at(1));
+    // add keywords defined by user ( [keyword] )
+    QStringList  tmpList=getAllBetween(input,"[","]");
+    QStringList special;
+    special<<"("<<")"<<"["<<"]"<<"{"<<"}";
 
-    return tmp.at(0);
+    if (tmpList.count()>0)
+    {
+        for (int i=0;i<tmpList.count();++i)
+            retList.insert(0,removeAllSpecialCharacters(tmpList.at(i),special));
+    }
+    else
+    {
+        retList.append("");
+        retList.append("");
+
+        for (int i=0;i<tmp.count();++i)
+        {
+            for (int j=0;j<retList.count();j++)
+            {
+                if ((tmp.at(i).length()>(retList.at(j)).length()))
+                {
+                    retList.insert(j,tmp[i]);
+                    retList.pop_back();
+                    break;
+                }
+            }
+        }
+    }
+
+    return (retList.join(" "));
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString removeAllBetween (const QString &input,const QString &first,const QString &second)
+{
+    QString ret = input;
+
+    while (1)
+    {
+        int a = ret.indexOf(first,0);
+        if (a==-1)
+            return ret;
+
+        int b = ret.indexOf(second,a);
+        if (b==-1)
+            return ret;
+
+        ret.remove(a,b-a+1);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QStringList getAllBetween   (const QString &input,const QString &first,const QString &second)
+{
+    QStringList ret;
+
+    int a=0;
+    int b=0;
+    while (1)
+    {
+        a = ret.indexOf(first,0);
+        if (a==-1)
+            return ret;
+
+        b = ret.indexOf(second,a);
+        if (b==-1)
+            return ret;
+
+        ret+=input.mid(a+1,b-a-1);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString removeAllSpecialCharacters  (const QString &input,const QStringList &list)
+{
+    QString ret = input;
+    for (int i=0;i<list.count();i++)
+    {
+        ret.remove(list.at(i));
+    }
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,7 @@
 #include "csmuxgenwidgets.h"
 #include "coursetemplateoptions.h"
 #include "ccodeeditor.h"
+#include "csapi.h"
 
 /////////////////////////////////////////////////////////////////////////////
 cOptionsPage::cOptionsPage(QWidget *parent)
@@ -64,15 +65,15 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     instructionLayout->addWidget(instructionLabel);
     instructionLayout->addWidget(instructionEdit);
 
-
-
-    voiceIndexQ     = new QSpinBox;
+    voiceComboQ     = new QComboBox;
+    voiceComboQ->insertItems(0,getVoices());
     voiceGainQ      = new QSpinBox;
     voiceTrimBeginQ = new QDoubleSpinBox;
     voiceTrimBeginQ->setSingleStep(0.1);
     voiceTrimBeginQ->setDecimals(1);
 
-    voiceIndexA     = new QSpinBox;
+    voiceComboA     = new QComboBox;
+    voiceComboA->insertItems(0,getVoices());
     voiceGainA      = new QSpinBox;
     voiceTrimBeginA = new QDoubleSpinBox;
     voiceTrimBeginA->setSingleStep(0.1);
@@ -85,12 +86,12 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     voiceTestbuttonA    = new QPushButton(tr("Test this text below"));
 
     voiceTesttextQ->setText("Test Testing Testen");
-    QLabel *voiceIndexLabelQ     = new QLabel(tr("Voice index"));
+    QLabel *voiceIndexLabelQ     = new QLabel(tr("Voice name"));
     QLabel *voiceGainLabelQ      = new QLabel(tr("Gain [dB] "));
     QLabel *voiceTrimBeginLabelQ = new QLabel(tr("Trim [s]"));
 
     voiceTesttextA->setText("Test Testing Testen");
-    QLabel *voiceIndexLabelA     = new QLabel(tr("Voice index"));
+    QLabel *voiceIndexLabelA     = new QLabel(tr("Voice name"));
     QLabel *voiceGainLabelA      = new QLabel(tr("Gain [dB] "));
     QLabel *voiceTrimBeginLabelA = new QLabel(tr("Trim [s]"));
 
@@ -102,7 +103,7 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     */
     voiceLayoutQ->addWidget(oVoiceCheckBoxQ         ,1  ,0  ,1  ,0);
     voiceLayoutQ->addWidget(voiceIndexLabelQ        ,2  ,0);
-    voiceLayoutQ->addWidget(voiceIndexQ             ,2  ,1);
+    voiceLayoutQ->addWidget(voiceComboQ             ,2  ,1);
     voiceLayoutQ->addWidget(voiceGainLabelQ         ,3  ,0);
     voiceLayoutQ->addWidget(voiceGainQ              ,3  ,1);
     voiceLayoutQ->addWidget(voiceTrimBeginLabelQ    ,4  ,0);
@@ -118,7 +119,7 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     */
     voiceLayoutA->addWidget(oVoiceCheckBoxA         ,1  ,0  ,1  ,0);
     voiceLayoutA->addWidget(voiceIndexLabelA        ,2  ,0);
-    voiceLayoutA->addWidget(voiceIndexA             ,2  ,1);
+    voiceLayoutA->addWidget(voiceComboA             ,2  ,1);
     voiceLayoutA->addWidget(voiceGainLabelA         ,3  ,0);
     voiceLayoutA->addWidget(voiceGainA              ,3  ,1);
     voiceLayoutA->addWidget(voiceTrimBeginLabelA    ,4  ,0);
@@ -166,7 +167,7 @@ void cOptionsPage::voiceCheckBoxChangedQ (int state)
     switch (state)
     {
         case Qt::Unchecked:
-            voiceIndexQ->       setEnabled(false);
+            voiceComboQ->       setEnabled(false);
             voiceGainQ->        setEnabled(false);
             voiceTrimBeginQ->   setEnabled(false);
             voiceTesttextQ->    setEnabled(false);
@@ -174,7 +175,7 @@ void cOptionsPage::voiceCheckBoxChangedQ (int state)
             break;
 
         case Qt::Checked:
-            voiceIndexQ->       setEnabled(true);
+            voiceComboQ->       setEnabled(true);
             voiceGainQ->        setEnabled(true);
             voiceTrimBeginQ->   setEnabled(true);
             voiceTesttextQ->    setEnabled(true);
@@ -189,7 +190,7 @@ void cOptionsPage::voiceCheckBoxChangedA (int state)
     switch (state)
     {
         case Qt::Unchecked:
-            voiceIndexA->       setEnabled(false);
+            voiceComboA->       setEnabled(false);
             voiceGainA->        setEnabled(false);
             voiceTrimBeginA->   setEnabled(false);
             voiceTesttextA->    setEnabled(false);
@@ -197,7 +198,7 @@ void cOptionsPage::voiceCheckBoxChangedA (int state)
             break;
 
         case Qt::Checked:
-            voiceIndexA->       setEnabled(true);
+            voiceComboA->       setEnabled(true);
             voiceGainA->        setEnabled(true);
             voiceTrimBeginA->   setEnabled(true);
             voiceTesttextA->    setEnabled(true);
@@ -220,11 +221,11 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
     this->subnameEdit->setText(options.subname);
     this->instructionEdit->setText(options.instruction);
 
-    this->voiceIndexQ    ->setValue(options.voiceIndexQ);
+    this->voiceComboQ    ->setCurrentIndex(getVoiceIndex(options.voiceNameQ));
     this->voiceGainQ     ->setValue(options.voiceGainQ);
     this->voiceTrimBeginQ->setValue(options.voiceTrimQ);
 
-    this->voiceIndexA    ->setValue(options.voiceIndexA);
+    this->voiceComboA    ->setCurrentIndex(getVoiceIndex(options.voiceNameA));
     this->voiceGainA     ->setValue(options.voiceGainA);
     this->voiceTrimBeginA->setValue(options.voiceTrimA);
 
@@ -239,10 +240,9 @@ void cOptionsPage::voiceTestButtonTriggered ()
 
     if (sender() ==voiceTestbuttonQ)
     {
-
         arguments.append("test");
         arguments.append(this->voiceTesttextQ->text());
-        arguments.append(QString::number(options.voiceIndexQ));
+        arguments.append(QString::number(getVoiceIndex(options.voiceNameQ)+1));
         arguments.append(QString::number(options.voiceTrimQ));
         arguments.append(QString::number(options.voiceGainQ));
     }
@@ -250,7 +250,7 @@ void cOptionsPage::voiceTestButtonTriggered ()
     {
         arguments.append("test");
         arguments.append(this->voiceTesttextA->text());
-        arguments.append(QString::number(options.voiceIndexA));
+        arguments.append(QString::number(getVoiceIndex(options.voiceNameA)+1));
         arguments.append(QString::number(options.voiceTrimA));
         arguments.append(QString::number(options.voiceGainA));
     }
@@ -294,11 +294,11 @@ cCourseTemplateOptions cOptionsPage::getOptions()
 
     options.course      = this->courseCombo->currentText();
 
-    options.voiceIndexQ = this->voiceIndexQ->value();
+    options.voiceNameQ  = this->voiceComboQ->currentText();
     options.voiceGainQ  = this->voiceGainQ->value();
     options.voiceTrimQ  = this->voiceTrimBeginQ->value();
 
-    options.voiceIndexA = this->voiceIndexA->value();
+    options.voiceNameA  = this->voiceComboA->currentText();
     options.voiceGainA  = this->voiceGainA->value();
     options.voiceTrimA  = this->voiceTrimBeginA->value();
 
@@ -442,7 +442,6 @@ QStringList cContentPage::getContent ()
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::contentChangedSlot()
 {
-    this->setToolTip    (QString::number(this->contentTextEdit->blockCount())+QString(" lines"));
     this->findToolbar->hide();
     emit this->contentChangedSignal();
 }

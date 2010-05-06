@@ -25,7 +25,7 @@
 #include <list>
 
 #include "globalsmuxgentools.h"
-
+#include "csapi.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -111,6 +111,9 @@ void  cCourseGenerator::run ()
     QString topicNameA = this->courseTemplate.options.subname;
     QString topicNameB = this->courseTemplate.options.subname+"*";
 
+    this->courseTemplate.options.voiceIndexA=getVoiceIndex(this->courseTemplate.options.voiceNameA)+1;
+    this->courseTemplate.options.voiceIndexQ=getVoiceIndex(this->courseTemplate.options.voiceNameQ)+1;
+
     QDomNode topicNodeA;
     QDomNode topicNodeB;
 
@@ -140,7 +143,7 @@ void  cCourseGenerator::run ()
         if (this->abortProces)
          goto END;
 
-        generateCourseElement(courseID,(list1.at(0)).trimmed(),(list1.at(1)).trimmed(),topicNameA,topicNodeA,topicAID,doc,courseFileDirectoryName,false);
+        generateCourseElement(courseID,list1.at(0),list1.at(1),topicNameA,topicNodeA,topicAID,doc,courseFileDirectoryName,false);
     }
 
 
@@ -174,7 +177,7 @@ void  cCourseGenerator::run ()
             if (this->abortProces)
                 goto END;
 
-            generateCourseElement(courseID,(list1.at(1)).trimmed(),(list1.at(0)).trimmed(),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true);
+            generateCourseElement(courseID,list1.at(1),list1.at(0),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true);
          }
 
         doDelete (courseID,topicBID,topicNodeB,courseFileDirectoryName);
@@ -245,17 +248,17 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
     const int timeOut   = -1; // no timeout
     QProcess myProcess;
 
-    if (!this->database.setElementSQL(question,courseIDSQL,topicID,ID))
+    if (!this->database.setElementSQL(getTextToPrint(question),courseIDSQL,topicID,ID))
         return false;
 
-    QDomNode questionNode=getNode (topicNode,question,doc,courseFileDirectory,"exercise",ID);
+    QDomNode questionNode=getNode (topicNode,getTextToPrint(question),doc,courseFileDirectory,"exercise",ID);
 
     // create xml course file
     if ((this->courseTemplate.options.bit.oForce)||
     (checkIfNewAnswers(courseFileDirectory+getFileName(ID),answer)))
     {
         forceMedia=true;
-        QDomDocument docItem=createCourseItem(1,topicName,this->courseTemplate.options.instruction,question,answer,ID,bMode);
+        QDomDocument docItem=createCourseItem(1,topicName,this->courseTemplate.options.instruction,getTextToPrint(question),getTextToPrint(answer),ID,bMode);
         writeDomDoucumentToFile(docItem,courseFileDirectory+getFileName(ID));
     }
 
@@ -269,7 +272,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
         answer.replace("|"," ");
         question.replace("|"," ");
-        arguments.append(bMode ? answer:question);
+        arguments.append(bMode ? getTranscript(answer):getTranscript(question));
         arguments.append(QString::number(this->courseTemplate.options.voiceIndexQ));
         arguments.append(QString::number(this->courseTemplate.options.voiceTrimQ));
         arguments.append(QString::number(this->courseTemplate.options.voiceGainQ));
@@ -293,7 +296,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
         arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A);
         answer.replace("|"," ");
         question.replace("|"," ");
-        arguments.append(bMode ? question:answer);
+        arguments.append(bMode ? getTranscript(question):getTranscript(answer));
         arguments.append(QString::number(this->courseTemplate.options.voiceIndexA));
         arguments.append(QString::number(this->courseTemplate.options.voiceTrimA));
         arguments.append(QString::number(this->courseTemplate.options.voiceGainA));

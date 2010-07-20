@@ -137,8 +137,8 @@ void  cCourseGenerator::run ()
             continue;
         }
 
-        emit progressSignal(topicNameA+"@"+this->courseTemplate.options.course+":"
-                                  +list1.at(0)+" "+QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count()));
+        emit progressSignal(QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count())+" "+topicNameA+"@"+this->courseTemplate.options.course+":"
+                                  +list1.at(0));
 
         if (this->abortProces)
          goto END;
@@ -171,8 +171,8 @@ void  cCourseGenerator::run ()
                 continue;
             }
 
-               emit progressSignal(topicNameB+"@"+this->courseTemplate.options.course+":"
-                                  +list1.at(0)+" "+QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count()));
+               emit progressSignal(QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count())+" "+topicNameB+"@"+this->courseTemplate.options.course+":"
+                                  +list1.at(0));
 
             if (this->abortProces)
                 goto END;
@@ -518,10 +518,12 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
     {   // create table with images
         tmpElement2.appendChild(doc.createElement("br"));
         tmpElement2.appendChild(doc.createElement("br"));
-        tmpElement2.appendChild(doc.createElement("br"));
 
         QDomElement table= doc.createElement( "table" );
         table.setAttribute("width","100%");
+        table.setAttribute("border","0");
+        table.setAttribute("cellpadding","0");
+        table.setAttribute("cellspacing","0");
 
             QDomElement tr = doc.createElement("tr");
 
@@ -530,9 +532,12 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 
                     QDomElement gfx= doc.createElement("gfx");
                     gfx.setAttribute("file","m");
-                    gfx.setAttribute("space","0");
+                    gfx.setAttribute("space","1");
                     gfx.setAttribute("width"    ,QString::number(IMG_WIDTH));
                     gfx.setAttribute("height"   ,QString::number(IMG_HEIGHT));
+                    gfx.setAttribute("scale-base"    ,QString::number(900));
+                    gfx.setAttribute("auto-play"   ,"false");
+
                 td.appendChild(gfx);
 
             tr.appendChild(td);
@@ -541,10 +546,12 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
                 td.setAttribute("align","center");
 
                     gfx= doc.createElement("gfx");
-                    gfx.setAttribute("file","n");
-                    gfx.setAttribute("space","0");
+                    gfx.setAttribute("file","m");
+                    gfx.setAttribute("space","1");
                     gfx.setAttribute("width"    ,QString::number(IMG_WIDTH));
                     gfx.setAttribute("height"   ,QString::number(IMG_HEIGHT));
+                    gfx.setAttribute("scale-base"    ,QString::number(900));
+                    gfx.setAttribute("auto-play"   ,"false");
                 td.appendChild(gfx);
 
             tr.appendChild(td);

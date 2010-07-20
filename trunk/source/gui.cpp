@@ -241,8 +241,9 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
         if (fileName.isEmpty())
             return;
 
-        setLastDir(strippedDir(fileName));
     }
+
+    setLastDir(strippedDir(fileName));
 
     if (!courseTemplate.open(fileName))
     {

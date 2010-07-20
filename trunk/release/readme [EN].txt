@@ -108,6 +108,9 @@ To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
 
+V 2.18		- Error correction for mp3 generation (words separated by comma)
+V 2.18		- Improved progress information
+V 2.18		- Better image scaling
 V 2.17      - extended elements definition (),[],{}
 V 2.16    	- voice engine by name
 V 2.15    	- mp3 for Q&A , mp3 browser

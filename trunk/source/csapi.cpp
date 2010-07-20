@@ -19,7 +19,13 @@ QStringList getVoices()
 
     QByteArray result=myProcess.readAllStandardOutput();
 
-    return (QString::fromLocal8Bit(result.constData(),result.length())).split("\r\n");
+    QStringList retlist =QString::fromLocal8Bit(result.constData(),result.length()).split("\r\n");
+
+    for (int i=0;i<retlist.count();i++)
+        retlist[i]=retlist[i].right(retlist[i].length()-retlist[i].indexOf(" ")-1);
+
+    return (retlist);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////

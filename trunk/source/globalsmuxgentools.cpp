@@ -72,7 +72,7 @@ QString getTranscript   (const QString &input) // get text to read
     QStringList special;
     special<<"("<<")"<<"["<<"]"<<"{"<<"}";
     QString ret =removeAllBetween (input,"(",")");
-    return removeAllSpecialCharacters(ret,special);
+    return removeAllSpecialCharacters(ret,special)+" ";
 }
 
 /////////////////////////////////////////////////////////////////////////////

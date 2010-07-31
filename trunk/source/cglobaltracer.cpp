@@ -20,7 +20,12 @@ void cGlobaTracer::trace(const QString &text,const int& flags)
 /////////////////////////////////////////////////////////////////////////////
 cGlobaTracer::cGlobaTracer ()
 {
-    this->flags = traceWarning | traceError | traceLevel1 /*| traceLevel2 | traceLevel3*/;
+    this->flags = traceWarning | traceError | traceLevel1;
 }
 
+/////////////////////////////////////////////////////////////////////////////
+void cGlobaTracer::setTraceFlags(const unsigned int& flags)
+{
+    this->flags = flags;
+}
 

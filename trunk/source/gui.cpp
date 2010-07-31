@@ -272,7 +272,7 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::saveCourseTemplateSlot()
+bool MainWindow::saveCourseTemplateSlot()
 {
     if (this->courseTemplateFileName.isEmpty())
         return this->saveAsCourseTemplateSlot();
@@ -288,6 +288,7 @@ void MainWindow::saveCourseTemplateSlot()
     trace (QString("Saved: ")+this->courseTemplateFileName,traceLevel1);
     this->setTitle();
 
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -331,20 +332,30 @@ void MainWindow::exportQASlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::saveAsCourseTemplateSlot()
+bool MainWindow::saveAsCourseTemplateSlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                 tr("Save file"),
                                 getLastDir(),
                                 tr("Smuxgen files (*.smuxgen);;All Files (*)"));
     if (fileName.isEmpty())
-        return;
+        return false;
 
     setLastDir(strippedDir(fileName));
+
+    QSettings settings("Smuxgen", "Smuxgen");
+        QStringList files = settings.value("recentFileList").toStringList();
+        files.removeAll(fileName);
+        files.prepend(fileName);
+        while (files.size() > MaxRecentFiles)
+            files.removeLast();
+    settings.setValue("recentFileList", files);
+    this->updateRecentFileActions();
+
     this->courseTemplateFileName = fileName;
     this->setTitle();
-;
     this->saveCourseTemplateSlot();
+    return true;
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseSlot()
@@ -363,6 +374,7 @@ void MainWindow::generateCourseSlot()
     this->courseGenerator.generate(this->courseTemplate);
     this->lockInterface();
     this->setTitle();
+    trace (QString("Started to generate: ")+this->courseTemplate.options.subname,traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -481,9 +493,23 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 
     if (this->contentChanged)
-        this->courseTemplateFileName.clear(),this->saveCourseTemplateSlot();
+    {
+        int q=QMessageBox::question(0,"Save changes","Do You want to save changes ?","Yes","No","Cancel");
 
-    close();
+        switch (q)
+        {
+        case 0:
+            if (!this->saveCourseTemplateSlot())
+                event->ignore();
+            break;
+        case 1:
+            break;
+        case 2:
+        default:
+            event->ignore();
+            break;
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////

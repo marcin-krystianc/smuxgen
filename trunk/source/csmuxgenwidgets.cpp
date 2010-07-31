@@ -380,12 +380,37 @@ cConsolePage::cConsolePage(QWidget *parent)
 
     consoleText             = new QTextEdit;
     QVBoxLayout *mainLayout = new QVBoxLayout;
+
+    QHBoxLayout *bLayout    = new QHBoxLayout;
+    cTracelevel2 = new QCheckBox("Trace 2");
+    cTracelevel3 = new QCheckBox("Trace 3");
+    bLayout->addWidget(cTracelevel2);
+    bLayout->addWidget(cTracelevel3);
+    bLayout->addStretch(1);
+
     mainLayout->addWidget(consoleText);
+    mainLayout->addLayout(bLayout);
     setLayout(mainLayout);
 
     consoleText->setReadOnly(true);
-}
 
+    connect(cTracelevel2 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot(int)));
+    connect(cTracelevel3 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot(int)));
+}
+/////////////////////////////////////////////////////////////////////////////
+void cConsolePage::traceLevelSlot (int state)
+{
+    unsigned int flags= traceError|traceWarning|traceLevel1;
+
+    if (this->cTracelevel2->checkState()==Qt::Checked)
+        flags |= traceLevel2;
+
+    if (this->cTracelevel3->checkState()==Qt::Checked)
+        flags |= traceLevel3;
+
+    globalTracer.setTraceFlags(flags);
+
+}
 /////////////////////////////////////////////////////////////////////////////
 void cConsolePage::traceSlot(const QString &txt,const int & flags)
 {

@@ -108,6 +108,7 @@ To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
 
+V 2.19		- Pop-up window for unsaved changes 
 V 2.18		- Error correction for mp3 generation (words separated by comma)
 V 2.18		- Improved progress information
 V 2.18		- Better image scaling

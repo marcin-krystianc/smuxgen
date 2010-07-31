@@ -137,13 +137,15 @@ QString cSuperMemoSQL::quotationString (QString s)
 bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int paretntIDSQL,int &elementIDSQL)
 {
     QSqlTableModel model(0,this->database);
+
     QString   filter;   // CourseID + PageNum - primary key
     filter  +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
     filter  +=QString::fromUtf8(" and ");
     filter  +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
     filter  +=QString::fromUtf8(" and ");
-    filter  +=QString::fromUtf8(" Name=\"")+elementName+QString::fromUtf8("\"");
+    filter  +=QString::fromUtf8(" Name=\"")+elementName.remove("\"")+QString::fromUtf8("\"");
 
+    //trace (QString("setElementSQL: lastQuery=")+query.lastQuery(),traceLevel3);
     model.setTable("items");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setFilter(filter);
@@ -201,7 +203,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL,int pare
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, const QString elementName,int &retID)
+bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, QString elementName,int &retID)
 {
 
     QString   filter;   // CourseID + PageNum - primary key
@@ -210,7 +212,7 @@ bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, const QString e
     filter  +=QString::fromUtf8(" and ");
     filter  +=QString::fromUtf8("ParentID=")+QString::number(parentID);
     filter  +=QString::fromUtf8(" and ");
-    filter  +=QString::fromUtf8(" Name =\"")+elementName+QString::fromUtf8("\"");
+    filter  +=QString::fromUtf8(" Name =\"")+elementName.remove('\"')+QString::fromUtf8("\"");
 
     QSqlQuery query (this->database);
     if (!query.exec(filter))    // delete all unknown course items

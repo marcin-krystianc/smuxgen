@@ -33,10 +33,10 @@ public:
 
 private slots:
     void openCourseTemplateSlot(QString filename="");
-    void saveCourseTemplateSlot();
+    bool saveCourseTemplateSlot();
     void importQASlot();
     void exportQASlot();
-    void saveAsCourseTemplateSlot();
+    bool saveAsCourseTemplateSlot();
     void generateCourseSlot();                      // start/stop generate course
     void courseBrowserOpenCloseSlot();                  // start/stop picture browser
     void courseBrowserVisibleSlot(bool visible);   // picture browser

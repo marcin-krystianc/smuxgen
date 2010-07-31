@@ -111,10 +111,14 @@ class cConsolePage : public QWidget
 
     public slots:
         void traceSlot(const QString &txt,const int & flags);
+        void traceLevelSlot (int s);
 
     private:
         QTextEdit *consoleText;
         QMutex traceMutex;
+        QCheckBox *cTracelevel2; // checkbox for tracelevel2
+        QCheckBox *cTracelevel3; // checkbox for tracelevel3
+
 };
 
 /////////////////////////////////////////////////////////////////////////////

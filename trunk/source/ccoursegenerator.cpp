@@ -546,7 +546,7 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
                 td.setAttribute("align","center");
 
                     gfx= doc.createElement("gfx");
-                    gfx.setAttribute("file","m");
+                    gfx.setAttribute("file","n");
                     gfx.setAttribute("space","1");
                     gfx.setAttribute("width"    ,QString::number(IMG_WIDTH));
                     gfx.setAttribute("height"   ,QString::number(IMG_HEIGHT));

@@ -28,6 +28,9 @@ QStringList parseGoogleHtml (const QString &fileName)
     QStringList retList;
     QTextStream inputFileStream;
     QString html;
+
+    globalTracer.trace(QString("parseGoogleHtml: ")+fileName,traceLevel3);
+
     inputFile.setFileName(fileName);
     if (!inputFile.open(QIODevice::ReadOnly))  {
          globalTracer.trace(QString("Cannot open file: ")+fileName,traceError);
@@ -38,22 +41,25 @@ QStringList parseGoogleHtml (const QString &fileName)
     inputFileStream.setCodec("UTF-8");
     html=inputFileStream.readAll();
 
-    int pos=0,leftPos,rightPos;
 
-    QString  leftBound  ("/imgres?imgurl\\x3d");
-    QString  rightBound ("\\x26");
-    QString  tmp;
+    QString leftBound  ("imgres?imgurl=");
+    QString rightBound ("&amp");
+    int leftPos = 0;
+    int pos = 0;
 
     while ((leftPos=html.indexOf(leftBound,pos)) != -1)
     {
-     rightPos=html.indexOf(rightBound,leftPos);
+     int rightPos=html.indexOf(rightBound,leftPos);
+     globalTracer.trace(QString("leftPos: ")+leftPos+QString(" rightPos: ")+rightPos,traceLevel3);
      if (rightPos==-1)
          break;
 
      pos=rightPos;
-     tmp = html.mid(leftPos+leftBound.length(),rightPos-leftPos-leftBound.length());
+     QString tmp = html.mid(leftPos+leftBound.length(),rightPos-leftPos-leftBound.length());
      if (tmp.indexOf("%")!=-1)
          continue;
+     globalTracer.trace(QString("Img url: ")+tmp,traceLevel3);
+
      retList.append(tmp);
     }
     return retList;

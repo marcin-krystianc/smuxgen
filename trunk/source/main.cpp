@@ -15,28 +15,18 @@
 #include <QDir>
 
 
-/*
-systray
-
-*/
 /////////////////////////////////////////////////////////////////////////////
 int main (int argc, char* argv[])
 {
     Q_INIT_RESOURCE(gui);
 
-    QApplication app(argc, argv);   // sql will not work without that
-    app.addLibraryPath(("plugins"));
+    QApplication app(argc, argv);
+    app.addLibraryPath(("plugins")); // sql will not work without that
 
-    QDir *pDir= new QDir;
-    if (!pDir->exists("tmp"))
-       pDir->mkdir("tmp");
-    delete(pDir);
+    QDir pDir;
+    pDir.mkdir("tmp");
 
-    QStringList argList;
-    while (argc >1)
-        argList.push_front(argv[--argc]);
-
-    MainWindow mainWin (argList);
+    MainWindow mainWin;
     mainWin.show();
 
     return app.exec();

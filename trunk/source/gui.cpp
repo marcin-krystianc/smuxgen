@@ -16,11 +16,8 @@
 #include "globalsmuxgentools.h"
 
 /////////////////////////////////////////////////////////////////////////////
-MainWindow::MainWindow(QStringList &inputFileList)
+MainWindow::MainWindow()
 {
-    this->batchMode     = !inputFileList.isEmpty();
-    this->inputFileList = inputFileList;
-
     this->createActions();
     this->createMenus();
     this->createToolBars();
@@ -35,12 +32,9 @@ MainWindow::MainWindow(QStringList &inputFileList)
 
     connect(&courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
     connect(&courseGenerator, SIGNAL(progressSignal(const QString&))    , this , SLOT(progressSlot(const QString&)));
-
-    if (this->batchMode)
-        this->generateCourseBatch();
 }
-/////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////
 MainWindow::~MainWindow()
 {
 }
@@ -58,26 +52,24 @@ void MainWindow::createMenus()
 {
     fileMenu    = menuBar()->addMenu(tr("&File"));
 
-    if (!this->batchMode)
-    {
-        fileMenu->addAction(openCourseTemplateAct);
-        fileMenu->addAction(saveCourseTemplateAct);
-        fileMenu->addAction(saveAsCourseTemplateAct);
-        fileMenu->addSeparator();
-        fileMenu->addAction(importQAAct);
-        fileMenu->addAction(exportQAAct);
+    fileMenu->addAction(openCourseTemplateAct);
+    fileMenu->addAction(saveCourseTemplateAct);
+    fileMenu->addAction(saveAsCourseTemplateAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(importQAAct);
+    fileMenu->addAction(exportQAAct);
 
-        fileMenu->addSeparator();
-        recentMenu  = fileMenu->addMenu("&Recent");
-        for (int i = 0; i < MaxRecentFiles; ++i)
-            recentMenu->addAction(recentFileActs[i]);
+    fileMenu->addSeparator();
+    recentMenu  = fileMenu->addMenu("&Recent");
+    for (int i = 0; i < MaxRecentFiles; ++i)
+        recentMenu->addAction(recentFileActs[i]);
 
-        fileMenu->addSeparator();
-        fileMenu->addAction(generateCourseAct);
-        fileMenu->addAction(courseBrowserAct);
-        fileMenu->addSeparator();
-        fileMenu->addSeparator();
-    }
+    fileMenu->addSeparator();
+    fileMenu->addAction(generateCourseAct);
+    fileMenu->addAction(courseBrowserAct);
+    fileMenu->addSeparator();
+    fileMenu->addSeparator();
+
     fileMenu->addAction(quitAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
@@ -126,8 +118,6 @@ void MainWindow::createActions()
     courseBrowserAct->setShortcuts(QKeySequence::UnknownKey);
     courseBrowserAct->setStatusTip(tr("Course browser"));
     connect(courseBrowserAct, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
-    if (this->batchMode)
-        this->courseBrowserAct->setVisible(false);
 
     quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcut(tr("Ctrl+Q"));
@@ -156,15 +146,14 @@ void MainWindow::createToolBars()
 {
     this->toolBar = new QToolBar;
     this->toolBar = addToolBar(tr("Toolbar"));
-    if (!this->batchMode)
-    {
-        this->toolBar->addAction(openCourseTemplateAct);
-        this->toolBar->addAction(saveCourseTemplateAct);
-        this->toolBar->addSeparator();
-        this->toolBar->addAction(importQAAct);
-        this->toolBar->addAction(exportQAAct);
-        this->toolBar->addSeparator();
-    }
+
+    this->toolBar->addAction(openCourseTemplateAct);
+    this->toolBar->addAction(saveCourseTemplateAct);
+    this->toolBar->addSeparator();
+    this->toolBar->addAction(importQAAct);
+    this->toolBar->addAction(exportQAAct);
+    this->toolBar->addSeparator();
+
     this->toolBar->addAction(generateCourseAct);
     this->toolBar->addAction(courseBrowserAct);
 }
@@ -178,24 +167,14 @@ void MainWindow::createDockWindows()
     this->addDockWidget(Qt::LeftDockWidgetArea, this->dockOptionsPage);
     this->optionsPage =new cOptionsPage(this->dockOptionsPage);
     this->dockOptionsPage->setWidget(this->optionsPage);
-
-    if (!this->batchMode)
-        viewMenu->addAction(this->dockOptionsPage->toggleViewAction());
-    else
-        this->dockOptionsPage->hide();
+    viewMenu->addAction(this->dockOptionsPage->toggleViewAction());
 
     this->dockContentPage = new QDockWidget(tr("Word list"), this);
     this->dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
     addDockWidget(Qt::RightDockWidgetArea, this->dockContentPage);
     this->contentPage = new cContentPage(this->dockContentPage);
     this->dockContentPage->setWidget(this->contentPage);
-
-
-    if (!this->batchMode)
-        viewMenu->addAction(this->dockContentPage->toggleViewAction());
-    else
-        this->dockContentPage->hide();
-
+    viewMenu->addAction(this->dockContentPage->toggleViewAction());
 
     this->dockConsolePage = new QDockWidget(tr("Console"), this);
     this->dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
@@ -203,11 +182,7 @@ void MainWindow::createDockWindows()
     this->consolePage = new cConsolePage(this->dockConsolePage);
     this->dockConsolePage->setWidget(this->consolePage);
     viewMenu->addAction(this->dockConsolePage->toggleViewAction());
-
-
-    if (!this->batchMode)
-        this->dockConsolePage->hide();
-
+    this->dockConsolePage->hide();
 
     this->dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
     this->dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
@@ -361,13 +336,8 @@ bool MainWindow::saveAsCourseTemplateSlot()
 void MainWindow::generateCourseSlot()
 {
     if (this->courseGenerator.isRunning()) {
-        this->inputFileList.clear();
-        return this ->generateStop();
+        return generateStop();
     }
-
-    if (this->batchMode)
-        return;
-
 
     this->courseTemplate.options = this->optionsPage->getOptions();
     this->courseTemplate.content = this->contentPage->getContent();
@@ -396,7 +366,6 @@ void MainWindow::courseBrowserVisibleSlot(bool visible)
         this->dockOptionsPage->show();
         this->dockContentPage->toggleViewAction()->setEnabled(true);
         this->dockOptionsPage->toggleViewAction()->setEnabled(true);
-
     }
     else
     {
@@ -460,8 +429,6 @@ void MainWindow::generateCourseFinishedSlot()
     statusBar()->showMessage("");
 
     this->setTitle();
-    if (this->batchMode)
-        this->generateCourseBatch();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -519,34 +486,6 @@ void MainWindow::generateStop()
     this->courseGenerator.stop();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-void MainWindow::generateCourseBatch()
-{
-    if (this->inputFileList.count()==0)
-    {
-        this->courseTemplateFileName = "";
-        this->setTitle();
-        return;  // nothing to do
-    }
-
-    this->courseTemplateFileName = this->inputFileList.at(0);
-
-    if (!this->courseTemplate.open(this->courseTemplateFileName))
-    {   // file error - stop batch mode
-        this->courseTemplateFileName = "";
-        this->setTitle();
-        return;  // nothing to do
-    }
-
-
-    trace (QString("Opened: ")+this->courseTemplateFileName,traceLevel1);
-
-    this->inputFileList.removeFirst();
-    this->courseGenerator.generate(this->courseTemplate);
-    trace (QString("generate started: "),traceLevel3);
-    this->lockInterface();
-    this->setTitle();
-}
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::trace (const QString& text,const unsigned int& flags= traceLevel1)
 {

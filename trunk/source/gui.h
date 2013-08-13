@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QStringList &inputFileList);
+    MainWindow();
     ~MainWindow();
 
 private slots:
@@ -94,7 +94,6 @@ private:
     QDockWidget *dockContentPage;
     QDockWidget *dockCourseBrowser;
 
-
 private:
     cCourseTemplate courseTemplate;
     void trace (const QString& txt,const unsigned int& flags);
@@ -103,10 +102,6 @@ private:
     void generateStop();
     cCourseGenerator courseGenerator;
     bool contentChanged;
-    bool batchMode;
-   // bool isRunning;
-    QStringList inputFileList;
-    void generateCourseBatch();
 };
 
 #endif // GUI_H

@@ -55,6 +55,8 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private:
+    static const int MaxRecentFiles = 15;
+
     void createMenus();
     void createActions();
     void createToolBars();
@@ -62,46 +64,45 @@ private:
     void createDockWindows();
     void updateRecentFileActions();
 
-    QMenu *fileMenu;
-    QMenu *recentMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
+    QMenu *m_fileMenu;
+    QToolBar *m_toolBar;
+    QMenu *m_recentMenu;
+    QMenu *m_helpMenu;
 
-    QToolBar *toolBar;
+    QMenu *m_viewMenu;
 
-    static const int MaxRecentFiles = 15;
+    QAction *m_openCourseTemplateAction;
+    QAction *m_saveCourseTemplateAction;
+    QAction *m_importQAAction;
+    QAction *m_exportQAAction;
+    QAction *m_saveAsCourseTemplateAction;
+    QAction *m_generateCourseAction;
+    QAction *m_courseBrowserAction;
 
-    QAction *openCourseTemplateAct;
-    QAction *saveCourseTemplateAct;
-    QAction *importQAAct;
-    QAction *exportQAAct;
-    QAction *saveAsCourseTemplateAct;
-    QAction *generateCourseAct;
-    QAction *courseBrowserAct;
-    QAction *recentFileActs[MaxRecentFiles];
+    QAction *m_aboutAction;
+    QAction *m_aboutQtAction;
+    QAction *m_quitAction;
 
-    QAction *aboutAct;
-    QAction *aboutQtAct;
-    QAction *quitAct;
+    cOptionsPage *m_optionsPage;
+    cConsolePage *m_consolePage;
+    cContentPage *m_contentPage;
+    cCourseImageEditor *m_imageWidget;
 
-    cOptionsPage *optionsPage;
-    cConsolePage *consolePage;
-    cContentPage *contentPage;
-    cCourseImageEditor *imageWidget;
+    QDockWidget *m_dockOptionsPage;
+    QDockWidget *m_dockConsolePage;
+    QDockWidget *m_dockContentPage;
+    QDockWidget *m_dockCourseBrowser;
 
-    QDockWidget *dockOptionsPage;
-    QDockWidget *dockConsolePage;
-    QDockWidget *dockContentPage;
-    QDockWidget *dockCourseBrowser;
-
+    QVector <QAction*> m_recentFileActions;
 private:
-    cCourseTemplate courseTemplate;
     void trace (const QString& txt,const unsigned int& flags);
-    QString courseTemplateFileName;
     void setTitle();
     void generateStop();
-    cCourseGenerator courseGenerator;
-    bool contentChanged;
+
+    cCourseGenerator m_courseGenerator;
+    cCourseTemplate m_courseTemplate;
+    QString m_courseTemplateFileName;
+    bool m_contentChanged;
 };
 
 #endif // GUI_H

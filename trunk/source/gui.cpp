@@ -24,14 +24,14 @@ MainWindow::MainWindow()
     this->createStatusBar();
     this->createDockWindows();
 
-    this->contentChanged = false;
+    this->m_contentChanged = false;
     this->setTitle();
     this->unlockInterface();
     this->resize(800,600);
     this->setWindowIcon(QIcon(":/images/smuxgen.png"));
 
-    connect(&courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
-    connect(&courseGenerator, SIGNAL(progressSignal(const QString&))    , this , SLOT(progressSlot(const QString&)));
+    connect(&m_courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
+    connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&))    , this , SLOT(progressSlot(const QString&)));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -50,33 +50,34 @@ void MainWindow::about()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
 {
-    fileMenu    = menuBar()->addMenu(tr("&File"));
+    m_fileMenu = menuBar()->addMenu(tr("&File"));
 
-    fileMenu->addAction(openCourseTemplateAct);
-    fileMenu->addAction(saveCourseTemplateAct);
-    fileMenu->addAction(saveAsCourseTemplateAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(importQAAct);
-    fileMenu->addAction(exportQAAct);
+    m_fileMenu->addAction(m_openCourseTemplateAction);
+    m_fileMenu->addAction(m_saveCourseTemplateAction);
+    m_fileMenu->addAction(m_saveAsCourseTemplateAction);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_importQAAction);
+    m_fileMenu->addAction(m_exportQAAction);
 
-    fileMenu->addSeparator();
-    recentMenu  = fileMenu->addMenu("&Recent");
-    for (int i = 0; i < MaxRecentFiles; ++i)
-        recentMenu->addAction(recentFileActs[i]);
+    m_fileMenu->addSeparator();
 
-    fileMenu->addSeparator();
-    fileMenu->addAction(generateCourseAct);
-    fileMenu->addAction(courseBrowserAct);
-    fileMenu->addSeparator();
-    fileMenu->addSeparator();
+    m_recentMenu  = m_fileMenu->addMenu("&Recent");
+    for (int i = 0; i < m_recentFileActions.size(); ++i)
+        m_recentMenu->addAction(m_recentFileActions[i]);
 
-    fileMenu->addAction(quitAct);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_generateCourseAction);
+    m_fileMenu->addAction(m_courseBrowserAction);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addSeparator();
 
-    viewMenu = menuBar()->addMenu(tr("&View"));
+    m_fileMenu->addAction(m_quitAction);
 
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    m_viewMenu = menuBar()->addMenu(tr("&View"));
+
+    m_helpMenu = menuBar()->addMenu(tr("&Help"));
+    m_helpMenu->addAction(m_aboutAction);
+    m_helpMenu->addAction(m_aboutQtAction);
 
     this->updateRecentFileActions();
 }
@@ -85,116 +86,114 @@ void MainWindow::createMenus()
 void MainWindow::createActions()
 {
 
-    openCourseTemplateAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
-    openCourseTemplateAct->setShortcuts(QKeySequence::Open);
-    openCourseTemplateAct->setStatusTip(tr("Open..."));
-    connect(openCourseTemplateAct, SIGNAL(triggered()), this, SLOT(openCourseTemplateSlot()));
+    m_openCourseTemplateAction = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+    m_openCourseTemplateAction->setShortcuts(QKeySequence::Open);
+    m_openCourseTemplateAction->setStatusTip(tr("Open..."));
+    connect(m_openCourseTemplateAction, SIGNAL(triggered()), this, SLOT(openCourseTemplateSlot()));
 
-    saveCourseTemplateAct = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
-    saveCourseTemplateAct->setShortcuts(QKeySequence::Save);
-    saveCourseTemplateAct->setStatusTip(tr("Save"));
-    connect(saveCourseTemplateAct, SIGNAL(triggered()), this, SLOT(saveCourseTemplateSlot()));
+    m_saveCourseTemplateAction = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
+    m_saveCourseTemplateAction->setShortcuts(QKeySequence::Save);
+    m_saveCourseTemplateAction->setStatusTip(tr("Save"));
+    connect(m_saveCourseTemplateAction, SIGNAL(triggered()), this, SLOT(saveCourseTemplateSlot()));
 
-    importQAAct = new QAction(QIcon(":/images/redo.png"), tr("&Import Q&A"), this);
-    importQAAct->setShortcuts(QKeySequence::UnknownKey);
-    importQAAct->setStatusTip(tr("Import from Q&A"));
-    connect(importQAAct, SIGNAL(triggered()), this, SLOT(importQASlot()));
+    m_importQAAction = new QAction(QIcon(":/images/redo.png"), tr("&Import Q&A"), this);
+    m_importQAAction->setShortcuts(QKeySequence::UnknownKey);
+    m_importQAAction->setStatusTip(tr("Import from Q&A"));
+    connect(m_importQAAction, SIGNAL(triggered()), this, SLOT(importQASlot()));
 
-    exportQAAct = new QAction(QIcon(":/images/undo.png"), tr("&Export to Q&A"), this);
-    exportQAAct->setShortcuts(QKeySequence::UnknownKey);
-    exportQAAct->setStatusTip(tr("Export to Q&A"));
-    connect(exportQAAct, SIGNAL(triggered()), this, SLOT(exportQASlot()));
+    m_exportQAAction = new QAction(QIcon(":/images/undo.png"), tr("&Export to Q&A"), this);
+    m_exportQAAction->setShortcuts(QKeySequence::UnknownKey);
+    m_exportQAAction->setStatusTip(tr("Export to Q&A"));
+    connect(m_exportQAAction, SIGNAL(triggered()), this, SLOT(exportQASlot()));
 
-    saveAsCourseTemplateAct = new QAction(QIcon(":/images/save.png"), tr("&Save As..."), this);
-    saveAsCourseTemplateAct->setShortcuts(QKeySequence::SaveAs);
-    saveAsCourseTemplateAct->setStatusTip(tr("Save as..."));
-    connect(saveAsCourseTemplateAct, SIGNAL(triggered()), this, SLOT(saveAsCourseTemplateSlot()));
+    m_saveAsCourseTemplateAction = new QAction(QIcon(":/images/save.png"), tr("&Save As..."), this);
+    m_saveAsCourseTemplateAction->setShortcuts(QKeySequence::SaveAs);
+    m_saveAsCourseTemplateAction->setStatusTip(tr("Save as..."));
+    connect(m_saveAsCourseTemplateAction, SIGNAL(triggered()), this, SLOT(saveAsCourseTemplateSlot()));
 
-    generateCourseAct = new QAction(this);
-    generateCourseAct->setShortcuts(QKeySequence::UnknownKey);
-    connect(generateCourseAct, SIGNAL(triggered()), this, SLOT(generateCourseSlot()));
+    m_generateCourseAction = new QAction(this);
+    m_generateCourseAction->setShortcuts(QKeySequence::UnknownKey);
+    connect(m_generateCourseAction, SIGNAL(triggered()), this, SLOT(generateCourseSlot()));
 
-    courseBrowserAct = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
-    courseBrowserAct->setShortcuts(QKeySequence::UnknownKey);
-    courseBrowserAct->setStatusTip(tr("Course browser"));
-    connect(courseBrowserAct, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
+    m_courseBrowserAction = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
+    m_courseBrowserAction->setShortcuts(QKeySequence::UnknownKey);
+    m_courseBrowserAction->setStatusTip(tr("Course browser"));
+    connect(m_courseBrowserAction, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
 
-    quitAct = new QAction(tr("&Quit"), this);
-    quitAct->setShortcut(tr("Ctrl+Q"));
-    quitAct->setStatusTip(tr("Quit the application"));
-    connect(quitAct, SIGNAL(triggered()), this, SLOT(closeSlot()));
+    m_quitAction = new QAction(tr("&Quit"), this);
+    m_quitAction->setShortcut(tr("Ctrl+Q"));
+    m_quitAction->setStatusTip(tr("Quit the application"));
+    connect(m_quitAction, SIGNAL(triggered()), this, SLOT(closeSlot()));
 
-    aboutAct = new QAction(tr("&About"), this);
-    aboutAct->setStatusTip(tr("Show the application's About box"));
-    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+    m_aboutAction = new QAction(tr("&About"), this);
+    m_aboutAction->setStatusTip(tr("Show the application's About box"));
+    connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    m_aboutQtAction = new QAction(tr("About &Qt"), this);
+    m_aboutQtAction->setStatusTip(tr("Show the Qt library's About box"));
+    connect(m_aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileActs[i] = new QAction(this);
-        recentFileActs[i]->setVisible(false);
-        connect(recentFileActs[i], SIGNAL(triggered()),
+        m_recentFileActions.push_back(new QAction(this));
+        m_recentFileActions[i]->setVisible(false);
+        connect(m_recentFileActions[i], SIGNAL(triggered()),
                 this, SLOT(openRecentFile()));
     }
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createToolBars()
 {
-    this->toolBar = new QToolBar;
-    this->toolBar = addToolBar(tr("Toolbar"));
+    m_toolBar = new QToolBar;
+    m_toolBar = addToolBar(tr("Toolbar"));
 
-    this->toolBar->addAction(openCourseTemplateAct);
-    this->toolBar->addAction(saveCourseTemplateAct);
-    this->toolBar->addSeparator();
-    this->toolBar->addAction(importQAAct);
-    this->toolBar->addAction(exportQAAct);
-    this->toolBar->addSeparator();
-
-    this->toolBar->addAction(generateCourseAct);
-    this->toolBar->addAction(courseBrowserAct);
+    m_toolBar->addAction(m_openCourseTemplateAction);
+    m_toolBar->addAction(m_saveCourseTemplateAction);
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_importQAAction);
+    m_toolBar->addAction(m_exportQAAction);
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_generateCourseAction);
+    m_toolBar->addAction(m_courseBrowserAction);
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createDockWindows()
 {
     //QDockWidget *dock;
 
-    this->dockOptionsPage = new QDockWidget(tr("Options"), this);
-    this->dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
-    this->addDockWidget(Qt::LeftDockWidgetArea, this->dockOptionsPage);
-    this->optionsPage =new cOptionsPage(this->dockOptionsPage);
-    this->dockOptionsPage->setWidget(this->optionsPage);
-    viewMenu->addAction(this->dockOptionsPage->toggleViewAction());
+    this->m_dockOptionsPage = new QDockWidget(tr("Options"), this);
+    this->m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
+    this->addDockWidget(Qt::LeftDockWidgetArea, this->m_dockOptionsPage);
+    this->m_optionsPage =new cOptionsPage(this->m_dockOptionsPage);
+    this->m_dockOptionsPage->setWidget(this->m_optionsPage);
+    m_viewMenu->addAction(this->m_dockOptionsPage->toggleViewAction());
 
-    this->dockContentPage = new QDockWidget(tr("Word list"), this);
-    this->dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
-    addDockWidget(Qt::RightDockWidgetArea, this->dockContentPage);
-    this->contentPage = new cContentPage(this->dockContentPage);
-    this->dockContentPage->setWidget(this->contentPage);
-    viewMenu->addAction(this->dockContentPage->toggleViewAction());
+    this->m_dockContentPage = new QDockWidget(tr("Word list"), this);
+    this->m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
+    addDockWidget(Qt::RightDockWidgetArea, this->m_dockContentPage);
+    this->m_contentPage = new cContentPage(this->m_dockContentPage);
+    this->m_dockContentPage->setWidget(this->m_contentPage);
+    m_viewMenu->addAction(this->m_dockContentPage->toggleViewAction());
 
-    this->dockConsolePage = new QDockWidget(tr("Console"), this);
-    this->dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, this->dockConsolePage);
-    this->consolePage = new cConsolePage(this->dockConsolePage);
-    this->dockConsolePage->setWidget(this->consolePage);
-    viewMenu->addAction(this->dockConsolePage->toggleViewAction());
-    this->dockConsolePage->hide();
+    this->m_dockConsolePage = new QDockWidget(tr("Console"), this);
+    this->m_dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, this->m_dockConsolePage);
+    this->m_consolePage = new cConsolePage(this->m_dockConsolePage);
+    this->m_dockConsolePage->setWidget(this->m_consolePage);
+    m_viewMenu->addAction(this->m_dockConsolePage->toggleViewAction());
+    this->m_dockConsolePage->hide();
 
-    this->dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
-    this->dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
-    addDockWidget(Qt::TopDockWidgetArea, this->dockCourseBrowser);
-    this->imageWidget = new cCourseImageEditor(this->dockCourseBrowser);
-    this->dockCourseBrowser->setWidget(this->imageWidget);
-    this->dockCourseBrowser->hide();
-    connect( this->dockCourseBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(courseBrowserVisibleSlot(bool)));
+    this->m_dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
+    this->m_dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, this->m_dockCourseBrowser);
+    this->m_imageWidget = new cCourseImageEditor(this->m_dockCourseBrowser);
+    this->m_dockCourseBrowser->setWidget(this->m_imageWidget);
+    this->m_dockCourseBrowser->hide();
+    connect( this->m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(courseBrowserVisibleSlot(bool)));
 
 
-    connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->consolePage , SLOT(traceSlot(const QString&,const int&)));
-    connect( this->contentPage , SIGNAL(contentChangedSignal()),this, SLOT(contentChangedSlot()));
+    connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->m_consolePage , SLOT(traceSlot(const QString&,const int&)));
+    connect( this->m_contentPage , SIGNAL(contentChangedSignal()),this, SLOT(contentChangedSlot()));
 
 }
 
@@ -220,28 +219,28 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
 
     setLastDir(strippedDir(fileName));
 
-    if (!courseTemplate.open(fileName))
+    if (!m_courseTemplate.open(fileName))
     {
         trace (tr("Error opening file:")+fileName,traceError);
         return;
     }
 
-    this->courseTemplateFileName    = fileName;
-    trace (QString("Opened: ")+this->courseTemplateFileName,traceLevel1);
+    this->m_courseTemplateFileName    = fileName;
+    trace (QString("Opened: ")+this->m_courseTemplateFileName,traceLevel1);
 
-    this->optionsPage->setOptions(courseTemplate.options);
-    this->contentPage->setContent(courseTemplate.content);
+    this->m_optionsPage->setOptions(m_courseTemplate.options);
+    this->m_contentPage->setContent(m_courseTemplate.content);
 
     QSettings settings("Smuxgen", "Smuxgen");
-        QStringList files = settings.value("recentFileList").toStringList();
-        files.removeAll(fileName);
-        files.prepend(fileName);
-        while (files.size() > MaxRecentFiles)
-            files.removeLast();
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
     settings.setValue("recentFileList", files);
     this->updateRecentFileActions();
 
-    this->contentChanged = false;
+    this->m_contentChanged = false;
     this->setTitle();
 
 }
@@ -249,18 +248,18 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
 /////////////////////////////////////////////////////////////////////////////
 bool MainWindow::saveCourseTemplateSlot()
 {
-    if (this->courseTemplateFileName.isEmpty())
+    if (this->m_courseTemplateFileName.isEmpty())
         return this->saveAsCourseTemplateSlot();
 
-    QFile::remove(this->courseTemplateFileName+"~");
-    QFile::copy(this->courseTemplateFileName,this->courseTemplateFileName+"~");
+    QFile::remove(this->m_courseTemplateFileName+"~");
+    QFile::copy(this->m_courseTemplateFileName,this->m_courseTemplateFileName+"~");
 
-    this->contentChanged = false;
+    this->m_contentChanged = false;
 
-    this->courseTemplate.options = this->optionsPage->getOptions();
-    this->courseTemplate.content = this->contentPage->getContent();
-    this->courseTemplate.save(this->courseTemplateFileName);
-    trace (QString("Saved: ")+this->courseTemplateFileName,traceLevel1);
+    this->m_courseTemplate.options = this->m_optionsPage->getOptions();
+    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    this->m_courseTemplate.save(this->m_courseTemplateFileName);
+    trace (QString("Saved: ")+this->m_courseTemplateFileName,traceLevel1);
     this->setTitle();
 
     return true;
@@ -277,12 +276,12 @@ void MainWindow::importQASlot()
         return;
 
     setLastDir(strippedDir(fileName));
-    this->courseTemplate.content = this->contentPage->getContent();
-    if (!courseTemplate.importQA(fileName)) {
+    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    if (!m_courseTemplate.importQA(fileName)) {
         trace (tr("Error importing Q&A file:")+fileName,traceError);
         return;
     }
-    this->contentPage->setContent(courseTemplate.content);
+    this->m_contentPage->setContent(m_courseTemplate.content);
     trace (QString::fromUtf8("Imported Q&A:")+fileName,traceLevel1);
 }
 
@@ -298,8 +297,8 @@ void MainWindow::exportQASlot()
 
     setLastDir(strippedDir(fileName));
 
-    this->courseTemplate.content = this->contentPage->getContent();
-    if (!courseTemplate.exportQA(fileName)) {
+    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    if (!m_courseTemplate.exportQA(fileName)) {
         trace (tr("Error exporting Q&A file:")+fileName,traceError);
         return;
     }
@@ -327,7 +326,7 @@ bool MainWindow::saveAsCourseTemplateSlot()
     settings.setValue("recentFileList", files);
     this->updateRecentFileActions();
 
-    this->courseTemplateFileName = fileName;
+    this->m_courseTemplateFileName = fileName;
     this->setTitle();
     this->saveCourseTemplateSlot();
     return true;
@@ -335,25 +334,25 @@ bool MainWindow::saveAsCourseTemplateSlot()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseSlot()
 {
-    if (this->courseGenerator.isRunning()) {
+    if (this->m_courseGenerator.isRunning()) {
         return generateStop();
     }
 
-    this->courseTemplate.options = this->optionsPage->getOptions();
-    this->courseTemplate.content = this->contentPage->getContent();
-    this->courseGenerator.generate(this->courseTemplate);
+    this->m_courseTemplate.options = this->m_optionsPage->getOptions();
+    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    this->m_courseGenerator.generate(this->m_courseTemplate);
     this->lockInterface();
     this->setTitle();
-    trace (QString("Started to generate: ")+this->courseTemplate.options.subname,traceLevel1);
+    trace (QString("Started to generate: ")+this->m_courseTemplate.options.subname,traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::courseBrowserOpenCloseSlot()
 {
-    if (this->dockCourseBrowser->isVisible())
-        this->dockCourseBrowser->hide();
+    if (this->m_dockCourseBrowser->isVisible())
+        this->m_dockCourseBrowser->hide();
     else
-        this->dockCourseBrowser->show();
+        this->m_dockCourseBrowser->show();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -361,38 +360,38 @@ void MainWindow::courseBrowserVisibleSlot(bool visible)
 {
     if (!visible)
     {   
-        this->generateCourseAct->setEnabled(true);
-        this->dockContentPage->show();
-        this->dockOptionsPage->show();
-        this->dockContentPage->toggleViewAction()->setEnabled(true);
-        this->dockOptionsPage->toggleViewAction()->setEnabled(true);
+        this->m_generateCourseAction->setEnabled(true);
+        this->m_dockContentPage->show();
+        this->m_dockOptionsPage->show();
+        this->m_dockContentPage->toggleViewAction()->setEnabled(true);
+        this->m_dockOptionsPage->toggleViewAction()->setEnabled(true);
     }
     else
     {
-        this->courseTemplate.options = this->optionsPage->getOptions();
-        this->courseTemplate.content = this->contentPage->getContent();
-        this->imageWidget->workWith(this->courseTemplate);
+        this->m_courseTemplate.options = this->m_optionsPage->getOptions();
+        this->m_courseTemplate.content = this->m_contentPage->getContent();
+        this->m_imageWidget->workWith(this->m_courseTemplate);
 
-        this->generateCourseAct->setEnabled(false);
-        this->dockContentPage->hide();
-        this->dockOptionsPage->hide();
-        this->dockContentPage->toggleViewAction()->setEnabled(false);
-        this->dockOptionsPage->toggleViewAction()->setEnabled(false);
+        this->m_generateCourseAction->setEnabled(false);
+        this->m_dockContentPage->hide();
+        this->m_dockOptionsPage->hide();
+        this->m_dockContentPage->toggleViewAction()->setEnabled(false);
+        this->m_dockOptionsPage->toggleViewAction()->setEnabled(false);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::setTitle()
 {
-    QFileInfo fileInfo(this->courseTemplateFileName);
+    QFileInfo fileInfo(this->m_courseTemplateFileName);
 
     QString title = "SMUXGEN: ";
-    if (this->contentChanged)
+    if (this->m_contentChanged)
         title += QString("*");
 
     title += fileInfo.fileName()+QString(" ");
 
-    if (this->courseGenerator.isRunning())
+    if (this->m_courseGenerator.isRunning())
         title += QString("[Running]");
 
     setWindowTitle(title);
@@ -402,25 +401,25 @@ void MainWindow::setTitle()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::unlockInterface()
 {
-    this->courseBrowserAct->setEnabled(true);
-    this->generateCourseAct->setIcon(QIcon(":/images/generate.png"));
-    this->generateCourseAct->setStatusTip(tr("Generate course"));
-    this->generateCourseAct->setText(tr("Generate "));
+    this->m_courseBrowserAction->setEnabled(true);
+    this->m_generateCourseAction->setIcon(QIcon(":/images/generate.png"));
+    this->m_generateCourseAction->setStatusTip(tr("Generate course"));
+    this->m_generateCourseAction->setText(tr("Generate "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
-    this->courseBrowserAct->setEnabled(false);
-    this->generateCourseAct->setIcon(QIcon(":/images/stop.png"));
-    this->generateCourseAct->setStatusTip(tr("Stop"));
-    this->generateCourseAct->setText(tr("Stop "));
+    this->m_courseBrowserAction->setEnabled(false);
+    this->m_generateCourseAction->setIcon(QIcon(":/images/stop.png"));
+    this->m_generateCourseAction->setStatusTip(tr("Stop"));
+    this->m_generateCourseAction->setText(tr("Stop "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseFinishedSlot()
 {
-    if (this->courseGenerator.getStatus())
+    if (this->m_courseGenerator.getStatus())
          trace (QString("Course generation failed !"),traceLevel1);
     else   
         trace (QString("Course generatad successfully"),traceLevel1);
@@ -440,7 +439,7 @@ void MainWindow::progressSlot(const QString &progress)
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::contentChangedSlot()
 {
-    this->contentChanged = true;
+    this->m_contentChanged = true;
     this->setTitle();
 }
 
@@ -453,13 +452,13 @@ void MainWindow::closeSlot ()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (this->courseGenerator.isRunning())
+    if (this->m_courseGenerator.isRunning())
     {
         event->ignore();
         return generateStop();
     }
 
-    if (this->contentChanged)
+    if (this->m_contentChanged)
     {
         int q=QMessageBox::question(0,"Save changes","Do You want to save changes ?","Yes","No","Cancel");
 
@@ -483,7 +482,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::generateStop()
 {
     trace (QString("Stopping "),traceLevel1);
-    this->courseGenerator.stop();
+    this->m_courseGenerator.stop();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -498,18 +497,18 @@ void MainWindow::updateRecentFileActions()
     QSettings settings("Smuxgen", "Smuxgen");
     QStringList files = settings.value("recentFileList").toStringList();
 
-    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+    int numRecentFiles = qMin(files.size(), m_recentFileActions.size());
 
     for (int i = 0; i < numRecentFiles; ++i) {
         QString text = tr("&%1 %2").arg(i + 1).arg(strippedFile(files[i]));
-        recentFileActs[i]->setText(text);
-        recentFileActs[i]->setData(files[i]);
-        recentFileActs[i]->setStatusTip(files[i]);
-        recentFileActs[i]->setVisible(true);
+        m_recentFileActions[i]->setText(text);
+        m_recentFileActions[i]->setData(files[i]);
+        m_recentFileActions[i]->setStatusTip(files[i]);
+        m_recentFileActions[i]->setVisible(true);
     }
-    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
-        recentFileActs[j]->setVisible(false);
 
+    for (int i = numRecentFiles; i < m_recentFileActions.size(); ++i)
+        m_recentFileActions[i]->setVisible(false);
 }
 
 /////////////////////////////////////////////////////////////////////////////

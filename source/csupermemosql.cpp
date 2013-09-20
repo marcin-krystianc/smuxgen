@@ -21,6 +21,18 @@
 #include "csupermemosql.h"
 
 /////////////////////////////////////////////////////////////////////////////
+bool isValidSuperMemoDatabase (const QSqlDatabase &db)
+{
+    QStringList tables = db.tables();
+    if (!tables.contains("Courses") ||
+            !tables.contains("Items") ||
+            !tables.contains("Items"))
+        return false;
+
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 cSuperMemoSQL::cSuperMemoSQL()
 {
 }
@@ -49,17 +61,7 @@ void cSuperMemoSQL::trace(const QString &text, const int &flags)
     globalTracer.trace(text, flags);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::isValidSuperMemoDatabase (const QSqlDatabase &db)
-{
-    QStringList tables = db.tables();
-    if (!tables.contains("Courses") ||
-            !tables.contains("Items") ||
-            !tables.contains("Items"))
-        return false;
 
-    return true;
-}
 
 /////////////////////////////////////////////////////////////////////////////
 bool cSuperMemoSQL::getCourses (QStringList *retList)

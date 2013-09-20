@@ -27,7 +27,7 @@ class CourseGenerator : public QThread
         CourseGenerator();
         ~CourseGenerator();
 
-        void generate (const cCourseTemplate &courseTemplate);
+        void generate (const cCourseTemplate &m_courseTemplate);
         int getStatus();
 
     public slots:
@@ -38,8 +38,9 @@ class CourseGenerator : public QThread
 
     private:
         volatile bool m_abortProces;
-        cSuperMemoSQL database;
-        cCourseTemplate courseTemplate;
+        cSuperMemoSQL m_db;
+        cCourseTemplate m_courseTemplate;
+
         void trace (const QString &text, const int & flags = traceLevel1|0);
         QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
         void setDelete (QDomNode &topicNode);

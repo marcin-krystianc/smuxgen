@@ -27,7 +27,7 @@ MainWindow::MainWindow()
     this->m_contentChanged = false;
     this->setTitle();
     this->unlockInterface();
-    this->resize(800,600);
+    this->resize(800, 600);
     this->setWindowIcon(QIcon(":/images/smuxgen.png"));
 
     connect(&m_courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
@@ -189,11 +189,11 @@ void MainWindow::createDockWindows()
     this->m_imageWidget = new cCourseImageEditor(this->m_dockCourseBrowser);
     this->m_dockCourseBrowser->setWidget(this->m_imageWidget);
     this->m_dockCourseBrowser->hide();
-    connect( this->m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )),this, SLOT(courseBrowserVisibleSlot(bool)));
+    connect( this->m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )), this, SLOT(courseBrowserVisibleSlot(bool)));
 
 
-    connect(&globalTracer, SIGNAL(traceSignal(const QString &,const int&)), this->m_consolePage , SLOT(traceSlot(const QString&,const int&)));
-    connect( this->m_contentPage , SIGNAL(contentChangedSignal()),this, SLOT(contentChangedSlot()));
+    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), this->m_consolePage , SLOT(traceSlot(const QString&, const int&)));
+    connect( this->m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 
 }
 
@@ -221,12 +221,12 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
 
     if (!m_courseTemplate.open(fileName))
     {
-        trace (tr("Error opening file:")+fileName,traceError);
+        trace (tr("Error opening file:")+fileName, traceError);
         return;
     }
 
     this->m_courseTemplateFileName    = fileName;
-    trace (QString("Opened: ")+this->m_courseTemplateFileName,traceLevel1);
+    trace (QString("Opened: ")+this->m_courseTemplateFileName, traceLevel1);
 
     this->m_optionsPage->setOptions(m_courseTemplate.options);
     this->m_contentPage->setContent(m_courseTemplate.content);
@@ -252,14 +252,14 @@ bool MainWindow::saveCourseTemplateSlot()
         return this->saveAsCourseTemplateSlot();
 
     QFile::remove(this->m_courseTemplateFileName+"~");
-    QFile::copy(this->m_courseTemplateFileName,this->m_courseTemplateFileName+"~");
+    QFile::copy(this->m_courseTemplateFileName, this->m_courseTemplateFileName+"~");
 
     this->m_contentChanged = false;
 
     this->m_courseTemplate.options = this->m_optionsPage->getOptions();
     this->m_courseTemplate.content = this->m_contentPage->getContent();
     this->m_courseTemplate.save(this->m_courseTemplateFileName);
-    trace (QString("Saved: ")+this->m_courseTemplateFileName,traceLevel1);
+    trace (QString("Saved: ")+this->m_courseTemplateFileName, traceLevel1);
     this->setTitle();
 
     return true;
@@ -278,11 +278,11 @@ void MainWindow::importQASlot()
     setLastDir(strippedDir(fileName));
     this->m_courseTemplate.content = this->m_contentPage->getContent();
     if (!m_courseTemplate.importQA(fileName)) {
-        trace (tr("Error importing Q&A file:")+fileName,traceError);
+        trace (tr("Error importing Q&A file:")+fileName, traceError);
         return;
     }
     this->m_contentPage->setContent(m_courseTemplate.content);
-    trace (QString::fromUtf8("Imported Q&A:")+fileName,traceLevel1);
+    trace (QString::fromUtf8("Imported Q&A:")+fileName, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -299,10 +299,10 @@ void MainWindow::exportQASlot()
 
     this->m_courseTemplate.content = this->m_contentPage->getContent();
     if (!m_courseTemplate.exportQA(fileName)) {
-        trace (tr("Error exporting Q&A file:")+fileName,traceError);
+        trace (tr("Error exporting Q&A file:")+fileName, traceError);
         return;
     }
-    trace (QString::fromUtf8("Exported Q&A:")+fileName,traceLevel1);
+    trace (QString::fromUtf8("Exported Q&A:")+fileName, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -343,7 +343,7 @@ void MainWindow::generateCourseSlot()
     this->m_courseGenerator.generate(this->m_courseTemplate);
     this->lockInterface();
     this->setTitle();
-    trace (QString("Started to generate: ")+this->m_courseTemplate.options.subname,traceLevel1);
+    trace (QString("Started to generate: ")+this->m_courseTemplate.options.subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -420,9 +420,9 @@ void MainWindow::lockInterface()
 void MainWindow::generateCourseFinishedSlot()
 {
     if (this->m_courseGenerator.isFailed())
-         trace (QString("Course generation failed !"),traceLevel1);
+         trace (QString("Course generation failed !"), traceLevel1);
     else   
-        trace (QString("Course generatad successfully"),traceLevel1);
+        trace (QString("Course generatad successfully"), traceLevel1);
 
     this->unlockInterface();
     statusBar()->showMessage("");
@@ -460,7 +460,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if (this->m_contentChanged)
     {
-        int q=QMessageBox::question(0,"Save changes","Do You want to save changes ?","Yes","No","Cancel");
+        int q=QMessageBox::question(0, "Save changes", "Do You want to save changes ?", "Yes", "No", "Cancel");
 
         switch (q)
         {
@@ -481,14 +481,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateStop()
 {
-    trace (QString("Stopping "),traceLevel1);
+    trace (QString("Stopping "), traceLevel1);
     this->m_courseGenerator.stop();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::trace (const QString& text,const unsigned int& flags= traceLevel1)
+void MainWindow::trace (const QString& text, const unsigned int& flags= traceLevel1)
 {
-    globalTracer.trace(text,flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////

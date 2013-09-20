@@ -27,7 +27,7 @@ bool cCourseTemplate::open(const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::open - Cannot open file: "+fileName,traceError);
+        this->trace("cCourseTemplate::open - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -38,7 +38,7 @@ bool cCourseTemplate::open(const QString &fileName)
 
     if (!this->options.fromString (inputFileStream.readLine()))
     {
-        this->trace("cCourseTemplate::open - Error in options: "+fileName,traceError);
+        this->trace("cCourseTemplate::open - Error in options: "+fileName, traceError);
         return false;
     }
 
@@ -58,7 +58,7 @@ bool cCourseTemplate::save(const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::save - Cannot open file: "+fileName,traceError);
+        this->trace("cCourseTemplate::save - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -79,7 +79,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::importQA - Cannot open file: "+fileName,traceError);
+        this->trace("cCourseTemplate::importQA - Cannot open file: "+fileName, traceError);
         return false;
     }
     QTextStream inputFileStream;
@@ -95,28 +95,28 @@ bool cCourseTemplate::importQA (const QString &fileName)
         if (line.isNull()) break;  //end of file
         if (line.length()==0) continue;
 
-        if (line.startsWith(QString::fromUtf8("Q:"),Qt::CaseInsensitive))
+        if (line.startsWith(QString::fromUtf8("Q:"), Qt::CaseInsensitive))
         {
             if (q&&a)
                 this->content.push_back(entry);
 
             a=false;
-            entry=(line.remove(0,2)).trimmed()+QString::fromUtf8(":");
+            entry=(line.remove(0, 2)).trimmed()+QString::fromUtf8(":");
             q=true;
             continue;
         }
 
-        if (line.startsWith(QString::fromUtf8("A:"),Qt::CaseInsensitive)&&q)
+        if (line.startsWith(QString::fromUtf8("A:"), Qt::CaseInsensitive)&&q)
         {
             if (a)
                 entry+=QString::fromUtf8("|");
 
-            entry +=(line.remove(0,2)).trimmed();
+            entry +=(line.remove(0, 2)).trimmed();
             a=true;
             continue;
         }
 
-        trace(QString::fromUtf8("Ignore line:")+line,traceWarning);
+        trace(QString::fromUtf8("Ignore line:")+line, traceWarning);
 
         continue;
     }
@@ -131,7 +131,7 @@ bool cCourseTemplate::exportQA (const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::exportQA - Cannot open file: "+fileName,traceError);
+        this->trace("cCourseTemplate::exportQA - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -160,9 +160,9 @@ bool cCourseTemplate::exportQA (const QString &fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplate::trace (const QString &text,const int & flags)
+void cCourseTemplate::trace (const QString &text, const int & flags)
 {
-      globalTracer.trace(text,flags);
+      globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////

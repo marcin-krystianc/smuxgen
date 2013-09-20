@@ -22,7 +22,7 @@ class cImageDownloadHelper : public QThread
 {
     Q_OBJECT
     public:
-        cImageDownloadHelper(const QString &ext,int id);
+        cImageDownloadHelper(const QString &ext, int id);
         ~cImageDownloadHelper();
 
         void getImage(const QString &url);
@@ -36,13 +36,13 @@ class cImageDownloadHelper : public QThread
         QString EXT;
 
         QString myFileName();
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
     protected:
         void run();
 
     signals:
-        void finished (bool success,const QPixmap& pixmap,int id,const QString &url);
+        void finished (bool success, const QPixmap& pixmap, int id, const QString &url);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -71,14 +71,14 @@ class cImageDownloader : public QThread
         cImageDownloadHelper *imageDownloadHelper[maxHelpThreads];
         QString myFileName ();
 
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
     protected:
         void run();
 
     signals:
-        void signalImage    (const QPixmap& pixmap,const QString &url);
-        void sProgressRange (int min,int max);
+        void signalImage    (const QPixmap& pixmap, const QString &url);
+        void sProgressRange (int min, int max);
         void sProgressValue (int value);
 };
 

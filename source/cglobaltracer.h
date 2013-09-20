@@ -26,14 +26,14 @@ class cGlobaTracer : public QObject
     Q_OBJECT
     public:
         cGlobaTracer ();
-        void trace (const QString &txt,const int& flags);
+        void trace (const QString &txt, const int& flags);
         void setTraceFlags(const unsigned int& flags);
 
     private:
         unsigned int flags;
 
     signals:
-        void traceSignal (const QString &txt,const int &);
+        void traceSignal (const QString &txt, const int &);
 
 };
 

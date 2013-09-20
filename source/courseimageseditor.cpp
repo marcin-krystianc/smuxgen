@@ -48,11 +48,11 @@ cCourseImageEditor::cCourseImageEditor(QWidget *parent)
 
     setLayout(l0);
 
-    connect(    this->readyCourseElementList    ,SIGNAL(elementSelectedImgSignal(const QStringList&)),
-                this                            ,SLOT(elementSelectedImgSlot (const QStringList&)));
+    connect(    this->readyCourseElementList    , SIGNAL(elementSelectedImgSignal(const QStringList&)),
+                this                            , SLOT(elementSelectedImgSlot (const QStringList&)));
 
-    connect(    readyCourseElementList          ,SIGNAL(elementSelectedMP3Signal(const QStringList&)),
-                mp3TargetWidget                 ,SLOT(elementSelectedMp3Slot(const QStringList&)));
+    connect(    readyCourseElementList          , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
+                mp3TargetWidget                 , SLOT(elementSelectedMp3Slot(const QStringList&)));
 
 }
 
@@ -65,14 +65,14 @@ void cCourseImageEditor::clear()
 /////////////////////////////////////////////////////////////////////////////
 void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 {
-    this->trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.course+" lesson:"+courseTemplate.options.subname,traceLevel1);
+    this->trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.course+" lesson:"+courseTemplate.options.subname, traceLevel1);
     this->clear();
 
     if (!this->database.open(courseTemplate.options.database))
         return;
 
     int courseID;
-    QString courseFileName,courseFileDirectoryName,mediaDirectoryName;
+    QString courseFileName, courseFileDirectoryName, mediaDirectoryName;
     if (!this->database.getCourseIdPath (courseTemplate.options.course, &courseID, &courseFileName))
         return;
 
@@ -82,14 +82,14 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
     QString topicNameA = courseTemplate.options.subname;
     QString topicNameB = courseTemplate.options.subname+"*";
 
-    int topicIDA,topicIDB;
+    int topicIDA, topicIDB;
 
-    if (!this->database.getElementID(courseID,0,topicNameA,topicIDA))
+    if (!this->database.getElementID(courseID, 0, topicNameA, topicIDA))
         return;
 
     if (courseTemplate.options.bit.oDouble)
     {
-        if (!this->database.getElementID(courseID,0,topicNameB,topicIDB))
+        if (!this->database.getElementID(courseID, 0, topicNameB, topicIDB))
             return;
     }
 
@@ -97,18 +97,18 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
     for (int i=0;i<courseTemplate.content.count();++i)
     {
-        int id1,id2;
+        int id1, id2;
         QString line=(courseTemplate.content.at(i)).trimmed();
         if (line.length()==0) continue;
         QStringList list1 = line.split(":");
 
         if (list1.count()< 2 )
         {
-            trace(QString("cCourseImageEditor::workWith Input error: ")+line,traceWarning);
+            trace(QString("cCourseImageEditor::workWith Input error: ")+line, traceWarning);
             continue;
         }
 
-        if (!this->database.getElementID(courseID,topicIDA,getTextToPrint(list1.at(0)),id1))
+        if (!this->database.getElementID(courseID, topicIDA, getTextToPrint(list1.at(0)), id1))
             continue;
 
         QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
@@ -129,7 +129,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
         if (courseTemplate.options.bit.oDouble)
         {
-            if (!this->database.getElementID(courseID,topicIDB,getTextToPrint(list1.at(1)),id2))
+            if (!this->database.getElementID(courseID, topicIDB, getTextToPrint(list1.at(1)), id2))
                 continue;
 
             f2m = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
@@ -141,17 +141,17 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
             a2  = getTextToPrint(list1.at(0));
         }
 
-        QStringList imgList,mp3List;
+        QStringList imgList, mp3List;
         imgList<<k1<<f1m<<f1n<<k2<<f2m<<f2n;
         mp3List<<f1a<<f1q<<a1<<q1<<f2a<<f2q<<a2<<q2;
-        this->readyCourseElementList->addItem(line,imgList,mp3List);
+        this->readyCourseElementList->addItem(line, imgList, mp3List);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseImageEditor::trace(const QString &text,const int & flags)
+void cCourseImageEditor::trace(const QString &text, const int & flags)
 {
-    globalTracer.trace(text,flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ void cCourseImageEditor::elementSelectedImgSlot (const QStringList &imgData)
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-cImageList::cImageList(QWidget *parent,int maxCount )
+cImageList::cImageList(QWidget *parent, int maxCount )
     : QListWidget (parent)
 {
     setViewMode(QListView::IconMode);
@@ -194,7 +194,7 @@ void cImageList::resetPosition()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
+void cImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 {
     if (this->count()>=this->maxCount)
         delete takeItem(this->count()-1);
@@ -208,13 +208,13 @@ void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
         {
             if(this->item(i)->data(Qt::UserRole+1).toString()==hint)
             {
-                 this->insertItem(this->rowIndex++,this->takeItem(i));  // move to the beginning of list
+                 this->insertItem(this->rowIndex++, this->takeItem(i));  // move to the beginning of list
                  return;
             }
         }
     }
 
-    this->insertItem(this->rowIndex++,pieceItem);
+    this->insertItem(this->rowIndex++, pieceItem);
     pieceItem->setIcon(QIcon(pixmap));
 
     pieceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable
@@ -226,14 +226,14 @@ void cImageList::addPiece(const QPixmap &pixmap,const QString &hint)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageList::addPieceSlot(const QPixmap &pixmap,const QString& hint)
+void cImageList::addPieceSlot(const QPixmap &pixmap, const QString& hint)
 {
-    this->addPiece(pixmap,hint);
+    this->addPiece(pixmap, hint);
 }
 /////////////////////////////////////////////////////////////////////////////
-void cImageList::trace(const QString &text,const int & flags)
+void cImageList::trace(const QString &text, const int & flags)
 {
-    globalTracer.trace(text,flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,7 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
     QPixmap pixmap = qVariantValue<QPixmap>(item->data(Qt::UserRole));
 
     dataStream << pixmap ;
-    pixmap = pixmap.scaled(tileSizeX,tileSizeY);
+    pixmap = pixmap.scaled(tileSizeX, tileSizeY);
     QMimeData *mimeData = new QMimeData;
     mimeData->setData(tileMimeFormat(), itemData);
 
@@ -291,7 +291,7 @@ cImageSearch::cImageSearch(QWidget *parent)
     this->zoomSlider->setMaximum(500);
     QHBoxLayout *l3 = new QHBoxLayout;
     l3->addWidget(new QLabel("Zoom:"));
-    l3->addWidget(this->zoomSlider,1);
+    l3->addWidget(this->zoomSlider, 1);
 
     this->imagelist = new cImageList();
     QVBoxLayout *l0 = new QVBoxLayout;
@@ -314,10 +314,10 @@ cImageSearch::cImageSearch(QWidget *parent)
     this->timerL->setSingleShot(true);
     this->timerR->setSingleShot(true);
 
-    connect(this->leftEdit  , SIGNAL(textChanged(const QString& ))  ,this ,SLOT(newKeywordsChangedL(const QString&)));
-    connect(this->rightEdit , SIGNAL(textChanged(const QString& ))  ,this ,SLOT(newKeywordsChangedR(const QString&)));
-    connect(this->timerL    ,SIGNAL(timeout())  , this, SLOT(newKeywordsL()));
-    connect(this->timerR    ,SIGNAL(timeout())  , this, SLOT(newKeywordsR()));
+    connect(this->leftEdit  , SIGNAL(textChanged(const QString& ))  , this , SLOT(newKeywordsChangedL(const QString&)));
+    connect(this->rightEdit , SIGNAL(textChanged(const QString& ))  , this , SLOT(newKeywordsChangedR(const QString&)));
+    connect(this->timerL    , SIGNAL(timeout())  , this, SLOT(newKeywordsL()));
+    connect(this->timerR    , SIGNAL(timeout())  , this, SLOT(newKeywordsR()));
 
 
 
@@ -325,15 +325,15 @@ cImageSearch::cImageSearch(QWidget *parent)
     this->imageDownloader[0] = new cImageDownloader("L");
     this->imageDownloader[1] = new cImageDownloader("R");
 
-    connect(this->imageDownloader[0]    ,SIGNAL(signalImage(const QPixmap&,const QString&))  , this->imagelist, SLOT(addPieceSlot(const QPixmap&,const QString&)));
-    connect(this->imageDownloader[1]    ,SIGNAL(signalImage(const QPixmap&,const QString&))  , this->imagelist, SLOT(addPieceSlot(const QPixmap&,const QString&)));
+    connect(this->imageDownloader[0]    , SIGNAL(signalImage(const QPixmap&, const QString&))  , this->imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
+    connect(this->imageDownloader[1]    , SIGNAL(signalImage(const QPixmap&, const QString&))  , this->imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
 
-    connect(this->imageDownloader[0]    ,SIGNAL(sProgressRange (int ,int))  , this->leftProgress    , SLOT(setRange (int ,int)));
-    connect(this->imageDownloader[1]    ,SIGNAL(sProgressRange (int ,int))  , this->rightProgress   , SLOT(setRange (int ,int)));
-    connect(this->imageDownloader[0]    ,SIGNAL(sProgressValue(int))  , this->leftProgress    , SLOT(setValue(int)));
-    connect(this->imageDownloader[1]    ,SIGNAL(sProgressValue(int))  , this->rightProgress   , SLOT(setValue(int)));
+    connect(this->imageDownloader[0]    , SIGNAL(sProgressRange (int , int))  , this->leftProgress    , SLOT(setRange (int , int)));
+    connect(this->imageDownloader[1]    , SIGNAL(sProgressRange (int , int))  , this->rightProgress   , SLOT(setRange (int , int)));
+    connect(this->imageDownloader[0]    , SIGNAL(sProgressValue(int))  , this->leftProgress    , SLOT(setValue(int)));
+    connect(this->imageDownloader[1]    , SIGNAL(sProgressValue(int))  , this->rightProgress   , SLOT(setValue(int)));
 
-    connect (this->zoomSlider           ,SIGNAL(valueChanged(int))      ,this->imagelist    , SLOT(setIconSizeSlot(int)));
+    connect (this->zoomSlider           , SIGNAL(valueChanged(int))      , this->imagelist    , SLOT(setIconSizeSlot(int)));
 /*
     QHBoxLayout *textFiledsLayout = new QHBoxLayout;
     textFiledsLayout->addWidget(courseLabel);
@@ -349,28 +349,28 @@ cImageSearch::~cImageSearch()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageSearch::newKeywords (const QString &txt,int id)
+void cImageSearch::newKeywords (const QString &txt, int id)
 {
     this->imagelist->resetPosition();
-    this->trace(txt+QString::fromUtf8(" id:")+QString::number(id),traceLevel2);
+    this->trace(txt+QString::fromUtf8(" id:")+QString::number(id), traceLevel2);
     this->imageDownloader[id]->getImages(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsL ()
 {
-    this->newKeywords(textL,0);
+    this->newKeywords(textL, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsR ()
 {
-    this->newKeywords(textR,1);
+    this->newKeywords(textR, 1);
 }
 /////////////////////////////////////////////////////////////////////////////
-void cImageSearch::trace(const QString &text,const int & flags)
+void cImageSearch::trace(const QString &text, const int & flags)
 {
-    globalTracer.trace(text,flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -418,8 +418,8 @@ cImageButtonWidget::cImageButtonWidget(QWidget *parent)
     l0->setMargin(0);
     setLayout(l0);
     setAcceptDrops(true);
-    this->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
-    this->resize(1,1);
+    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    this->resize(1, 1);
     this->setFile("");
 }
 
@@ -437,7 +437,7 @@ bool cImageButtonWidget::setFile(const QString &path)
 
     if (!tmpImg.load(this->filePath))
     {
-        trace(QString("cImageButtonWidget::setFile cannot open file:")+filePath,traceError);
+        trace(QString("cImageButtonWidget::setFile cannot open file:")+filePath, traceError);
         this->setStatusTip(QString("Cannot open file:")+filePath);
         this->pixmap = QPixmap(":/images/monkey_off.png");
         this->setPixmap(this->pixmap);
@@ -452,9 +452,9 @@ bool cImageButtonWidget::setFile(const QString &path)
     return true;
 }
 /////////////////////////////////////////////////////////////////////////////
-void cImageButtonWidget::trace(const QString &text,const int & flags)
+void cImageButtonWidget::trace(const QString &text, const int & flags)
 {
-    globalTracer.trace(text,flags);
+    globalTracer.trace(text, flags);
 }
 
 
@@ -516,10 +516,10 @@ cImageTargetWidget::cImageTargetWidget(QWidget *parent)
     this->imageButtonWidget[1][1] = new cImageButtonWidget;
 
     QVBoxLayout *l1 = new QVBoxLayout;
-    l1->addWidget(imageButtonWidget[0][0],1);
-    l1->addWidget(imageButtonWidget[0][1],1);
-    l1->addWidget(imageButtonWidget[1][0],1);
-    l1->addWidget(imageButtonWidget[1][1],1);
+    l1->addWidget(imageButtonWidget[0][0], 1);
+    l1->addWidget(imageButtonWidget[0][1], 1);
+    l1->addWidget(imageButtonWidget[1][0], 1);
+    l1->addWidget(imageButtonWidget[1][1], 1);
 
     QGroupBox  *groupBox =new QGroupBox ("Picture panel");
     groupBox->setLayout(l1);
@@ -568,16 +568,16 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
 
     this->setMinimumWidth(200);
 
-    connect(this->listWidget    ,SIGNAL(currentItemChanged( QListWidgetItem*,QListWidgetItem*))  , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
+    connect(this->listWidget    , SIGNAL(currentItemChanged( QListWidgetItem*, QListWidgetItem*))  , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cReadyCourseElementList::addItem (const QString &text,const QStringList &imgData,const QStringList &mp3Data)
+void cReadyCourseElementList::addItem (const QString &text, const QStringList &imgData, const QStringList &mp3Data)
 {
-    this->listWidget->insertItem(0,text);
-    this->listWidget->item(0)->setData(Qt::UserRole     ,imgData);
-    this->listWidget->item(0)->setData(Qt::UserRole+1   ,mp3Data);
+    this->listWidget->insertItem(0, text);
+    this->listWidget->item(0)->setData(Qt::UserRole     , imgData);
+    this->listWidget->item(0)->setData(Qt::UserRole+1   , mp3Data);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -621,12 +621,12 @@ cMp3Widget::cMp3Widget (QWidget *parent)
     this->audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
     this->mediaObject = new Phonon::MediaObject (this);
 
-    connect(playButton    ,SIGNAL(clicked())  , this , SLOT(play()));
-    connect(openButton    ,SIGNAL(clicked())  , this , SLOT(openFile()));
+    connect(playButton    , SIGNAL(clicked())  , this , SLOT(play()));
+    connect(openButton    , SIGNAL(clicked())  , this , SLOT(openFile()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cMp3Widget::setData (const QString &label,const QString &path)
+void cMp3Widget::setData (const QString &label, const QString &path)
 {
     this->label->setText(label);
     this->filePath = path;
@@ -678,7 +678,7 @@ void cMp3Widget::openFile()
     setLastDir(strippedDir(fileName));
 
     QFile::remove(filePath);          // remove old file
-    QFile::copy(fileName,filePath);   //
+    QFile::copy(fileName, filePath);   //
 
     if (checkIsFileOk(filePath))
         playButton->setEnabled(true);
@@ -718,10 +718,10 @@ cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 void cMp3TargetWidget::setData (const QStringList &list)
 {
-    mp3Widget[0]->setData(QString("Q:")+list.at(3),list.at(1));
-    mp3Widget[1]->setData(QString("A:")+list.at(2),list.at(0));
-    mp3Widget[2]->setData(QString("Q:")+list.at(7),list.at(5));
-    mp3Widget[3]->setData(QString("A:")+list.at(6),list.at(4));
+    mp3Widget[0]->setData(QString("Q:")+list.at(3), list.at(1));
+    mp3Widget[1]->setData(QString("A:")+list.at(2), list.at(0));
+    mp3Widget[2]->setData(QString("Q:")+list.at(7), list.at(5));
+    mp3Widget[3]->setData(QString("A:")+list.at(6), list.at(4));
 }
 
 /////////////////////////////////////////////////////////////////////////////

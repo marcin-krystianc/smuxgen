@@ -88,7 +88,7 @@ class cOptionsPage : public QWidget
 
     private:
         cSuperMemoSQL superMemoSQL;
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
         Phonon::AudioOutput *audioOutput;
         Phonon::MediaObject *mediaObject;
@@ -110,7 +110,7 @@ class cConsolePage : public QWidget
         cConsolePage(QWidget *parent = 0);
 
     public slots:
-        void traceSlot(const QString &txt,const int & flags);
+        void traceSlot(const QString &txt, const int & flags);
         void traceLevelSlot ();
 
     private:

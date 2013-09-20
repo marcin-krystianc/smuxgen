@@ -39,11 +39,11 @@ class cImageList : public QListWidget
     Q_OBJECT
     public:
 
-        cImageList(QWidget *parent = 0,int maxCount = 128);
-        void addPiece(const QPixmap &pixmap,const QString &hint="");
+        cImageList(QWidget *parent = 0, int maxCount = 128);
+        void addPiece(const QPixmap &pixmap, const QString &hint="");
         void resetPosition();
     public slots:
-        void addPieceSlot       (const QPixmap &,const QString &hint="");
+        void addPieceSlot       (const QPixmap &, const QString &hint="");
         void setIconSizeSlot    (int size );
 
     private:
@@ -55,7 +55,7 @@ class cImageList : public QListWidget
         static const unsigned int tileSizeX = 100;
         static const unsigned int tileSizeY = 100;
 
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
     protected:
         /*
@@ -99,9 +99,9 @@ class cImageSearch : public QWidget
 
         cImageList  *imagelist;
         cImageDownloader *imageDownloader[2];
-        void newKeywords    (const QString &txt,int id);
+        void newKeywords    (const QString &txt, int id);
 
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
 
     protected:
@@ -123,7 +123,7 @@ class cImageButtonWidget : public QWidget
 
         QString filePath;
         QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
         void setPixmap (const QPixmap &pixmap);
 
     protected:
@@ -156,7 +156,7 @@ class cReadyCourseElementList : public QWidget
     public:
         cReadyCourseElementList (QWidget *parent = 0);
         void clear();
-        void addItem (const QString &text,const QStringList &imgData,const QStringList &mp3Data);
+        void addItem (const QString &text, const QStringList &imgData, const QStringList &mp3Data);
 
     signals:
         void elementSelectedImgSignal   (const QStringList &list);
@@ -177,7 +177,7 @@ class cMp3Widget : public QWidget
     Q_OBJECT
     public:
         cMp3Widget (QWidget *parent = 0);
-        void setData (const QString &label,const QString &path);
+        void setData (const QString &label, const QString &path);
 
     private:
         QLabel          *label;
@@ -218,7 +218,7 @@ class cCourseImageEditor : public QWidget
 
     private:
         void clear ();
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
 
         cSuperMemoSQL           database;
 

@@ -22,11 +22,11 @@ bool cCourseTemplateOptions::fromString(const QString &line)
 {
     if (line.isEmpty())
     {
-        trace("cCourseTemplateOptions::fromString - line is empty: ",traceError);
+        trace("cCourseTemplateOptions::fromString - line is empty: ", traceError);
         return false;
     }
 
-    QStringList chunks =line.split(" ",QString::SkipEmptyParts);
+    QStringList chunks =line.split(" ", QString::SkipEmptyParts);
 
     int i=0;
     while (i<chunks.count())
@@ -60,7 +60,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
 
         if (i==chunks.count())
         {
-            trace("cCourseTemplateOptions::fromString - Missing value after: "+first,traceError);
+            trace("cCourseTemplateOptions::fromString - Missing value after: "+first, traceError);
             return false;
         }
 
@@ -72,7 +72,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
         {
             if (i>=chunks.count())
             {
-                trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second,traceError);
+                trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second, traceError);
                 return false;   // wrong parameters
             }
             second += " ";
@@ -129,7 +129,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             continue;
         }
 
-        trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first,traceError);
+        trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first, traceError);
         continue;   // wrong parameters
     }
     return true;
@@ -163,9 +163,9 @@ QString cCourseTemplateOptions::toString()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplateOptions::trace(const QString &text,const int & flags)
+void cCourseTemplateOptions::trace(const QString &text, const int & flags)
 {
-     globalTracer.trace(text,flags);
+     globalTracer.trace(text, flags);
 }
 /////////////////////////////////////////////////////////////////////////////
 void  cCourseTemplateOptions::clear()

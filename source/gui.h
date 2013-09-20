@@ -95,7 +95,7 @@ private:
 
     QVector <QAction*> m_recentFileActions;
 private:
-    void trace (const QString& txt,const unsigned int& flags);
+    void trace (const QString& txt, const unsigned int& flags);
     void setTitle();
     void generateStop();
 

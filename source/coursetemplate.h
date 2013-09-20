@@ -30,7 +30,7 @@ public:
     QStringList content;
 private:
 
-    void trace (const QString &text,const int & flags = traceLevel1|0);
+    void trace (const QString &text, const int & flags = traceLevel1|0);
     void clear();
 
 };

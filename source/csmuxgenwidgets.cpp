@@ -30,9 +30,9 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     oVoiceCheckBoxA  = new QCheckBox(tr("Lector (Answers)"));
 
     QGridLayout *checkLayout = new QGridLayout;
-    checkLayout->addWidget(oForceCheckBox   ,0  ,0);
-    checkLayout->addWidget(oDoubleCheckBox  ,0  ,1);
-    checkLayout->addWidget(oImageCheckBox   ,1  ,0);
+    checkLayout->addWidget(oForceCheckBox   , 0  , 0);
+    checkLayout->addWidget(oDoubleCheckBox  , 0  , 1);
+    checkLayout->addWidget(oImageCheckBox   , 1  , 0);
 
     QLabel *fileLabel   = new QLabel(tr("Database file:"));
     fileEdit            = new QLineEdit;
@@ -42,7 +42,7 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     QGridLayout *fileLayout = new QGridLayout;
     fileLayout->addWidget(fileLabel, 0, 0);
     fileLayout->addWidget(fileChooseButton, 0, 1);
-    fileLayout->addWidget(fileEdit, 1, 0,1,0);
+    fileLayout->addWidget(fileEdit, 1, 0, 1, 0);
 
     QLabel *courseLabel     = new QLabel(tr("Course:"));
     courseCombo             = new QComboBox;
@@ -66,14 +66,14 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     instructionLayout->addWidget(instructionEdit);
 
     voiceComboQ     = new QComboBox;
-    voiceComboQ->insertItems(0,getVoiceEngines());
+    voiceComboQ->insertItems(0, getVoiceEngines());
     voiceGainQ      = new QSpinBox;
     voiceTrimBeginQ = new QDoubleSpinBox;
     voiceTrimBeginQ->setSingleStep(0.1);
     voiceTrimBeginQ->setDecimals(1);
 
     voiceComboA     = new QComboBox;
-    voiceComboA->insertItems(0,getVoiceEngines());
+    voiceComboA->insertItems(0, getVoiceEngines());
     voiceGainA      = new QSpinBox;
     voiceTrimBeginA = new QDoubleSpinBox;
     voiceTrimBeginA->setSingleStep(0.1);
@@ -99,33 +99,33 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     /*
     QFrame *frameQ = new QFrame;
     frameQ->setFrameStyle(QFrame::HLine);
-    voiceLayoutQ->addWidget(frameQ                  ,0  ,0  ,1  ,0);
+    voiceLayoutQ->addWidget(frameQ                  , 0  , 0  , 1  , 0);
     */
-    voiceLayoutQ->addWidget(oVoiceCheckBoxQ         ,1  ,0  ,1  ,0);
-    voiceLayoutQ->addWidget(voiceIndexLabelQ        ,2  ,0);
-    voiceLayoutQ->addWidget(voiceComboQ             ,2  ,1);
-    voiceLayoutQ->addWidget(voiceGainLabelQ         ,3  ,0);
-    voiceLayoutQ->addWidget(voiceGainQ              ,3  ,1);
-    voiceLayoutQ->addWidget(voiceTrimBeginLabelQ    ,4  ,0);
-    voiceLayoutQ->addWidget(voiceTrimBeginQ         ,4  ,1);
-    voiceLayoutQ->addWidget(voiceTestbuttonQ        ,5  ,0  ,1  ,0);
-    voiceLayoutQ->addWidget(voiceTesttextQ          ,6  ,0  ,1  ,0);
+    voiceLayoutQ->addWidget(oVoiceCheckBoxQ         , 1  , 0  , 1  , 0);
+    voiceLayoutQ->addWidget(voiceIndexLabelQ        , 2  , 0);
+    voiceLayoutQ->addWidget(voiceComboQ             , 2  , 1);
+    voiceLayoutQ->addWidget(voiceGainLabelQ         , 3  , 0);
+    voiceLayoutQ->addWidget(voiceGainQ              , 3  , 1);
+    voiceLayoutQ->addWidget(voiceTrimBeginLabelQ    , 4  , 0);
+    voiceLayoutQ->addWidget(voiceTrimBeginQ         , 4  , 1);
+    voiceLayoutQ->addWidget(voiceTestbuttonQ        , 5  , 0  , 1  , 0);
+    voiceLayoutQ->addWidget(voiceTesttextQ          , 6  , 0  , 1  , 0);
 
     QGridLayout *voiceLayoutA = new QGridLayout;
     /*
     QFrame *frameA = new QFrame;
     frameA->setFrameStyle(QFrame::HLine);
-    voiceLayoutA->addWidget(frameA                  ,0  ,0  ,1  ,0);
+    voiceLayoutA->addWidget(frameA                  , 0  , 0  , 1  , 0);
     */
-    voiceLayoutA->addWidget(oVoiceCheckBoxA         ,1  ,0  ,1  ,0);
-    voiceLayoutA->addWidget(voiceIndexLabelA        ,2  ,0);
-    voiceLayoutA->addWidget(voiceComboA             ,2  ,1);
-    voiceLayoutA->addWidget(voiceGainLabelA         ,3  ,0);
-    voiceLayoutA->addWidget(voiceGainA              ,3  ,1);
-    voiceLayoutA->addWidget(voiceTrimBeginLabelA    ,4  ,0);
-    voiceLayoutA->addWidget(voiceTrimBeginA         ,4  ,1);
-    voiceLayoutA->addWidget(voiceTestbuttonA        ,5  ,0  ,1  ,0);
-    voiceLayoutA->addWidget(voiceTesttextA          ,6  ,0  ,1  ,0);
+    voiceLayoutA->addWidget(oVoiceCheckBoxA         , 1  , 0  , 1  , 0);
+    voiceLayoutA->addWidget(voiceIndexLabelA        , 2  , 0);
+    voiceLayoutA->addWidget(voiceComboA             , 2  , 1);
+    voiceLayoutA->addWidget(voiceGainLabelA         , 3  , 0);
+    voiceLayoutA->addWidget(voiceGainA              , 3  , 1);
+    voiceLayoutA->addWidget(voiceTrimBeginLabelA    , 4  , 0);
+    voiceLayoutA->addWidget(voiceTrimBeginA         , 4  , 1);
+    voiceLayoutA->addWidget(voiceTestbuttonA        , 5  , 0  , 1  , 0);
+    voiceLayoutA->addWidget(voiceTesttextA          , 6  , 0  , 1  , 0);
 
     QVBoxLayout *configLayout = new QVBoxLayout;
     configLayout->addLayout(fileLayout);
@@ -147,15 +147,15 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     this->audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
     this->mediaObject = new Phonon::MediaObject (this);
 
-    connect(fileChooseButton, SIGNAL(clicked())                     ,this ,SLOT(fileButtonTriggered()));
-    connect(this->fileEdit  , SIGNAL(textChanged(const QString & )) ,this ,SLOT(fileEditChanged(const QString &)));
-    connect(voiceTestbuttonQ, SIGNAL(clicked())                     ,this ,SLOT(voiceTestButtonTriggered()));
-    connect(voiceTestbuttonA, SIGNAL(clicked())                     ,this ,SLOT(voiceTestButtonTriggered()));
+    connect(fileChooseButton, SIGNAL(clicked())                     , this , SLOT(fileButtonTriggered()));
+    connect(this->fileEdit  , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
+    connect(voiceTestbuttonQ, SIGNAL(clicked())                     , this , SLOT(voiceTestButtonTriggered()));
+    connect(voiceTestbuttonA, SIGNAL(clicked())                     , this , SLOT(voiceTestButtonTriggered()));
 
-    connect(this->oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) ,this ,SLOT(voiceCheckBoxChangedQ(int)));
-    connect(this->oVoiceCheckBoxA , SIGNAL(stateChanged (int )) ,this ,SLOT(voiceCheckBoxChangedA(int)));
+    connect(this->oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
+    connect(this->oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
 
-    connect(this->mediaObject     , SIGNAL(finished ()) ,this ,SLOT(testFileRemoveSlot()));
+    connect(this->mediaObject     , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
 
     this->voiceCheckBoxChangedQ(this->oVoiceCheckBoxQ->checkState());
     this->voiceCheckBoxChangedA(this->oVoiceCheckBoxA->checkState());
@@ -217,7 +217,7 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
 
     this->fileEdit->setText(options.database);
     this->courseCombo->clear();
-    this->courseCombo->insertItem(0,options.course);
+    this->courseCombo->insertItem(0, options.course);
     this->subnameEdit->setText(options.subname);
     this->instructionEdit->setText(options.instruction);
 
@@ -236,7 +236,7 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
 void cOptionsPage::voiceTestButtonTriggered ()
 {
     cCourseTemplateOptions options=this->getOptions();
-    QStringList  arguments; // filename, text,trim,gain
+    QStringList  arguments; // filename, text, trim, gain
 
     if (sender() ==voiceTestbuttonQ)
     {
@@ -257,19 +257,19 @@ void cOptionsPage::voiceTestButtonTriggered ()
     else
         return;
 
-    trace(QString("createMp3.bat ")+arguments.join(" "),traceLevel1);
+    trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
     QProcess myProcess;
 
     myProcess.start("createMp3.bat", arguments );
     if (!myProcess.waitForStarted())
     {
-         trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
+         trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
          return;
     }
     myProcess.waitForFinished();
     if (myProcess.exitCode())
     {
-        trace(QString("Error:createMp3.bat ")+arguments.join(" "),traceError);
+        trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
         return;
     }
 
@@ -342,13 +342,13 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
     this->superMemoSQL.getCourses(courseList);
 
     for (int i=0;i<courseList.count();++i)
-        this->courseCombo->insertItem(0,courseList.at(i));
+        this->courseCombo->insertItem(0, courseList.at(i));
 
     int pos =this->courseCombo->findText(oldText);
 
     if (pos == -1)  // text not found
     {
-        this->courseCombo->insertItem(0,QIcon(":/images/warning.png"),oldText);
+        this->courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
         this->courseCombo->setCurrentIndex(0);
     }
     else
@@ -362,13 +362,13 @@ void cOptionsPage::testFileRemoveSlot()
 {
     this->mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
     if (!QFile::remove("test.mp3"))
-      trace(QString("cannot remove test.mp3 "),traceError);
+      trace(QString("cannot remove test.mp3 "), traceError);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::trace (const QString &text,const int & flags)
+void cOptionsPage::trace (const QString &text, const int & flags)
 {
-      globalTracer.trace(text,flags);
+      globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -393,8 +393,8 @@ cConsolePage::cConsolePage(QWidget *parent)
 
     consoleText->setReadOnly(true);
 
-    connect(cTracelevel2 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot()));
-    connect(cTracelevel3 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot()));
+    connect(cTracelevel2 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
+    connect(cTracelevel3 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
 }
 /////////////////////////////////////////////////////////////////////////////
 void cConsolePage::traceLevelSlot ()
@@ -411,7 +411,7 @@ void cConsolePage::traceLevelSlot ()
 
 }
 /////////////////////////////////////////////////////////////////////////////
-void cConsolePage::traceSlot(const QString &txt,const int & flags)
+void cConsolePage::traceSlot(const QString &txt, const int & flags)
 {
     this->traceMutex.lock();
 
@@ -443,10 +443,10 @@ cContentPage::cContentPage(QWidget *parent)
     mainLayout->addWidget(this->contentTextEdit);
     setLayout(mainLayout);
 
-    connect (this->contentTextEdit,SIGNAL(textChanged()),this,SLOT(contentChangedSlot()));
+    connect (this->contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
 
-    connect (this->findToolbar  ,SIGNAL(findNext(const QString& ))  ,this,SLOT(findNext(const QString& )));
-    connect (this->findToolbar  ,SIGNAL(findPrev(const QString& ))  ,this,SLOT(findPrev(const QString& )));
+    connect (this->findToolbar  , SIGNAL(findNext(const QString& ))  , this, SLOT(findNext(const QString& )));
+    connect (this->findToolbar  , SIGNAL(findPrev(const QString& ))  , this, SLOT(findPrev(const QString& )));
 
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ void cContentPage::findNext(const QString &txt )
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::findPrev(const QString &txt )
 {
-    this->contentTextEdit->find(txt,QTextDocument::FindBackward);
+    this->contentTextEdit->find(txt, QTextDocument::FindBackward);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -502,8 +502,8 @@ cFindToolbar::cFindToolbar(QWidget *parent)
     : QWidget(parent)
 {
     this->lineEdit      = new QLineEdit;
-    this->forwardButton = new QPushButton (QIcon(":/images/next.png"),"");
-    this->backwardButton= new QPushButton (QIcon(":/images/prev.png"),"");
+    this->forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
+    this->backwardButton= new QPushButton (QIcon(":/images/prev.png"), "");
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(new QLabel("Find:"));
@@ -512,9 +512,9 @@ cFindToolbar::cFindToolbar(QWidget *parent)
     mainLayout->addWidget(this->forwardButton);
     setLayout(mainLayout);
 
-    connect (this->lineEdit         ,SIGNAL(returnPressed()),this   ,SLOT(nextSlot()));
-    connect (this->forwardButton    ,SIGNAL(clicked())      ,this   ,SLOT(nextSlot()));
-    connect (this->backwardButton   ,SIGNAL(clicked())      ,this   ,SLOT(prevSlot()));
+    connect (this->lineEdit         , SIGNAL(returnPressed()), this   , SLOT(nextSlot()));
+    connect (this->forwardButton    , SIGNAL(clicked())      , this   , SLOT(nextSlot()));
+    connect (this->backwardButton   , SIGNAL(clicked())      , this   , SLOT(prevSlot()));
 
 }
 

@@ -74,11 +74,8 @@ void CourseGenerator::run ()
     if (!m_db.getCourseIdPath (m_courseTemplate.options.course, &courseID, &courseFileName))
         return;
 
-    QFileInfo courseFileInfo(courseFileName);
-    QString courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
-    QDir dir = QDir(courseFileDirectoryName);
-    if (!dir.exists("media"))
-        dir.mkdir("media");
+    QString courseFileDirectoryName = QFileInfo(courseFileName).dir().path()+QDir::separator();
+    QDir(courseFileDirectoryName).mkdir("media");
 
     // get root document
     QDomDocument doc("mydocument");

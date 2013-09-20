@@ -28,7 +28,7 @@ class CourseGenerator : public QThread
         ~CourseGenerator();
 
         void generate (const cCourseTemplate &m_courseTemplate);
-        int getStatus();
+        bool isFailed();
 
     public slots:
         void stop();
@@ -40,8 +40,9 @@ class CourseGenerator : public QThread
         volatile bool m_abortProces;
         cSuperMemoSQL m_db;
         cCourseTemplate m_courseTemplate;
+        bool m_isFailed;
 
-        void trace (const QString &text, const int & flags = traceLevel1|0);
+        void trace (const QString &text, const int &flags = traceLevel1);
         QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
         void setDelete (QDomNode &topicNode);
         bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
@@ -50,7 +51,7 @@ class CourseGenerator : public QThread
         QDomDocument createCourseItem (int templateId, QString chapter);
         bool checkIfNewAnswers(QString fileName, QString answers);
         QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
-        int status;
+
 
     protected:
         void run();

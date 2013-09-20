@@ -29,7 +29,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 CourseGenerator::CourseGenerator() :
-    m_abortProces(false)
+    m_abortProces(false), m_isFailed(false)
 {
 
 }
@@ -65,7 +65,7 @@ void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 void CourseGenerator::run ()
 {
 
-    this->status = 1;
+    m_isFailed = true;
     if (!this->m_db.open(this->m_courseTemplate.options.database))
         return;
 
@@ -181,7 +181,7 @@ void CourseGenerator::run ()
 
 END:
     writeDomDoucumentToFile(doc, courseFileName);
-    this->status = 0;
+    m_isFailed = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -575,7 +575,7 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int CourseGenerator::getStatus()
+bool CourseGenerator::isFailed()
 {
-    return this->status;
+    return m_isFailed;
 }

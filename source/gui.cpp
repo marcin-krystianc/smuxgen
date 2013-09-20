@@ -419,7 +419,7 @@ void MainWindow::lockInterface()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseFinishedSlot()
 {
-    if (this->m_courseGenerator.getStatus())
+    if (this->m_courseGenerator.isFailed())
          trace (QString("Course generation failed !"),traceLevel1);
     else   
         trace (QString("Course generatad successfully"),traceLevel1);

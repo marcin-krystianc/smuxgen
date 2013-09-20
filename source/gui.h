@@ -99,7 +99,7 @@ private:
     void setTitle();
     void generateStop();
 
-    cCourseGenerator m_courseGenerator;
+    CourseGenerator m_courseGenerator;
     cCourseTemplate m_courseTemplate;
     QString m_courseTemplateFileName;
     bool m_contentChanged;

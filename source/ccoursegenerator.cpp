@@ -23,19 +23,18 @@
 
 #include <algorithm>
 #include <list>
-
 #include "globalsmuxgentools.h"
 #include "csapi.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
-cCourseGenerator::cCourseGenerator()
+CourseGenerator::CourseGenerator()
 {
     this->abortProces = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-cCourseGenerator::~cCourseGenerator()
+CourseGenerator::~CourseGenerator()
 {
     mutex.lock();
     this->abortProces = true;
@@ -45,7 +44,7 @@ cCourseGenerator::~cCourseGenerator()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseGenerator::stop()
+void CourseGenerator::stop()
 {
     mutex.lock();
     this->abortProces = true;
@@ -53,13 +52,13 @@ void cCourseGenerator::stop()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseGenerator::trace (const QString &text,const int & flags)
+void CourseGenerator::trace (const QString &text,const int & flags)
 {
       globalTracer.trace(text,flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseGenerator::generate (const cCourseTemplate &courseTemplate)
+void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 {
     this->courseTemplate    = courseTemplate;
     this->abortProces       = false;
@@ -67,7 +66,7 @@ void cCourseGenerator::generate (const cCourseTemplate &courseTemplate)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void  cCourseGenerator::run ()
+void  CourseGenerator::run ()
 {
 
     this->status  = 1;
@@ -190,7 +189,7 @@ END:
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int nodeID)
+QDomNode CourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int nodeID)
 {
     QDomNode node = rootElement.firstChild();
     while(!node.isNull())
@@ -226,7 +225,7 @@ QDomNode cCourseGenerator::getNode (QDomNode &rootElement,QString nodeName,QDomD
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void  cCourseGenerator::setDelete (QDomNode &topicNode)
+void  CourseGenerator::setDelete (QDomNode &topicNode)
 {
     QDomNode n = topicNode.firstChild();
     while(!n.isNull())
@@ -241,7 +240,7 @@ void  cCourseGenerator::setDelete (QDomNode &topicNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode)
+bool CourseGenerator::generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode)
 {
     int     ID          = 0;
     bool    forceMedia  = this->courseTemplate.options.bit.oForce;
@@ -369,7 +368,7 @@ bool cCourseGenerator::generateCourseElement(int courseIDSQL,QString question,QS
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory)
+bool  CourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory)
 {
     QDomNode n = docElement.firstChild();
     std::list <int> listValidID;
@@ -426,7 +425,7 @@ bool  cCourseGenerator::doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &doc
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int cCourseGenerator::writeDomDoucumentToFile (QDomDocument &document,QString path)
+int CourseGenerator::writeDomDoucumentToFile (QDomDocument &document,QString path)
 {
   QFile file( path );
   if( !file.open( QIODevice::WriteOnly|QIODevice::Text ) )
@@ -439,7 +438,7 @@ int cCourseGenerator::writeDomDoucumentToFile (QDomDocument &document,QString pa
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter)
+QDomDocument CourseGenerator::createCourseItem (int templateId,QString chapter)
 {
     QDomDocument doc;
     QDomElement rootElement = doc.createElement( "item" );
@@ -463,7 +462,7 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseGenerator::checkIfNewAnswers(QString fileName,QString answers)
+bool CourseGenerator::checkIfNewAnswers(QString fileName,QString answers)
 {
     QDomDocument doc("mydocument");
     QFile docFile(fileName);
@@ -494,7 +493,7 @@ bool cCourseGenerator::checkIfNewAnswers(QString fileName,QString answers)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,bool bMode)
+QDomDocument CourseGenerator::createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,bool bMode)
 {
 
     QDomDocument doc = createCourseItem(templateId,chapter);
@@ -580,7 +579,7 @@ QDomDocument cCourseGenerator::createCourseItem (int templateId,QString chapter,
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int cCourseGenerator::getStatus()
+int CourseGenerator::getStatus()
 {
     return this->status;
 }

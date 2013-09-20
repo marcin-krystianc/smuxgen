@@ -338,8 +338,9 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
     QString oldText = this->courseCombo->currentText();
 
     this->courseCombo->clear();
+
     QStringList courseList;
-    this->superMemoSQL.getCourses(courseList);
+    this->superMemoSQL.getCourses(&courseList);
 
     for (int i = 0;i<courseList.count();++i)
         this->courseCombo->insertItem(0, courseList.at(i));

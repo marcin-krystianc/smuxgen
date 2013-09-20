@@ -87,12 +87,9 @@ void CourseGenerator::run ()
     QFile docFile(courseFileName);
 
     if (!doc.setContent(&docFile)) {
-        docFile.close();
         trace(QString("Cannot open file: ")+courseFileName, traceError);
         return;
     }
-    docFile.close();
-
 
     QDomElement rootElement = doc.documentElement();
     if (!m_db.getCourseMaxId(courseID))

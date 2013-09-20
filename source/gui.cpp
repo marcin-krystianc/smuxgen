@@ -52,14 +52,12 @@ void MainWindow::about()
 void MainWindow::createMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
-
     m_fileMenu->addAction(m_openCourseTemplateAction);
     m_fileMenu->addAction(m_saveCourseTemplateAction);
     m_fileMenu->addAction(m_saveAsCourseTemplateAction);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_importQAAction);
     m_fileMenu->addAction(m_exportQAAction);
-
     m_fileMenu->addSeparator();
 
     m_recentMenu = m_fileMenu->addMenu("&Recent");
@@ -71,7 +69,6 @@ void MainWindow::createMenus()
     m_fileMenu->addAction(m_courseBrowserAction);
     m_fileMenu->addSeparator();
     m_fileMenu->addSeparator();
-
     m_fileMenu->addAction(m_quitAction);
 
     m_viewMenu = menuBar()->addMenu(tr("&View"));
@@ -86,7 +83,6 @@ void MainWindow::createMenus()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createActions()
 {
-
     m_openCourseTemplateAction = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
     m_openCourseTemplateAction->setShortcuts(QKeySequence::Open);
     m_openCourseTemplateAction->setStatusTip(tr("Open..."));
@@ -147,7 +143,6 @@ void MainWindow::createToolBars()
 {
     m_toolBar = new QToolBar;
     m_toolBar = addToolBar(tr("Toolbar"));
-
     m_toolBar->addAction(m_openCourseTemplateAction);
     m_toolBar->addAction(m_saveCourseTemplateAction);
     m_toolBar->addSeparator();
@@ -189,9 +184,8 @@ void MainWindow::createDockWindows()
     m_imageWidget = new cCourseImageEditor(m_dockCourseBrowser);
     m_dockCourseBrowser->setWidget(m_imageWidget);
     m_dockCourseBrowser->hide();
+
     connect( m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )), this, SLOT(courseBrowserVisibleSlot(bool)));
-
-
     connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), m_consolePage , SLOT(traceSlot(const QString&, const int&)));
     connect( m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 }

@@ -52,20 +52,20 @@ class LineNumberArea : public QWidget
 {
 public:
     LineNumberArea(CodeEditor *editor) : QWidget(editor) {
-        codeEditor = editor;
+        m_codeEditor = editor;
     }
 
     QSize sizeHint() const {
-        return QSize(codeEditor->lineNumberAreaWidth(), 0);
+        return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
     }
 
 protected:
     void paintEvent(QPaintEvent *event) {
-        codeEditor->lineNumberAreaPaintEvent(event);
+        m_codeEditor->lineNumberAreaPaintEvent(event);
     }
 
 private:
-    CodeEditor *codeEditor;
+    CodeEditor *m_codeEditor;
 };
 
 //![extraarea]

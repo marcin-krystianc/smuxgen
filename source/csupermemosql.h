@@ -31,8 +31,7 @@ private:
 
     bool getCourseMaxId (int courseId, int *maxId);
     void trace (const QString &text, const int &flags = traceLevel1|0);
-    bool isValidSuperMemoDatabase();
-    QString quotationString (QString s);
+    bool isValidSuperMemoDatabase(const QSqlDatabase &db);
 };
 
 #endif // CSUPERMEMOSQL_H

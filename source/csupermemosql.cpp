@@ -34,7 +34,7 @@ bool cSuperMemoSQL::open(const QString &fileName)
 
     if (!m_database.isOpen() ||
             !m_database.isValid() ||
-            !isValidSuperMemoDatabase())
+            !isValidSuperMemoDatabase(m_database))
     {
         trace(QString("cSuperMemoSQL::open:")+fileName+QString(" Error:")+(m_database.lastError().text()), traceError);
         return false;
@@ -50,9 +50,9 @@ void cSuperMemoSQL::trace(const QString &text, const int &flags)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::isValidSuperMemoDatabase ()
+bool cSuperMemoSQL::isValidSuperMemoDatabase (const QSqlDatabase &db)
 {
-    QStringList tables = m_database.tables();
+    QStringList tables = db.tables();
     if (!tables.contains("Courses") ||
             !tables.contains("Items") ||
             !tables.contains("Items"))
@@ -65,8 +65,8 @@ bool cSuperMemoSQL::isValidSuperMemoDatabase ()
 bool cSuperMemoSQL::getCourses (QStringList *retList)
 {
     QSqlQuery query (m_database);
-    QString filter = "Select Title from Courses";
-    if (!query.exec(filter)) {
+    QString q = QString("Select %1 from %2").arg("Title", "Courses");
+    if (!query.exec(q)) {
         trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(), traceError);
         return false;
     }
@@ -83,8 +83,10 @@ bool cSuperMemoSQL::getCourses (QStringList *retList)
 bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
 {
     QSqlQuery query (m_database);
-    QString filter = "Select Id, Path from Courses where Title = "+quotationString(course);
-    if (!query.exec(filter)) {
+    QString q = QString("Select %1, %2 from %3 where %4 = :v1").arg("Id", "Path", "Courses", "Title");
+    query.prepare(q);
+    query.bindValue(":v1", QVariant(course));
+    if (!query.exec()) {
         trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(), traceError);
         return false;
     }
@@ -115,14 +117,6 @@ bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
     this->trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);
 
     return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-QString cSuperMemoSQL::quotationString (QString s)
-{
-    s.prepend(QString::fromUtf8("'"));
-    s.append(QString::fromUtf8("'"));
-    return s;
 }
 
 /////////////////////////////////////////////////////////////////////////////

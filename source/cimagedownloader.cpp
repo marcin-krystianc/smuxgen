@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include <QString>
@@ -18,8 +18,8 @@
 /////////////////////////////////////////////////////////////////////////////
 cImageDownloadHelper::cImageDownloadHelper(const QString &ext, int id)
 {
-    this->ID    = id;
-    this->EXT   = ext;
+    this->ID = id;
+    this->EXT = ext;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -49,10 +49,10 @@ void cImageDownloadHelper::run()
     trace(QString("cImageDownloadHelper::run id:")+QString::number(this->ID)+QString::fromUtf8(" url:")+this->url, traceLevel3);
 
     QProcess myProcess;
-    const int timeOut   = -1; // no timeout
+    const int timeOut = -1; // no timeout
     QString fileName = this->myFileName();
 
-    QStringList  arguments;
+    QStringList arguments;
 
     deleteFile(fileName);
 
@@ -61,12 +61,12 @@ void cImageDownloadHelper::run()
 
     trace(QString("getImage.bat ")+arguments.join(" "), traceLevel3);
 
-    myProcess.start("getImage.bat", arguments  );
+    myProcess.start("getImage.bat", arguments );
     if (!myProcess.waitForStarted())
         trace(QString("Error.waitForStarted() :getImage.bat ")+arguments.join(" "), traceError);
     myProcess.waitForFinished(timeOut);
     if (myProcess.exitCode())
-          trace(QString("Error.exitCode() :getImage.bat ")+arguments.join(" "), traceError);
+        trace(QString("Error.exitCode() :getImage.bat ")+arguments.join(" "), traceError);
 
     if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT))
     {
@@ -89,7 +89,7 @@ void cImageDownloadHelper::run()
 /////////////////////////////////////////////////////////////////////////////
 void cImageDownloadHelper::trace (const QString &text, const int & flags)
 {
-      globalTracer.trace(text, flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ cImageDownloader::cImageDownloader(const QString &id)
     for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
     {
         imageDownloadHelper[i] = new cImageDownloadHelper(this->ID+QString::number(i), i);
-        connect(imageDownloadHelper[i], SIGNAL(finished(bool, const QPixmap& , int, const QString &))   , this , SLOT(helpThreadFinished(bool, const QPixmap& , const QString &)));
+        connect(imageDownloadHelper[i], SIGNAL(finished(bool, const QPixmap& , int, const QString &)) , this , SLOT(helpThreadFinished(bool, const QPixmap& , const QString &)));
     }
 
 }
@@ -109,10 +109,10 @@ cImageDownloader::cImageDownloader(const QString &id)
 /////////////////////////////////////////////////////////////////////////////
 cImageDownloader::~cImageDownloader()
 {
-   /*
-    for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
-        delete imageDownloadHelper[i];
-   */
+    /*
+ for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+ delete imageDownloadHelper[i];
+ */
 
     deleteFile(this->myFileName());
 }
@@ -127,14 +127,14 @@ QString cImageDownloader::myFileName ()
 /////////////////////////////////////////////////////////////////////////////
 void cImageDownloader::trace (const QString &text, const int & flags)
 {
-      globalTracer.trace(text, flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageDownloader::getImages(const QString &keyWords)
 {
-    this->keyWords  = keyWords;
-    this->newTask   = true;
+    this->keyWords = keyWords;
+    this->newTask = true;
     this->start();
 }
 
@@ -145,8 +145,8 @@ void cImageDownloader::run ()
     trace(QString("cImageDownloader::run id:")+this->ID+QString::fromUtf8(" keywords:")+this->keyWords, traceLevel3);
 
     QProcess myProcess;
-    const int timeOut   = -1; // no timeout
-    QString gFileName   = this->myFileName();
+    const int timeOut = -1; // no timeout
+    QString gFileName = this->myFileName();
 
     while (1)
     {
@@ -155,14 +155,14 @@ void cImageDownloader::run ()
                 imageDownloadHelper[i]->terminate();
 
         this->newTask = false;
-        QStringList  arguments;
+        QStringList arguments;
 
         deleteFile(gFileName);
 
         arguments.append(getKeyWord(keyWords));
         arguments.append(gFileName);
 
-        myProcess.start("getGoogleHtml.bat", arguments  );
+        myProcess.start("getGoogleHtml.bat", arguments );
         if (!myProcess.waitForStarted())
             trace(QString("Error.waitForStarted :getGoogleHtml.bat ")+arguments.join(" "), traceError);
         myProcess.waitForFinished(timeOut);
@@ -173,7 +173,7 @@ void cImageDownloader::run ()
 
         trace(QString("cImageDownloader::run urls.count=")+QString::number(this->urls.count()), traceLevel2);
 
-        this->progressMax   = this->urls.count();
+        this->progressMax = this->urls.count();
         this->progressValue = 0;
         emit sProgressRange(this->progressValue, this->progressMax);
 
@@ -182,7 +182,7 @@ void cImageDownloader::run ()
             for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
             {
                 if (!imageDownloadHelper[i]->isRunning()
-                   && (!this->urls.isEmpty()))
+                        && (!this->urls.isEmpty()))
                 {
                     imageDownloadHelper[i]->getImage(this->urls.takeFirst());
                 }

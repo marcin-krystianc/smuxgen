@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include "coursetemplate.h"
@@ -45,7 +45,7 @@ bool cCourseTemplate::open(const QString &fileName)
     while (1)
     {
         QString line=(inputFileStream.readLine()).trimmed();
-        if (line.isNull()) break;  //end of file
+        if (line.isNull()) break; //end of file
         if (line.length()==0) continue;
         this->content.push_back(line);
     }
@@ -92,7 +92,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
     while (1)
     {
         QString line=(inputFileStream.readLine()).trimmed();
-        if (line.isNull()) break;  //end of file
+        if (line.isNull()) break; //end of file
         if (line.length()==0) continue;
 
         if (line.startsWith(QString::fromUtf8("Q:"), Qt::CaseInsensitive))
@@ -162,7 +162,7 @@ bool cCourseTemplate::exportQA (const QString &fileName)
 /////////////////////////////////////////////////////////////////////////////
 void cCourseTemplate::trace (const QString &text, const int & flags)
 {
-      globalTracer.trace(text, flags);
+    globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////

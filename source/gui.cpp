@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include <QtGui>
@@ -30,8 +30,8 @@ MainWindow::MainWindow()
     this->resize(800, 600);
     this->setWindowIcon(QIcon(":/images/smuxgen.png"));
 
-    connect(&m_courseGenerator, SIGNAL(finished())                        , this , SLOT(generateCourseFinishedSlot()));
-    connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&))    , this , SLOT(progressSlot(const QString&)));
+    connect(&m_courseGenerator, SIGNAL(finished()) , this , SLOT(generateCourseFinishedSlot()));
+    connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&)) , this , SLOT(progressSlot(const QString&)));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -43,9 +43,9 @@ MainWindow::~MainWindow()
 void MainWindow::about()
 {
     QMessageBox::about(this, QString("SMUXGEN"),
-                       QString   (  "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
-                                    "<center><br/>License : GPL"
-                                    "<center><br/><a href=\"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
+                       QString ( "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
+                                 "<center><br/>License : GPL"
+                                 "<center><br/><a href=\"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
@@ -61,7 +61,7 @@ void MainWindow::createMenus()
 
     m_fileMenu->addSeparator();
 
-    m_recentMenu  = m_fileMenu->addMenu("&Recent");
+    m_recentMenu = m_fileMenu->addMenu("&Recent");
     for (int i = 0; i < m_recentFileActions.size(); ++i)
         m_recentMenu->addAction(m_recentFileActions[i]);
 
@@ -209,9 +209,9 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     if (fileName.isEmpty())
     {
         fileName = QFileDialog::getOpenFileName(this,
-                                    tr("Open file"),
-                                    getLastDir(),
-                                    tr("Smuxgen files (*.smuxgen);;All Files (*)"));
+                                                tr("Open file"),
+                                                getLastDir(),
+                                                tr("Smuxgen files (*.smuxgen);;All Files (*)"));
         if (fileName.isEmpty())
             return;
 
@@ -225,7 +225,7 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
         return;
     }
 
-    this->m_courseTemplateFileName    = fileName;
+    this->m_courseTemplateFileName = fileName;
     trace (QString("Opened: ")+this->m_courseTemplateFileName, traceLevel1);
 
     this->m_optionsPage->setOptions(m_courseTemplate.options);
@@ -269,9 +269,9 @@ bool MainWindow::saveCourseTemplateSlot()
 void MainWindow::importQASlot()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                                tr("Open file"),
-                                getLastDir(),
-                                tr("Q&A files (*)"));
+                                                    tr("Open file"),
+                                                    getLastDir(),
+                                                    tr("Q&A files (*)"));
     if (fileName.isEmpty())
         return;
 
@@ -289,9 +289,9 @@ void MainWindow::importQASlot()
 void MainWindow::exportQASlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-                                tr("Save file"),
-                                getLastDir(),
-                                tr("Q&A files (*)"));
+                                                    tr("Save file"),
+                                                    getLastDir(),
+                                                    tr("Q&A files (*)"));
     if (fileName.isEmpty())
         return;
 
@@ -309,20 +309,20 @@ void MainWindow::exportQASlot()
 bool MainWindow::saveAsCourseTemplateSlot()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-                                tr("Save file"),
-                                getLastDir(),
-                                tr("Smuxgen files (*.smuxgen);;All Files (*)"));
+                                                    tr("Save file"),
+                                                    getLastDir(),
+                                                    tr("Smuxgen files (*.smuxgen);;All Files (*)"));
     if (fileName.isEmpty())
         return false;
 
     setLastDir(strippedDir(fileName));
 
     QSettings settings("Smuxgen", "Smuxgen");
-        QStringList files = settings.value("recentFileList").toStringList();
-        files.removeAll(fileName);
-        files.prepend(fileName);
-        while (files.size() > MaxRecentFiles)
-            files.removeLast();
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
     settings.setValue("recentFileList", files);
     this->updateRecentFileActions();
 
@@ -359,7 +359,7 @@ void MainWindow::courseBrowserOpenCloseSlot()
 void MainWindow::courseBrowserVisibleSlot(bool visible)
 {
     if (!visible)
-    {   
+    {
         this->m_generateCourseAction->setEnabled(true);
         this->m_dockContentPage->show();
         this->m_dockOptionsPage->show();
@@ -420,8 +420,8 @@ void MainWindow::lockInterface()
 void MainWindow::generateCourseFinishedSlot()
 {
     if (this->m_courseGenerator.isFailed())
-         trace (QString("Course generation failed !"), traceLevel1);
-    else   
+        trace (QString("Course generation failed !"), traceLevel1);
+    else
         trace (QString("Course generatad successfully"), traceLevel1);
 
     this->unlockInterface();

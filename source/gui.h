@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 
@@ -37,11 +37,11 @@ private slots:
     void importQASlot();
     void exportQASlot();
     bool saveAsCourseTemplateSlot();
-    void generateCourseSlot();                      // start/stop generate course
-    void courseBrowserOpenCloseSlot();                  // start/stop picture browser
-    void courseBrowserVisibleSlot(bool visible);   // picture browser
+    void generateCourseSlot(); // start/stop generate course
+    void courseBrowserOpenCloseSlot(); // start/stop picture browser
+    void courseBrowserVisibleSlot(bool visible); // picture browser
 
-    void generateCourseFinishedSlot();          // generate finished
+    void generateCourseFinishedSlot(); // generate finished
     void progressSlot(const QString &);
     void contentChangedSlot();
 

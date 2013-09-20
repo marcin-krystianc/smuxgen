@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include "coursetemplateoptions.h"
@@ -73,7 +73,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
             if (i>=chunks.count())
             {
                 trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second, traceError);
-                return false;   // wrong parameters
+                return false; // wrong parameters
             }
             second += " ";
             second += chunks.at(i++);
@@ -130,7 +130,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
         }
 
         trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first, traceError);
-        continue;   // wrong parameters
+        continue; // wrong parameters
     }
     return true;
 }
@@ -140,24 +140,24 @@ QString cCourseTemplateOptions::toString()
 {
     QString ret;
 
-    ret+=QString("-course ")        +"\""+this->course      +"\" ";
-    ret+=QString("-database ")      +"\""+this->database    +"\" ";
-    ret+=QString("-subname ")       +"\""+this->subname     +"\" ";
-    ret+=QString("-instruction ")   +"\""+this->instruction +"\" ";
+    ret+=QString("-course ") +"\""+this->course +"\" ";
+    ret+=QString("-database ") +"\""+this->database +"\" ";
+    ret+=QString("-subname ") +"\""+this->subname +"\" ";
+    ret+=QString("-instruction ") +"\""+this->instruction +"\" ";
 
-    ret+=QString("-trimQ ")     +QString::number(this->voiceTrimQ) +" ";
-    ret+=QString("-vNameQ ")    +"\""+this->voiceNameQ+"\" ";
-    ret+=QString("-gainQ ")     +QString::number(this->voiceGainQ) +" ";
+    ret+=QString("-trimQ ") +QString::number(this->voiceTrimQ) +" ";
+    ret+=QString("-vNameQ ") +"\""+this->voiceNameQ+"\" ";
+    ret+=QString("-gainQ ") +QString::number(this->voiceGainQ) +" ";
 
-    ret+=QString("-trimA ")     +QString::number(this->voiceTrimA) +" ";
-    ret+=QString("-vNameA ")    +"\""+this->voiceNameA+"\" ";
-    ret+=QString("-gainA ")     +QString::number(this->voiceGainA) +" ";
+    ret+=QString("-trimA ") +QString::number(this->voiceTrimA) +" ";
+    ret+=QString("-vNameA ") +"\""+this->voiceNameA+"\" ";
+    ret+=QString("-gainA ") +QString::number(this->voiceGainA) +" ";
 
-    if ( this->bit.oForce)  ret+="-Force ";
+    if ( this->bit.oForce) ret+="-Force ";
     if ( this->bit.oDouble) ret+="-Double ";
     if ( this->bit.oVoiceQ) ret+="-VoiceQ ";
     if ( this->bit.oVoiceA) ret+="-VoiceA ";
-    if ( this->bit.oImage)  ret+="-Image ";
+    if ( this->bit.oImage) ret+="-Image ";
 
     return ret;
 }
@@ -165,16 +165,16 @@ QString cCourseTemplateOptions::toString()
 /////////////////////////////////////////////////////////////////////////////
 void cCourseTemplateOptions::trace(const QString &text, const int & flags)
 {
-     globalTracer.trace(text, flags);
+    globalTracer.trace(text, flags);
 }
 /////////////////////////////////////////////////////////////////////////////
-void  cCourseTemplateOptions::clear()
+void cCourseTemplateOptions::clear()
 {
     this->bit.oDouble = false;
-    this->bit.oForce  = false;
+    this->bit.oForce = false;
     this->bit.oVoiceQ = false;
     this->bit.oVoiceA = false;
-    this->bit.oImage  = false;
+    this->bit.oImage = false;
 
     this->course.clear();
     this->database.clear();
@@ -182,10 +182,10 @@ void  cCourseTemplateOptions::clear()
     this->instruction.clear();
 
     voiceNameQ.clear();
-    voiceGainQ  = 0;
-    voiceTrimQ  = 0;
+    voiceGainQ = 0;
+    voiceTrimQ = 0;
 
     voiceNameA.clear();
-    voiceGainA  = 0;
-    voiceTrimA  = 0;
+    voiceGainA = 0;
+    voiceTrimA = 0;
 }

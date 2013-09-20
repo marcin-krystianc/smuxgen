@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 
@@ -34,18 +34,18 @@ public:
 
     struct
     {
-        unsigned int oForce  : 1; // force to create agian all course elements
+        unsigned int oForce : 1; // force to create agian all course elements
         unsigned int oDouble : 1; // make also alternative course
         unsigned int oVoiceQ : 1; // make mp3 files (Questions)
         unsigned int oVoiceA : 1; // make mp3 files (Answers)
-        unsigned int oImage  : 1; // get Images
+        unsigned int oImage : 1; // get Images
     } bit;
 
-    bool fromString  (const QString &line);
+    bool fromString (const QString &line);
     QString toString () ;
     void clear();
 
-    private:
+private:
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
 };

@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 
@@ -22,7 +22,7 @@ public:
     bool getCourses (QStringList &retList);
     bool getCourseIdPath (QString course, int *id, QString *path);
     bool setElementSQL (QString elementName, int courseIDSQL, int paretntIDSQL, int &elementIDSQL);
-    bool getElementID  (int courseIDSQL, int parentID, QString elementName, int &retID);
+    bool getElementID (int courseIDSQL, int parentID, QString elementName, int &retID);
     bool getCourseMaxId (int courseId);
 
     QSqlDatabase getDatabase();

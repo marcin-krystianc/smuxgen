@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include <QString>
@@ -23,13 +23,13 @@ bool checkIsFileOk(const QString &fileName);
 QString getFileName (int i);
 QString getMediaFileName (int i);
 
-QString removeAllBetween            (const QString &input, const QString &first, const QString &second);
-QStringList getAllBetween           (const QString &input, const QString &first, const QString &second);
-QString removeAllSpecialCharacters  (const QString &input, const QStringList &list);
+QString removeAllBetween (const QString &input, const QString &first, const QString &second);
+QStringList getAllBetween (const QString &input, const QString &first, const QString &second);
+QString removeAllSpecialCharacters (const QString &input, const QStringList &list);
 
-QString getKeyWord      (const QString &input); // get keywords for google search
-QString getTranscript   (const QString &input); // get text to read
-QString getTextToPrint  (const QString &input); // get text to show to user
+QString getKeyWord (const QString &input); // get keywords for google search
+QString getTranscript (const QString &input); // get text to read
+QString getTextToPrint (const QString &input); // get text to show to user
 
 
 

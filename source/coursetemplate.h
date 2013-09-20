@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #ifndef COURSETEMPLATE_H
@@ -21,10 +21,10 @@ class cCourseTemplate
 public:
     cCourseTemplate();
 
-    bool open (const QString &fileName);    // open from file - false if not succeeded
-    bool save (const QString &fileName);    // save to file - false if not succeeded
-    bool importQA (const QString &fileName);    // import from Q&A file - false if not succeeded
-    bool exportQA (const QString &fileName);    // export to Q&A file - false if not succeeded
+    bool open (const QString &fileName); // open from file - false if not succeeded
+    bool save (const QString &fileName); // save to file - false if not succeeded
+    bool importQA (const QString &fileName); // import from Q&A file - false if not succeeded
+    bool exportQA (const QString &fileName); // export to Q&A file - false if not succeeded
 
     cCourseTemplateOptions options;
     QStringList content;

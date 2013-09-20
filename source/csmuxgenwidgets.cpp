@@ -377,7 +377,6 @@ void cOptionsPage::trace (const QString &text,const int & flags)
 cConsolePage::cConsolePage(QWidget *parent)
     : QWidget(parent)
 {
-
     consoleText             = new QTextEdit;
     QVBoxLayout *mainLayout = new QVBoxLayout;
 

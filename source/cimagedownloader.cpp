@@ -101,7 +101,7 @@ cImageDownloader::cImageDownloader(const QString &id)
     for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
     {
         imageDownloadHelper[i] = new cImageDownloadHelper(this->ID+QString::number(i),i);
-        connect(imageDownloadHelper[i], SIGNAL(finished(bool,const QPixmap& ,int,const QString &))   , this , SLOT(helpThredFinished(bool,const QPixmap& ,int,const QString &)));
+        connect(imageDownloadHelper[i], SIGNAL(finished(bool,const QPixmap& ,int,const QString &))   , this , SLOT(helpThreadFinished(bool,const QPixmap& ,const QString &)));
     }
 
 }
@@ -193,7 +193,7 @@ void cImageDownloader::run ()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageDownloader::helpThredFinished(bool success,const QPixmap& pixmap,int id,const QString &url)
+void cImageDownloader::helpThreadFinished(bool success, const QPixmap& pixmap, const QString &url)
 {
     emit sProgressValue(++this->progressValue);
     if (success)

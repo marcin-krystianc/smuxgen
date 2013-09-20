@@ -56,7 +56,7 @@ class cImageDownloader : public QThread
         void getImages(const QString &keyWords);
 
     public slots:
-        void helpThredFinished(bool success,const QPixmap& pixmap,int id,const QString &url);
+        void helpThreadFinished(bool success, const QPixmap& pixmap, const QString &url);
 
     private:
         QString ID;

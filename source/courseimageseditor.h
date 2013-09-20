@@ -46,10 +46,6 @@ class cImageList : public QListWidget
         void addPieceSlot       (const QPixmap &,const QString &hint="");
         void setIconSizeSlot    (int size );
 
-    private slots:
-        void itemClickedSlot ( QListWidgetItem * item );
-
-
     private:
         int maxCount;
         int rowIndex;
@@ -134,7 +130,7 @@ class cImageButtonWidget : public QWidget
         void dragEnterEvent(QDragEnterEvent *event);
         void dragMoveEvent(QDragMoveEvent *event);
         void dropEvent(QDropEvent *event);
-        void resizeEvent ( QResizeEvent * event ) ;
+        void resizeEvent (QResizeEvent * event) ;
 };
 
 /////////////////////////////////////////////////////////////////////////////

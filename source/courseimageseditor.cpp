@@ -186,9 +186,6 @@ cImageList::cImageList(QWidget *parent,int maxCount )
     this->maxCount = maxCount;
     this->resetPosition();
     this->setMouseTracking(true);
-
-    connect (   this,   SIGNAL  (itemClicked        (QListWidgetItem* )),
-                this,   SLOT    (itemClickedSlot    (QListWidgetItem* )));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -260,12 +257,6 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
     drag->setPixmap(pixmap);
 
     drag->exec(Qt::MoveAction);
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void cImageList::itemClickedSlot(  QListWidgetItem * item )
-{
 
 }
 

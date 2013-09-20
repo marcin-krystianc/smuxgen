@@ -73,8 +73,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
     int courseID;
     QString courseFileName,courseFileDirectoryName,mediaDirectoryName;
-
-    if (!this->database.getCourseIdPath (courseTemplate.options.course, courseID, courseFileName))
+    if (!this->database.getCourseIdPath (courseTemplate.options.course, &courseID, &courseFileName))
         return;
 
     QFileInfo courseFileInfo(courseFileName);

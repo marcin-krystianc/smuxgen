@@ -70,13 +70,12 @@ void CourseGenerator::run ()
         return;
 
     int courseID;
-    QString courseFileName, courseFileDirectoryName;
-
-    if (!m_db.getCourseIdPath (m_courseTemplate.options.course, courseID, courseFileName))
+    QString courseFileName;
+    if (!m_db.getCourseIdPath (m_courseTemplate.options.course, &courseID, &courseFileName))
         return;
 
     QFileInfo courseFileInfo(courseFileName);
-    courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
+    QString courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
 
     // check media directory
     QDir dir = QDir(courseFileDirectoryName);

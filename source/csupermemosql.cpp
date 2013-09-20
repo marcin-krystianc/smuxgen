@@ -82,19 +82,16 @@ bool cSuperMemoSQL::getCourses (QStringList &retList)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourseIdPath (QString course, int &id,QString &path)
+bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
 {
-
     QSqlQuery query (this->database);
     QString filter = "Select Id,Path from Courses where Title="+quotationString(course);
-    if (!query.exec(filter))
-    {
+    if (!query.exec(filter)) {
         trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(),traceError);
         return false;
     }
 
-    if (!query.first())
-    {
+    if (!query.first()) {
         this->trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+course,traceWarning);
         return false;
     }
@@ -112,15 +109,12 @@ bool cSuperMemoSQL::getCourseIdPath (QString course, int &id,QString &path)
         return false;
     }
 
-    id  = v1.toInt();
-    path= v2.toString();
+    *id  = v1.toInt();
+    QFileInfo courseFileInfo(v2.toString());
+    *path = courseFileInfo.path()+QDir::separator()+QString("override")+QDir::separator()+QString("course.xml");
 
-    QFileInfo courseFileInfo(path);
-
-    path = courseFileInfo.path()+QDir::separator()+QString("override")+QDir::separator()+QString("course.xml");
-
-    this->trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(id)  ,traceLevel2);
-    this->trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+path                ,traceLevel2);
+    this->trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(*id), traceLevel2);
+    this->trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);
 
     return true;
 }

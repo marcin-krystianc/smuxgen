@@ -64,7 +64,6 @@ void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 /////////////////////////////////////////////////////////////////////////////
 void CourseGenerator::run ()
 {
-
     m_isFailed = true;
     if (!m_db.open(m_courseTemplate.options.database))
         return;
@@ -79,10 +78,9 @@ void CourseGenerator::run ()
     courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
 
     // check media directory
-    QDir *pDir= new QDir(courseFileDirectoryName);
-    if (!pDir->exists("media"))
-        pDir->mkdir("media");
-    delete(pDir);
+    QDir dir = QDir(courseFileDirectoryName);
+    if (!dir.exists("media"))
+        dir.mkdir("media");
 
     // get root document
     QDomDocument doc("mydocument");

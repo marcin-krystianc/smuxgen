@@ -37,20 +37,18 @@ class CourseGenerator : public QThread
         void progressSignal (const QString&);
 
     private:
+        volatile bool m_abortProces;
         cSuperMemoSQL database;
         cCourseTemplate courseTemplate;
-
-        volatile bool m_abortProces;
-
-        void trace (const QString &text,const int & flags = traceLevel1|0);
-        QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int retID);
+        void trace (const QString &text, const int & flags = traceLevel1|0);
+        QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
         void setDelete (QDomNode &topicNode);
-        bool doDelete (int courseIDSQL,int paretntIDSQL,QDomNode &docElement,QString courseFileDirectory);
-        bool generateCourseElement(int courseIDSQL,QString question,QString answer,QString topicName,QDomNode &topicNode,int topicID,QDomDocument &doc,QString courseFileDirectory,bool bMode);
-        int writeDomDoucumentToFile (QDomDocument &document,QString path);
-        QDomDocument createCourseItem (int templateId,QString chapter);
-        bool checkIfNewAnswers(QString fileName,QString answers);
-        QDomDocument createCourseItem (int templateId,QString chapter,QString title,QString question,QString answers,int ID,bool bMode);
+        bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
+        bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode);
+        int writeDomDoucumentToFile (QDomDocument &document, QString path);
+        QDomDocument createCourseItem (int templateId, QString chapter);
+        bool checkIfNewAnswers(QString fileName, QString answers);
+        QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
         int status;
 
     protected:

@@ -111,7 +111,7 @@ class cConsolePage : public QWidget
 
     public slots:
         void traceSlot(const QString &txt,const int & flags);
-        void traceLevelSlot (int s);
+        void traceLevelSlot ();
 
     private:
         QTextEdit *consoleText;

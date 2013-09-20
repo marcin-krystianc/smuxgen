@@ -394,11 +394,11 @@ cConsolePage::cConsolePage(QWidget *parent)
 
     consoleText->setReadOnly(true);
 
-    connect(cTracelevel2 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot(int)));
-    connect(cTracelevel3 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot(int)));
+    connect(cTracelevel2 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot()));
+    connect(cTracelevel3 , SIGNAL(stateChanged (int )) ,this ,SLOT(traceLevelSlot()));
 }
 /////////////////////////////////////////////////////////////////////////////
-void cConsolePage::traceLevelSlot (int state)
+void cConsolePage::traceLevelSlot ()
 {
     unsigned int flags= traceError|traceWarning|traceLevel1;
 

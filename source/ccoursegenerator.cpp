@@ -99,20 +99,15 @@ void CourseGenerator::run ()
 
     QString topicNameA = m_courseTemplate.options.subname;
     QString topicNameB = m_courseTemplate.options.subname+"*";
-
     int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
     int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
-
-    QDomNode topicNodeA;
-    QDomNode topicNodeB;
 
     int topicAID, topicBID;
     // A course
     if (!m_db.setElementSQL(topicNameA, courseID, 0, topicAID))
-        goto END;
+        return;
 
-    topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
-
+    QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
     setDelete (topicNodeA);
 
     for (int i=0;i<m_courseTemplate.content.count();++i)
@@ -131,7 +126,7 @@ void CourseGenerator::run ()
                             +list1.at(0));
 
         if (m_abortProces)
-            goto END;
+            return;
 
         generateCourseElement(courseID, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false, voiceIndexA, voiceIndexQ);
     }
@@ -144,8 +139,8 @@ void CourseGenerator::run ()
     if (m_courseTemplate.options.bit.oDouble)
     {
         if (!m_db.setElementSQL(topicNameB, courseID, 0, topicBID))
-            goto END;
-        topicNodeB = getNode (rootElement, topicNameB, doc, courseFileDirectoryName, "pres", topicBID);
+            return;
+        QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, courseFileDirectoryName, "pres", topicBID);
 
         setDelete (topicNodeB);
 
@@ -165,7 +160,7 @@ void CourseGenerator::run ()
                                 +list1.at(0));
 
             if (m_abortProces)
-                goto END;
+                return;
 
             generateCourseElement(courseID, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true, voiceIndexA, voiceIndexQ);
         }
@@ -176,8 +171,6 @@ void CourseGenerator::run ()
 
     writeDomDoucumentToFile(doc, courseFileName);
     m_isFailed = false;
-END:;
-
 }
 
 /////////////////////////////////////////////////////////////////////////////

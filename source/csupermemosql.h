@@ -28,10 +28,10 @@ public:
     QSqlDatabase getDatabase();
 
 private:
-    QSqlDatabase database;
+    int m_GID; // last ID (PageNum) for this course - get with getCourseMaxId
+    QSqlDatabase m_database;
     void trace (const QString &text, const int & flags = traceLevel1|0);
     bool isValidSuperMemoDatabase();
-    int GID; // last ID (PageNum) for this course - get with getCourseMaxId
     QString quotationString (QString s);
 };
 

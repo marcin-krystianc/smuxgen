@@ -380,7 +380,6 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
         n = n.nextSibling();
     }
 
-
     if (!m_db.deleteNotValidItems(courseIDSQL, paretntIDSQL, validIds))
         return false;
 

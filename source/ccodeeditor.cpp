@@ -10,62 +10,59 @@
 #include "ccodeeditor.h"
 
 /////////////////////////////////////////////////////////////////////////////
-cCodeEditor::cCodeEditor(QWidget *parent) : QPlainTextEdit(parent)
+CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
-    lineNumberArea = new LineNumberArea(this);
+    m_lineNumberArea = new LineNumberArea(this);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int cCodeEditor::lineNumberAreaWidth()
+int CodeEditor::lineNumberAreaWidth()
 {
     int digits = 1;
-    int max = qMax(1, blockCount());
+    int max = std::max(1, blockCount());
     while (max >= 10) {
         max /= 10;
         ++digits;
     }
 
-    int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
-
-    return space;
+    return 3 + fontMetrics().width(QLatin1Char('9')) * digits;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+void CodeEditor::updateLineNumberAreaWidth(int )
 {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCodeEditor::updateLineNumberArea(const QRect &rect, int dy)
+void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
     if (dy)
-        lineNumberArea->scroll(0, dy);
+        m_lineNumberArea->scroll(0, dy);
     else
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+        m_lineNumberArea->update(0, rect.y(), m_lineNumberArea->width(), rect.height());
 
     if (rect.contains(viewport()->rect()))
         updateLineNumberAreaWidth(0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCodeEditor::resizeEvent(QResizeEvent *e)
+void CodeEditor::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-    QPainter painter(lineNumberArea);
+    QPainter painter(m_lineNumberArea);
     painter.fillRect(event->rect(), Qt::lightGray);
 
 //![extraAreaPaintEvent_0]
@@ -82,7 +79,7 @@ void cCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+            painter.drawText(0, top, m_lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, number);
         }
 
@@ -94,7 +91,7 @@ void cCodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCodeEditor::wheelEvent(QWheelEvent *event)
+void CodeEditor::wheelEvent(QWheelEvent *event)
 {
     if (!(event->modifiers()&Qt::ControlModifier))
     {
@@ -119,7 +116,5 @@ void cCodeEditor::wheelEvent(QWheelEvent *event)
             this->setFont(f);
         }
     }
-
-
 }
 

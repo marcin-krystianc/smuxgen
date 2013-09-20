@@ -434,7 +434,7 @@ void cConsolePage::traceSlot(const QString &txt,const int & flags)
 cContentPage::cContentPage(QWidget *parent)
     : QWidget(parent)
 {
-    this->contentTextEdit   = new cCodeEditor;
+    this->contentTextEdit   = new CodeEditor;
     this->findToolbar       = new cFindToolbar;
     this->findToolbar->layout()->setMargin(0);
     //this->contentTextEdit->setAcceptRichText(false);

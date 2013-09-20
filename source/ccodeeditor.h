@@ -23,12 +23,12 @@ class LineNumberArea;
 
 //![codeeditordefinition]
 
-class cCodeEditor : public QPlainTextEdit
+class CodeEditor : public QPlainTextEdit
 {
     Q_OBJECT
 
 public:
-    cCodeEditor(QWidget *parent = 0);
+    CodeEditor(QWidget *parent = 0);
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
@@ -42,7 +42,7 @@ private slots:
     void updateLineNumberArea(const QRect &, int);
 
 private:
-    QWidget *lineNumberArea;
+    QWidget *m_lineNumberArea;
 };
 
 //![codeeditordefinition]
@@ -51,7 +51,7 @@ private:
 class LineNumberArea : public QWidget
 {
 public:
-    LineNumberArea(cCodeEditor *editor) : QWidget(editor) {
+    LineNumberArea(CodeEditor *editor) : QWidget(editor) {
         codeEditor = editor;
     }
 
@@ -65,7 +65,7 @@ protected:
     }
 
 private:
-    cCodeEditor *codeEditor;
+    CodeEditor *codeEditor;
 };
 
 //![extraarea]

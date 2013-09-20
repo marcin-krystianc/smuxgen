@@ -76,8 +76,6 @@ void CourseGenerator::run ()
 
     QFileInfo courseFileInfo(courseFileName);
     QString courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
-
-    // check media directory
     QDir dir = QDir(courseFileDirectoryName);
     if (!dir.exists("media"))
         dir.mkdir("media");

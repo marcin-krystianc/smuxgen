@@ -227,15 +227,15 @@ bool cSuperMemoSQL::getElementID  (int courseIDSQL,int parentID, QString element
 /////////////////////////////////////////////////////////////////////////////
 bool cSuperMemoSQL::getCourseMaxId (int courseID)
 {
-    QString   filter;   // CourseID
-    filter  +=QString::fromUtf8("select PageNum from items where ");
-    filter  +=QString::fromUtf8("CourseId=")+QString::number(courseID);
+    // TODO: remove this function
 
+    QString filter;   // CourseID
+    filter += QString::fromUtf8("select PageNum from items where ");
+    filter += QString::fromUtf8("CourseId=") + QString::number(courseID);
 
     QSqlQuery query (this->database);
-    if (!query.exec(filter))    // delete all unknown course items
-    {
-        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ")+query.lastError().text(),traceError);
+    if (!query.exec(filter)) {
+        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ")+query.lastError().text(), traceError);
         return false;
     }
 

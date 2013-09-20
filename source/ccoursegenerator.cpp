@@ -30,25 +30,20 @@
 /////////////////////////////////////////////////////////////////////////////
 CourseGenerator::CourseGenerator()
 {
-    this->abortProces = false;
+    m_abortProces = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 CourseGenerator::~CourseGenerator()
 {
-    mutex.lock();
-    this->abortProces = true;
-    mutex.unlock();
-
+    m_abortProces = true;
     wait();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void CourseGenerator::stop()
 {
-    mutex.lock();
-    this->abortProces = true;
-    mutex.unlock();
+    m_abortProces = true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +56,7 @@ void CourseGenerator::trace (const QString &text,const int & flags)
 void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 {
     this->courseTemplate    = courseTemplate;
-    this->abortProces       = false;
+    m_abortProces       = false;
     this->start();
 }
 
@@ -139,7 +134,7 @@ void  CourseGenerator::run ()
         emit progressSignal(QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count())+" "+topicNameA+"@"+this->courseTemplate.options.course+":"
                                   +list1.at(0));
 
-        if (this->abortProces)
+        if (m_abortProces)
          goto END;
 
         generateCourseElement(courseID,list1.at(0),list1.at(1),topicNameA,topicNodeA,topicAID,doc,courseFileDirectoryName,false);
@@ -173,7 +168,7 @@ void  CourseGenerator::run ()
                emit progressSignal(QString::number(i+1)+"/"+QString::number(this->courseTemplate.content.count())+" "+topicNameB+"@"+this->courseTemplate.options.course+":"
                                   +list1.at(0));
 
-            if (this->abortProces)
+            if (m_abortProces)
                 goto END;
 
             generateCourseElement(courseID,list1.at(1),list1.at(0),topicNameB,topicNodeB,topicBID,doc,courseFileDirectoryName,true);

@@ -20,12 +20,12 @@
 #include <QThread>
 #include <QMutex>
 
-class cCourseGenerator : public QThread
+class CourseGenerator : public QThread
 {
     Q_OBJECT
     public:
-        cCourseGenerator();
-        ~cCourseGenerator();
+        CourseGenerator();
+        ~CourseGenerator();
 
         void generate (const cCourseTemplate &courseTemplate);
         int getStatus();
@@ -40,8 +40,7 @@ class cCourseGenerator : public QThread
         cSuperMemoSQL database;
         cCourseTemplate courseTemplate;
 
-        bool abortProces;;
-        QMutex mutex;
+        bool m_abortProces;;
 
         void trace (const QString &text,const int & flags = traceLevel1|0);
         QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int retID);

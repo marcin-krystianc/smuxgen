@@ -85,7 +85,6 @@ void CourseGenerator::run ()
     // get root document
     QDomDocument doc("mydocument");
     QFile docFile(courseFileName);
-
     if (!doc.setContent(&docFile)) {
         trace(QString("Cannot open file: ")+courseFileName, traceError);
         return;
@@ -101,8 +100,8 @@ void CourseGenerator::run ()
     QString topicNameA = m_courseTemplate.options.subname;
     QString topicNameB = m_courseTemplate.options.subname+"*";
 
-    m_courseTemplate.options.voiceIndexA=getVoiceIndex(m_courseTemplate.options.voiceNameA)+1;
-    m_courseTemplate.options.voiceIndexQ=getVoiceIndex(m_courseTemplate.options.voiceNameQ)+1;
+    m_courseTemplate.options.voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
+    m_courseTemplate.options.voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
     QDomNode topicNodeA;
     QDomNode topicNodeB;

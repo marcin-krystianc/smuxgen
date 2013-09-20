@@ -66,14 +66,14 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     instructionLayout->addWidget(instructionEdit);
 
     voiceComboQ     = new QComboBox;
-    voiceComboQ->insertItems(0,getVoices());
+    voiceComboQ->insertItems(0,getVoiceEngines());
     voiceGainQ      = new QSpinBox;
     voiceTrimBeginQ = new QDoubleSpinBox;
     voiceTrimBeginQ->setSingleStep(0.1);
     voiceTrimBeginQ->setDecimals(1);
 
     voiceComboA     = new QComboBox;
-    voiceComboA->insertItems(0,getVoices());
+    voiceComboA->insertItems(0,getVoiceEngines());
     voiceGainA      = new QSpinBox;
     voiceTrimBeginA = new QDoubleSpinBox;
     voiceTrimBeginA->setSingleStep(0.1);
@@ -221,11 +221,11 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
     this->subnameEdit->setText(options.subname);
     this->instructionEdit->setText(options.instruction);
 
-    this->voiceComboQ    ->setCurrentIndex(getVoiceIndex(options.voiceNameQ));
+    this->voiceComboQ    ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
     this->voiceGainQ     ->setValue(options.voiceGainQ);
     this->voiceTrimBeginQ->setValue(options.voiceTrimQ);
 
-    this->voiceComboA    ->setCurrentIndex(getVoiceIndex(options.voiceNameA));
+    this->voiceComboA    ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
     this->voiceGainA     ->setValue(options.voiceGainA);
     this->voiceTrimBeginA->setValue(options.voiceTrimA);
 
@@ -242,7 +242,7 @@ void cOptionsPage::voiceTestButtonTriggered ()
     {
         arguments.append("test");
         arguments.append(this->voiceTesttextQ->text());
-        arguments.append(QString::number(getVoiceIndex(options.voiceNameQ)+1));
+        arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)+1));
         arguments.append(QString::number(options.voiceTrimQ));
         arguments.append(QString::number(options.voiceGainQ));
     }
@@ -250,7 +250,7 @@ void cOptionsPage::voiceTestButtonTriggered ()
     {
         arguments.append("test");
         arguments.append(this->voiceTesttextA->text());
-        arguments.append(QString::number(getVoiceIndex(options.voiceNameA)+1));
+        arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)+1));
         arguments.append(QString::number(options.voiceTrimA));
         arguments.append(QString::number(options.voiceGainA));
     }

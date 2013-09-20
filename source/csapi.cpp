@@ -4,7 +4,7 @@
 
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList getVoices()
+QStringList getVoiceEngines()
 {
     QProcess myProcess;
     QStringList  arguments;
@@ -29,13 +29,13 @@ QStringList getVoices()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int getVoiceIndex(QString voice) // if failed then returns -1
+int getVoiceEngineIndex(QString voiceEngine) // if failed then returns -1
 {
-    QStringList voices=getVoices();
+    QStringList voices=getVoiceEngines();
 
     for (int i=0;i<voices.count();++i)
     {
-        if (voices[i]==voice)
+        if (voices[i]==voiceEngine)
             return i;
     }
     return -1;

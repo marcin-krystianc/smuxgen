@@ -13,10 +13,10 @@
 #define CSAPI_H
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList getVoices();
+QStringList getVoiceEngines();
 
 /////////////////////////////////////////////////////////////////////////////
-int getVoiceIndex(QString voice); // if failed then returns -1
+int getVoiceEngineIndex(QString voiceEngine); // if failed then returns -1
 
 
 #endif // CSAPI_H

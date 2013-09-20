@@ -18,7 +18,7 @@ enum traceFlags
     traceWarning    = 1<<2,
     traceLevel1     = 1<<3,
     traceLevel2     = 1<<4,
-    traceLevel3     = 1<<5,
+    traceLevel3     = 1<<5
 };
 
 class cGlobaTracer : public QObject

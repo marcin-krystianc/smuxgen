@@ -40,7 +40,7 @@ class CourseGenerator : public QThread
         cSuperMemoSQL database;
         cCourseTemplate courseTemplate;
 
-        bool m_abortProces;;
+        volatile bool m_abortProces;
 
         void trace (const QString &text,const int & flags = traceLevel1|0);
         QDomNode getNode (QDomNode &rootElement,QString nodeName,QDomDocument &doc,QString courseFileDirectory,QString type,int retID);

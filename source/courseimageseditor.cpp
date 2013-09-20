@@ -500,7 +500,7 @@ void cImageButtonWidget::dropEvent(QDropEvent *event)
         event->ignore();
 }
 /////////////////////////////////////////////////////////////////////////////
-void cImageButtonWidget::resizeEvent(QResizeEvent *event)
+void cImageButtonWidget::resizeEvent(QResizeEvent *)
 {
    this->setPixmap(this->pixmap);
 }
@@ -542,7 +542,7 @@ void cImageTargetWidget::setFiles (const QStringList &list)
     this->imageButtonWidget[1][1]->setFile(list.at(3));
 }
 /////////////////////////////////////////////////////////////////////////////
-void cImageTargetWidget::resizeEvent ( QResizeEvent * event )
+void cImageTargetWidget::resizeEvent (QResizeEvent*)
 {
    this->setMaximumWidth(this->imageButtonWidget[0][0]->height()*2);
    this->setMinimumWidth(this->imageButtonWidget[0][0]->height()*1);

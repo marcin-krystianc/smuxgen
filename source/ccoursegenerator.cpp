@@ -65,6 +65,7 @@ void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 void CourseGenerator::run ()
 {
     m_isFailed = true;
+
     if (!m_db.open(m_courseTemplate.options.database))
         return;
 
@@ -91,8 +92,7 @@ void CourseGenerator::run ()
     }
 
     QDomElement rootElement = doc.documentElement();
-    if (!m_db.getCourseMaxId(courseID))
-    {
+    if (!m_db.getCourseMaxId(courseID)) {
         trace(QString("Cannot getCourseMaxId"), traceError);
         return;
     }

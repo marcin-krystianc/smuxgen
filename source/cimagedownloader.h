@@ -50,7 +50,7 @@ class cImageDownloader : public QThread
 {
     Q_OBJECT
 public:
-    cImageDownloader(const QString &id="");
+    cImageDownloader(const QString &id = "");
     ~cImageDownloader();
 
     void getImages(const QString &keyWords);

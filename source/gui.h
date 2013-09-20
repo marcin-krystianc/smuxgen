@@ -32,7 +32,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void openCourseTemplateSlot(QString filename="");
+    void openCourseTemplateSlot(QString filename = "");
     bool saveCourseTemplateSlot();
     void importQASlot();
     void exportQASlot();

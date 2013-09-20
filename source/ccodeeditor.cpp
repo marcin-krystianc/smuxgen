@@ -99,7 +99,7 @@ void CodeEditor::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QFont f=this->font();
+    QFont f = this->font();
     if (event->delta()>0)
     {
         if (f.pointSize() <24)

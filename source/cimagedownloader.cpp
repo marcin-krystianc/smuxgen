@@ -98,7 +98,7 @@ void cImageDownloadHelper::trace (const QString &text, const int & flags)
 cImageDownloader::cImageDownloader(const QString &id)
 {
     this->ID = id;
-    for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+    for (int i = 0;i<cImageDownloader::maxHelpThreads;++i)
     {
         imageDownloadHelper[i] = new cImageDownloadHelper(this->ID+QString::number(i), i);
         connect(imageDownloadHelper[i], SIGNAL(finished(bool, const QPixmap& , int, const QString &)) , this , SLOT(helpThreadFinished(bool, const QPixmap& , const QString &)));
@@ -110,7 +110,7 @@ cImageDownloader::cImageDownloader(const QString &id)
 cImageDownloader::~cImageDownloader()
 {
     /*
- for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+ for (int i = 0;i<cImageDownloader::maxHelpThreads;++i)
  delete imageDownloadHelper[i];
  */
 
@@ -150,7 +150,7 @@ void cImageDownloader::run ()
 
     while (1)
     {
-        for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+        for (int i = 0;i<cImageDownloader::maxHelpThreads;++i)
             if (!imageDownloadHelper[i]->isRunning())
                 imageDownloadHelper[i]->terminate();
 
@@ -171,7 +171,7 @@ void cImageDownloader::run ()
 
         this->urls = parseGoogleHtml(gFileName);
 
-        trace(QString("cImageDownloader::run urls.count=")+QString::number(this->urls.count()), traceLevel2);
+        trace(QString("cImageDownloader::run urls.count = ")+QString::number(this->urls.count()), traceLevel2);
 
         this->progressMax = this->urls.count();
         this->progressValue = 0;
@@ -179,7 +179,7 @@ void cImageDownloader::run ()
 
         while (!this->newTask)
         {
-            for (int i=0;i<cImageDownloader::maxHelpThreads;++i)
+            for (int i = 0;i<cImageDownloader::maxHelpThreads;++i)
             {
                 if (!imageDownloadHelper[i]->isRunning()
                         && (!this->urls.isEmpty()))

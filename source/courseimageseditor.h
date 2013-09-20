@@ -40,10 +40,10 @@ class cImageList : public QListWidget
 public:
 
     cImageList(QWidget *parent = 0, int maxCount = 128);
-    void addPiece(const QPixmap &pixmap, const QString &hint="");
+    void addPiece(const QPixmap &pixmap, const QString &hint = "");
     void resetPosition();
 public slots:
-    void addPieceSlot (const QPixmap &, const QString &hint="");
+    void addPieceSlot (const QPixmap &, const QString &hint = "");
     void setIconSizeSlot (int size );
 
 private:

@@ -45,7 +45,7 @@ void MainWindow::about()
     QMessageBox::about(this, QString("SMUXGEN"),
                        QString ( "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
                                  "<center><br/>License : GPL"
-                                 "<center><br/><a href=\"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
+                                 "<center><br/><a href = \"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
 }
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
@@ -164,7 +164,7 @@ void MainWindow::createDockWindows()
     this->m_dockOptionsPage = new QDockWidget(tr("Options"), this);
     this->m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
     this->addDockWidget(Qt::LeftDockWidgetArea, this->m_dockOptionsPage);
-    this->m_optionsPage =new cOptionsPage(this->m_dockOptionsPage);
+    this->m_optionsPage = new cOptionsPage(this->m_dockOptionsPage);
     this->m_dockOptionsPage->setWidget(this->m_optionsPage);
     m_viewMenu->addAction(this->m_dockOptionsPage->toggleViewAction());
 
@@ -460,7 +460,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if (this->m_contentChanged)
     {
-        int q=QMessageBox::question(0, "Save changes", "Do You want to save changes ?", "Yes", "No", "Cancel");
+        int q = QMessageBox::question(0, "Save changes", "Do You want to save changes ?", "Yes", "No", "Cancel");
 
         switch (q)
         {
@@ -486,7 +486,7 @@ void MainWindow::generateStop()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::trace (const QString& text, const unsigned int& flags= traceLevel1)
+void MainWindow::trace (const QString& text, const unsigned int& flags = traceLevel1)
 {
     globalTracer.trace(text, flags);
 }

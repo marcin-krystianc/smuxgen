@@ -104,10 +104,10 @@ void CourseGenerator::run ()
     QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
     setDelete (topicNodeA);
 
-    for (int i=0;i<m_courseTemplate.content.count();++i)
+    for (int i = 0;i<m_courseTemplate.content.count();++i)
     {
-        QString line=(m_courseTemplate.content.at(i)).trimmed();
-        if (line.length()==0) continue;
+        QString line = (m_courseTemplate.content.at(i)).trimmed();
+        if (line.length() == 0) continue;
         QStringList list1 = line.split(":");
 
         if (list1.count()<2)
@@ -138,10 +138,10 @@ void CourseGenerator::run ()
 
         setDelete (topicNodeB);
 
-        for (int i=0;i<m_courseTemplate.content.count();++i)
+        for (int i = 0;i<m_courseTemplate.content.count();++i)
         {
-            QString line=(m_courseTemplate.content.at(i)).trimmed();
-            if (line.length()==0) continue;
+            QString line = (m_courseTemplate.content.at(i)).trimmed();
+            if (line.length() == 0) continue;
             QStringList list1 = line.split(":");
 
             if (list1.count()<2)
@@ -176,9 +176,9 @@ QDomNode CourseGenerator::getNode (QDomNode &rootElement, QString nodeName, QDom
         QDomElement e = node.toElement(); // try to convert the node to an element.
         if(!e.isNull())
         {
-            if ((e.attribute("type", "none")==type) &&
-                    (e.attribute("name", "none")==nodeName) &&
-                    (e.attribute("id", "0").toInt()==nodeID))
+            if ((e.attribute("type", "none") == type) &&
+                    (e.attribute("name", "none") == nodeName) &&
+                    (e.attribute("id", "0").toInt() == nodeID))
             {
                 e.setAttribute("delete", "false");
                 break; // topic Found
@@ -195,7 +195,7 @@ QDomNode CourseGenerator::getNode (QDomNode &rootElement, QString nodeName, QDom
         tmpElement.setAttribute("id", QString::number(nodeID));
         tmpElement.setAttribute("delete", "false");
         node = rootElement.appendChild(tmpElement);
-        QDomDocument docItem=createCourseItem(1, nodeName);
+        QDomDocument docItem = createCourseItem(1, nodeName);
         writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(nodeID));
         trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+nodeID, traceLevel2);
     }
@@ -232,14 +232,14 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     if (!m_db.setElementSQL(getTextToPrint(question), courseIDSQL, topicID, ID))
         return false;
 
-    QDomNode questionNode=getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
+    QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
 
     // create xml course file
     if ((m_courseTemplate.options.bit.oForce)||
             (checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)))
     {
-        forceMedia=true;
-        QDomDocument docItem=createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
+        forceMedia = true;
+        QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
         writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
     }
 
@@ -311,9 +311,9 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         if (myProcess.exitCode())
             trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
 
-        QStringList fileUrls= parseGoogleHtml(tmpDir+"HTML");
+        QStringList fileUrls = parseGoogleHtml(tmpDir+"HTML");
 
-        int i=0; // download 2 images
+        int i = 0; // download 2 images
         while ((fileUrls.count())>0&&(i<2))
         {
             QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
@@ -366,7 +366,7 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if(!e.isNull())
         {
-            if (e.attribute("delete", "none")=="true")
+            if (e.attribute("delete", "none") == "true")
             {
                 trace(QString("doDelete: id:")+e.attribute("id", "0")+QString(" name:")+e.attribute("name", ""), traceLevel2);
                 int ID = e.attribute("id", "0").toInt();
@@ -387,15 +387,15 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
     }
 
     QString filter; // CourseID + PageNum - primary key
-    filter +=QString::fromUtf8("delete from items where ");
-    filter +=QString::fromUtf8("CourseId=")+QString::number(courseIDSQL);
-    filter +=QString::fromUtf8(" and ");
-    filter +=QString::fromUtf8("ParentID=")+QString::number(paretntIDSQL);
-    filter +=QString::fromUtf8(" and ");
-    for (it=listValidID.begin();it!=listValidID.end();it++)
-        filter +=QString::fromUtf8 ("PageNum!=")+QString::number(*it)+QString(" and ");
+    filter += QString::fromUtf8("delete from items where ");
+    filter += QString::fromUtf8("CourseId = ")+QString::number(courseIDSQL);
+    filter += QString::fromUtf8(" and ");
+    filter += QString::fromUtf8("ParentID = ")+QString::number(paretntIDSQL);
+    filter += QString::fromUtf8(" and ");
+    for (it = listValidID.begin();it!= listValidID.end();it++)
+        filter += QString::fromUtf8 ("PageNum!= ")+QString::number(*it)+QString(" and ");
 
-    filter +="1=1"; // to finish qery
+    filter += "1 = 1"; // to finish qery
 
     QSqlQuery query (m_db.getDatabase());
     if (!query.exec(filter)) // delete all unknown course items
@@ -432,7 +432,7 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter)
     rootElement.appendChild(tmpElement0);
 
     QDomElement tmpElement1 = (doc.createElement( "modified" ));
-    QDate x=QDate::currentDate();
+    QDate x = QDate::currentDate();
     tmpElement1.appendChild(doc.createTextNode(x.toString("yyyy-MM-dd")));
     rootElement.appendChild(tmpElement1);
 
@@ -466,7 +466,7 @@ bool CourseGenerator::checkIfNewAnswers(QString fileName, QString answers)
     if(!e.isNull())
     {
         QString oAnswer = e.attribute("correct", "");
-        if (oAnswer==answers)
+        if (oAnswer == answers)
             return 0;
 
         trace(QString("New answers: ")+oAnswer+":"+answers, traceLevel1);
@@ -500,7 +500,7 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
         tmpElement2.appendChild(doc.createElement("br"));
         tmpElement2.appendChild(doc.createElement("br"));
 
-        QDomElement table= doc.createElement( "table" );
+        QDomElement table = doc.createElement( "table" );
         table.setAttribute("width", "100%");
         table.setAttribute("border", "0");
         table.setAttribute("cellpadding", "0");
@@ -508,10 +508,10 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
         QDomElement tr = doc.createElement("tr");
 
-        QDomElement td= doc.createElement("td");
+        QDomElement td = doc.createElement("td");
         td.setAttribute("align", "center");
 
-        QDomElement gfx= doc.createElement("gfx");
+        QDomElement gfx = doc.createElement("gfx");
         gfx.setAttribute("file", "m");
         gfx.setAttribute("space", "1");
         gfx.setAttribute("width" , QString::number(IMG_WIDTH));
@@ -523,10 +523,10 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
         tr.appendChild(td);
 
-        td= doc.createElement("td");
+        td = doc.createElement("td");
         td.setAttribute("align", "center");
 
-        gfx= doc.createElement("gfx");
+        gfx = doc.createElement("gfx");
         gfx.setAttribute("file", "n");
         gfx.setAttribute("space", "1");
         gfx.setAttribute("width" , QString::number(IMG_WIDTH));

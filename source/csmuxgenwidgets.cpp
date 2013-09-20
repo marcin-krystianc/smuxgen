@@ -235,10 +235,10 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
 /////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::voiceTestButtonTriggered ()
 {
-    cCourseTemplateOptions options=this->getOptions();
+    cCourseTemplateOptions options = this->getOptions();
     QStringList arguments; // filename, text, trim, gain
 
-    if (sender() ==voiceTestbuttonQ)
+    if (sender() == voiceTestbuttonQ)
     {
         arguments.append("test");
         arguments.append(this->voiceTesttextQ->text());
@@ -246,7 +246,7 @@ void cOptionsPage::voiceTestButtonTriggered ()
         arguments.append(QString::number(options.voiceTrimQ));
         arguments.append(QString::number(options.voiceGainQ));
     }
-    else if (sender() ==voiceTestbuttonA)
+    else if (sender() == voiceTestbuttonA)
     {
         arguments.append("test");
         arguments.append(this->voiceTesttextA->text());
@@ -310,7 +310,7 @@ void cOptionsPage::fileButtonTriggered()
 {
     QFileDialog::Options opt = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
 
-    QString selectedFilter ="";
+    QString selectedFilter = "";
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open database file"),
                                                     "",
@@ -335,16 +335,16 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
 
     this->fileEdit->setPalette( this->subnameEdit->palette() ); // fileEdit to default colour
 
-    QString oldText=this->courseCombo->currentText();
+    QString oldText = this->courseCombo->currentText();
 
     this->courseCombo->clear();
     QStringList courseList;
     this->superMemoSQL.getCourses(courseList);
 
-    for (int i=0;i<courseList.count();++i)
+    for (int i = 0;i<courseList.count();++i)
         this->courseCombo->insertItem(0, courseList.at(i));
 
-    int pos =this->courseCombo->findText(oldText);
+    int pos = this->courseCombo->findText(oldText);
 
     if (pos == -1) // text not found
     {
@@ -399,12 +399,12 @@ cConsolePage::cConsolePage(QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 void cConsolePage::traceLevelSlot ()
 {
-    unsigned int flags= traceError|traceWarning|traceLevel1;
+    unsigned int flags = traceError|traceWarning|traceLevel1;
 
-    if (this->cTracelevel2->checkState()==Qt::Checked)
+    if (this->cTracelevel2->checkState() == Qt::Checked)
         flags |= traceLevel2;
 
-    if (this->cTracelevel3->checkState()==Qt::Checked)
+    if (this->cTracelevel3->checkState() == Qt::Checked)
         flags |= traceLevel3;
 
     globalTracer.setTraceFlags(flags);
@@ -415,7 +415,7 @@ void cConsolePage::traceSlot(const QString &txt, const int & flags)
 {
     this->traceMutex.lock();
 
-    QDateTime dateTime=QDateTime::currentDateTime ();
+    QDateTime dateTime = QDateTime::currentDateTime ();
 
     this->consoleText->setTextColor(Qt::black);
     if (flags & traceWarning)
@@ -459,7 +459,7 @@ void cContentPage::setContent (const QStringList & content)
 /////////////////////////////////////////////////////////////////////////////
 QStringList cContentPage::getContent ()
 {
-    QString str=this->contentTextEdit->toPlainText();
+    QString str = this->contentTextEdit->toPlainText();
     return str.split(QString("\n"));
 }
 
@@ -474,7 +474,7 @@ void cContentPage::contentChangedSlot()
 void cContentPage::keyPressEvent ( QKeyEvent * event )
 {
     if ((event->modifiers()&Qt::ControlModifier) &&
-            (event->key()==Qt::Key_F))
+            (event->key() == Qt::Key_F))
     {
         this->findToolbar->show();
         this->findToolbar->setFindFocus();
@@ -503,7 +503,7 @@ cFindToolbar::cFindToolbar(QWidget *parent)
 {
     this->lineEdit = new QLineEdit;
     this->forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
-    this->backwardButton= new QPushButton (QIcon(":/images/prev.png"), "");
+    this->backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(new QLabel("Find:"));

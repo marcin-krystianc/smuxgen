@@ -5,7 +5,7 @@ QT += sql
 QT += xml
 QT += phonon
 
-# CONFIG -= app_bundle
+# CONFIG - = app_bundle
 # TEMPLATE = app
 TARGET = smuxgen
 SOURCES += main.cpp \

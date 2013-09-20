@@ -95,11 +95,11 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
     mediaDirectoryName = courseFileDirectoryName+"media"+QDir::separator();
 
-    for (int i=0;i<courseTemplate.content.count();++i)
+    for (int i = 0;i<courseTemplate.content.count();++i)
     {
         int id1, id2;
-        QString line=(courseTemplate.content.at(i)).trimmed();
-        if (line.length()==0) continue;
+        QString line = (courseTemplate.content.at(i)).trimmed();
+        if (line.length() == 0) continue;
         QStringList list1 = line.split(":");
 
         if (list1.count()< 2 )
@@ -196,7 +196,7 @@ void cImageList::resetPosition()
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 {
-    if (this->count()>=this->maxCount)
+    if (this->count() >= this->maxCount)
         delete takeItem(this->count()-1);
 
     QListWidgetItem *pieceItem = new QListWidgetItem();
@@ -204,9 +204,9 @@ void cImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 
     if (!hint.isNull())
     {
-        for (int i=0;i<this->count();i++)
+        for (int i = 0;i<this->count();i++)
         {
-            if(this->item(i)->data(Qt::UserRole+1).toString()==hint)
+            if(this->item(i)->data(Qt::UserRole+1).toString() == hint)
             {
                 this->insertItem(this->rowIndex++, this->takeItem(i)); // move to the beginning of list
                 return;
@@ -300,7 +300,7 @@ cImageSearch::cImageSearch(QWidget *parent)
     l0->addLayout(l3);
     l0->addWidget(this->imagelist);
 
-    QGroupBox *groubBox=new QGroupBox ("Picture search");
+    QGroupBox *groubBox = new QGroupBox ("Picture search");
     groubBox->setLayout(l0);
 
     QVBoxLayout *l4 = new QVBoxLayout;
@@ -521,7 +521,7 @@ cImageTargetWidget::cImageTargetWidget(QWidget *parent)
     l1->addWidget(imageButtonWidget[1][0], 1);
     l1->addWidget(imageButtonWidget[1][1], 1);
 
-    QGroupBox *groupBox =new QGroupBox ("Picture panel");
+    QGroupBox *groupBox = new QGroupBox ("Picture panel");
     groupBox->setLayout(l1);
 
     QVBoxLayout *l2 = new QVBoxLayout;
@@ -554,11 +554,11 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
     : QWidget (parent)
 {
 
-    this->listWidget =new QListWidget;
+    this->listWidget = new QListWidget;
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addWidget(this->listWidget);
 
-    QGroupBox *groupBox =new QGroupBox ("Course items");
+    QGroupBox *groupBox = new QGroupBox ("Course items");
     groupBox->setLayout(l0);
 
     QVBoxLayout *l1 = new QVBoxLayout;
@@ -665,7 +665,7 @@ void cMp3Widget::openFile()
 
     QFileDialog::Options opt = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
 
-    QString selectedFilter ="";
+    QString selectedFilter = "";
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open mp3 file"),
                                                     getLastDir(),
@@ -706,7 +706,7 @@ cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
     l0->addWidget(mp3Widget[2]);
     l0->addWidget(mp3Widget[3]);
 
-    QGroupBox *groupBox =new QGroupBox ("Mp3 panel");
+    QGroupBox *groupBox = new QGroupBox ("Mp3 panel");
     groupBox->setLayout(l0);
 
     QVBoxLayout *l1 = new QVBoxLayout;

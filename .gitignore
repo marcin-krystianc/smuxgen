@@ -1,0 +1,5 @@
+.svn
+build-smuxgen-Desktop_Qt_5_1_0_MinGW_32bit-Debug/
+release
+*.user
+source/build*

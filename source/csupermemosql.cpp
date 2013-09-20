@@ -109,20 +109,15 @@ bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int paretntIDSQL, int *elementIDSQL)
+bool cSuperMemoSQL::setElementSQL (QString elementName, int courseId, int parentItemId, int *itemId)
 {
     QSqlTableModel model(0, m_database);
-
-    QString filter; // CourseID + PageNum - primary key
-    filter += QString::fromUtf8("CourseId = ")+QString::number(courseIDSQL);
-    filter += QString::fromUtf8(" and ");
-    filter += QString::fromUtf8("ParentID = ")+QString::number(paretntIDSQL);
-    filter += QString::fromUtf8(" and ");
-    filter += QString::fromUtf8(" Name = \"")+elementName.remove("\"")+QString::fromUtf8("\"");
-
-    //trace (QString("setElementSQL: lastQuery = ")+query.lastQuery(), traceLevel3);
-    model.setTable("items");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+    QString filter = QString("CourseId = %1 and ParentID = %2 and Name = \"%3\"")
+            .arg(QString::number(courseId), QString::number(parentItemId), elementName.remove("\""));
+
+    model.setTable("items");
     model.setFilter(filter);
 
     trace(QString("setElementSQL, filter:")+filter, traceLevel3);
@@ -133,32 +128,31 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
     }
 
     QSqlRecord record = model.record(0);
-
     if (model.rowCount() == 0)
     {
         // generate new record
         int maxId = 0;
-        if (!getCourseMaxId(courseIDSQL, &maxId))
+        if (!getCourseMaxId(courseId, &maxId))
             return false;
 
-        *elementIDSQL = maxId + 1;
-        record.setValue("CourseId", courseIDSQL);
+        *itemId = maxId + 1;
+        record.setValue("CourseId", courseId);
         record.setValue("Name", elementName);
-        record.setValue("PageNum", *elementIDSQL);
-        record.setValue("QueueOrder", *elementIDSQL);
-        record.setValue("ParentId", paretntIDSQL);
+        record.setValue("PageNum", *itemId);
+        record.setValue("QueueOrder", *itemId);
+        record.setValue("ParentId", parentItemId);
 
-        if (paretntIDSQL>0)
+        if (parentItemId>0)
             record.setValue("Type", 0);
         else
             record.setValue("Type", 5);
 
         trace(QString("setElementSQL, generate new record: ")
-              + QString(" CourseId:") +QString::number(courseIDSQL)
+              + QString(" CourseId:") +QString::number(courseId)
               + QString(" Name:") +elementName
-              + QString(" PageNum:") +QString::number(*elementIDSQL)
-              + QString(" QueueOrder:") +QString::number(*elementIDSQL)
-              + QString(" ParentId:") +QString::number(paretntIDSQL)
+              + QString(" PageNum:") +QString::number(*itemId)
+              + QString(" QueueOrder:") +QString::number(*itemId)
+              + QString(" ParentId:") +QString::number(parentItemId)
               , traceLevel3);
 
         if (!model.insertRecord(-1, record)){ // to the end
@@ -167,7 +161,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
         }
     }
     else
-        *elementIDSQL = record.value("PageNum").toInt();
+        *itemId = record.value("PageNum").toInt();
 
     model.database().transaction();
     if (model.submitAll()) {
@@ -182,27 +176,24 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getElementID (int courseIDSQL, int parentID, QString elementName, int *retID)
+bool cSuperMemoSQL::getElementID (int courseId, int parentItemId, QString elementName, int *retID)
 {
-    QString filter; // CourseID + PageNum - primary key
-    filter += QString::fromUtf8("select PageNum from items where ");
-    filter += QString::fromUtf8("CourseId = ")+QString::number(courseIDSQL);
-    filter += QString::fromUtf8(" and ");
-    filter += QString::fromUtf8("ParentID = ")+QString::number(parentID);
-    filter += QString::fromUtf8(" and ");
-    filter += QString::fromUtf8(" Name = \"")+elementName.remove('\"')+QString::fromUtf8("\"");
-
     QSqlQuery query (m_database);
-    if (!query.exec(filter)) {
+    QString q = QString("select %1 from %2 where %3 = :v1 and %4 = :v2 and %4 = :v3")
+            .arg("PageNum", "items", "CourseId", "ParentID", "Name");
+    query.prepare(q);
+    query.bindValue(":v1", QVariant(courseId));
+    query.bindValue(":v2", QVariant(parentItemId));
+    query.bindValue(":v3", QVariant(elementName.remove('\"')));
+    if (!query.exec()) {
         trace(QString("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text(), traceError);
         return false;
     }
-    query.first();
-    QVariant tmp = query.value(0);
-    if (!tmp.isValid())
+
+    if (!query.first())
         return false;
 
-    *retID = tmp.toInt();
+    *retID = query.value(0).toInt();
     return true;
 }
 

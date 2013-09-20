@@ -21,8 +21,8 @@ public:
     bool open(const QString &fileName);
     bool getCourses (QStringList *retList);
     bool getCourseIdPath (QString course, int *id, QString *path);
-    bool setElementSQL (QString elementName, int courseIDSQL, int paretntIDSQL, int *elementIDSQL);
-    bool getElementID (int courseIDSQL, int parentID, QString elementName, int *retID);
+    bool setElementSQL (QString elementName, int courseId, int parentItemId, int *itemId);
+    bool getElementID (int courseIDSQL, int parentItemId, QString elementName, int *retID);
 
     QSqlDatabase getDatabase();
 

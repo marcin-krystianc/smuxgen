@@ -126,7 +126,7 @@ QString cSuperMemoSQL::quotationString (QString s)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int paretntIDSQL, int &elementIDSQL)
+bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int paretntIDSQL, int *elementIDSQL)
 {
     QSqlTableModel model(0, m_database);
 
@@ -158,11 +158,11 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
         if (!getCourseMaxId(courseIDSQL, &maxId))
             return false;
 
-        elementIDSQL = maxId + 1;
+        *elementIDSQL = maxId + 1;
         record.setValue("CourseId", courseIDSQL);
         record.setValue("Name", elementName);
-        record.setValue("PageNum", elementIDSQL);
-        record.setValue("QueueOrder", elementIDSQL);
+        record.setValue("PageNum", *elementIDSQL);
+        record.setValue("QueueOrder", *elementIDSQL);
         record.setValue("ParentId", paretntIDSQL);
 
         if (paretntIDSQL>0)
@@ -173,8 +173,8 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
         trace(QString("setElementSQL, generate new record: ")
               + QString(" CourseId:") +QString::number(courseIDSQL)
               + QString(" Name:") +elementName
-              + QString(" PageNum:") +QString::number(elementIDSQL)
-              + QString(" QueueOrder:") +QString::number(elementIDSQL)
+              + QString(" PageNum:") +QString::number(*elementIDSQL)
+              + QString(" QueueOrder:") +QString::number(*elementIDSQL)
               + QString(" ParentId:") +QString::number(paretntIDSQL)
               , traceLevel3);
 
@@ -184,7 +184,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
         }
     }
     else
-        elementIDSQL = record.value("PageNum").toInt();
+        *elementIDSQL = record.value("PageNum").toInt();
 
     model.database().transaction();
     if (model.submitAll()) {
@@ -199,7 +199,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getElementID (int courseIDSQL, int parentID, QString elementName, int &retID)
+bool cSuperMemoSQL::getElementID (int courseIDSQL, int parentID, QString elementName, int *retID)
 {
     QString filter; // CourseID + PageNum - primary key
     filter += QString::fromUtf8("select PageNum from items where ");
@@ -219,7 +219,7 @@ bool cSuperMemoSQL::getElementID (int courseIDSQL, int parentID, QString element
     if (!tmp.isValid())
         return false;
 
-    retID = tmp.toInt();
+    *retID = tmp.toInt();
     return true;
 }
 

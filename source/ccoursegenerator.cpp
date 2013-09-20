@@ -93,7 +93,7 @@ void CourseGenerator::run ()
 
     int topicAID, topicBID;
     // A course
-    if (!m_db.setElementSQL(topicNameA, courseID, 0, topicAID))
+    if (!m_db.setElementSQL(topicNameA, courseID, 0, &topicAID))
         return;
 
     QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
@@ -127,7 +127,7 @@ void CourseGenerator::run ()
     // B course
     if (m_courseTemplate.options.bit.oDouble)
     {
-        if (!m_db.setElementSQL(topicNameB, courseID, 0, topicBID))
+        if (!m_db.setElementSQL(topicNameB, courseID, 0, &topicBID))
             return;
         QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, courseFileDirectoryName, "pres", topicBID);
 
@@ -224,7 +224,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     const int timeOut = -1; // no timeout
     QProcess myProcess;
 
-    if (!m_db.setElementSQL(getTextToPrint(question), courseIDSQL, topicID, ID))
+    if (!m_db.setElementSQL(getTextToPrint(question), courseIDSQL, topicID, &ID))
         return false;
 
     QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);

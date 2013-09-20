@@ -22,7 +22,7 @@
 #include <QSqlQuery>
 
 #include <algorithm>
-#include <list>
+#include <set>
 #include "globalsmuxgentools.h"
 #include "csapi.h"
 
@@ -348,8 +348,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
 bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory)
 {
     QDomNode n = docElement.firstChild();
-    std::list <int> listValidID;
-    std::list <int>::iterator it;
+    std::set<int> validIds;
 
     trace (QString("doDelete: id:")
            + QString(" CourseId:")+QString::number(courseIDSQL)
@@ -375,29 +374,16 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
                 docElement.removeChild(tmp);
                 continue;
             }
-            listValidID.push_back(e.attribute("id", "0").toInt());
+            validIds.insert(e.attribute("id", "0").toInt());
             trace(QString("validID:")+e.attribute("id", "0"), traceLevel2);
         }
         n = n.nextSibling();
     }
 
-    QString filter; // CourseID + PageNum - primary key
-    filter += QString::fromUtf8("delete from items where ");
-    filter += QString::fromUtf8("CourseId = ")+QString::number(courseIDSQL);
-    filter += QString::fromUtf8(" and ");
-    filter += QString::fromUtf8("ParentID = ")+QString::number(paretntIDSQL);
-    filter += QString::fromUtf8(" and ");
-    for (it = listValidID.begin();it!= listValidID.end();it++)
-        filter += QString::fromUtf8 ("PageNum!= ")+QString::number(*it)+QString(" and ");
 
-    filter += "1 = 1"; // to finish qery
-
-    QSqlQuery query (m_db.getDatabase());
-    if (!query.exec(filter)) // delete all unknown course items
-    {
-        trace(QString("doDelete error query.exec(): ")+query.lastError().text(), traceError);
+    if (!m_db.deleteNotValidItems(courseIDSQL, paretntIDSQL, validIds))
         return false;
-    }
+
     return true;
 }
 

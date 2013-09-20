@@ -155,8 +155,13 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseIDSQL, int par
     QSqlRecord record = model.record(0);
 
     if (model.rowCount() == 0)
-    { // generate new record
-        elementIDSQL = ++this->m_GID;
+    {
+        // generate new record
+        int maxId = 0;
+        if (!getCourseMaxId(courseIDSQL, &maxId))
+            return false;
+
+        elementIDSQL = maxId + 1;
         record.setValue("CourseId", courseIDSQL);
         record.setValue("Name", elementName);
         record.setValue("PageNum", elementIDSQL);
@@ -225,23 +230,25 @@ bool cSuperMemoSQL::getElementID (int courseIDSQL, int parentID, QString element
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourseMaxId (int courseID)
+bool cSuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
 {
     // TODO: remove this function
 
     QString filter; // CourseID
-    filter += QString::fromUtf8("select PageNum from items where ");
+    filter += QString::fromUtf8("select max(PageNum) from items where ");
     filter += QString::fromUtf8("CourseId = ") + QString::number(courseID);
 
     QSqlQuery query (this->m_database);
     if (!query.exec(filter)) {
-        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ")+query.lastError().text(), traceError);
+        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ") + query.lastError().text(), traceError);
         return false;
     }
 
-    for (this->m_GID = 1, query.first();query.value(0).isValid();query.next())
-        m_GID = std::max(query.value(0).toInt(), this->m_GID);
+    *maxId = 0;
+    if (!query.first())
+        return true;
 
+    *maxId = query.value(0).toInt();
     return true;
 }
 

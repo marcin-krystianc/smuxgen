@@ -78,19 +78,14 @@ void CourseGenerator::run ()
     QDir(courseFileDirectoryName).mkdir("media");
 
     // get root document
-    QDomDocument doc("mydocument");
     QFile docFile(courseFileName);
-    if (!doc.setContent(&docFile)) {
+    QDomDocument doc("mydocument");
+     if (!doc.setContent(&docFile)) {
         trace(QString("Cannot open file: ")+courseFileName, traceError);
         return;
     }
 
     QDomElement rootElement = doc.documentElement();
-    if (!m_db.getCourseMaxId(courseID)) {
-        trace(QString("Cannot getCourseMaxId"), traceError);
-        return;
-    }
-
     QString topicNameA = m_courseTemplate.options.subname;
     QString topicNameB = m_courseTemplate.options.subname+"*";
     int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
@@ -197,7 +192,7 @@ QDomNode CourseGenerator::getNode (QDomNode &rootElement, QString nodeName, QDom
         node = rootElement.appendChild(tmpElement);
         QDomDocument docItem = createCourseItem(1, nodeName);
         writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(nodeID));
-        trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+nodeID, traceLevel2);
+        trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+QString::number(nodeID), traceLevel2);
     }
 
     return node;

@@ -52,7 +52,6 @@ class CourseGenerator : public QThread
         bool checkIfNewAnswers(QString fileName, QString answers);
         QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
 
-
     protected:
         void run();
 };

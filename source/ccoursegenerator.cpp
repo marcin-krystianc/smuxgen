@@ -100,8 +100,8 @@ void CourseGenerator::run ()
     QString topicNameA = m_courseTemplate.options.subname;
     QString topicNameB = m_courseTemplate.options.subname+"*";
 
-    m_courseTemplate.options.voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
-    m_courseTemplate.options.voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
+    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
+    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
     QDomNode topicNodeA;
     QDomNode topicNodeB;
@@ -110,6 +110,7 @@ void CourseGenerator::run ()
     // A course
     if (!m_db.setElementSQL(topicNameA, courseID, 0, topicAID))
         goto END;
+
     topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
 
     setDelete (topicNodeA);
@@ -132,7 +133,7 @@ void CourseGenerator::run ()
         if (m_abortProces)
             goto END;
 
-        generateCourseElement(courseID, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false);
+        generateCourseElement(courseID, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false, voiceIndexA, voiceIndexQ);
     }
 
 
@@ -166,16 +167,17 @@ void CourseGenerator::run ()
             if (m_abortProces)
                 goto END;
 
-            generateCourseElement(courseID, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true);
+            generateCourseElement(courseID, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true, voiceIndexA, voiceIndexQ);
         }
 
         doDelete (courseID, topicBID, topicNodeB, courseFileDirectoryName);
     }
 
 
-END:
     writeDomDoucumentToFile(doc, courseFileName);
     m_isFailed = false;
+END:;
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -230,7 +232,10 @@ void CourseGenerator::setDelete (QDomNode &topicNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode)
+bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, QString answer
+                                            , QString topicName, QDomNode &topicNode, int topicID
+                                            , QDomDocument &doc, QString courseFileDirectory, bool bMode
+                                            , int voiceIndexA, int voiceIndexQ)
 {
     int ID = 0;
     bool forceMedia = m_courseTemplate.options.bit.oForce;
@@ -262,7 +267,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         answer.replace("|", " ");
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(answer):getTranscript(question));
-        arguments.append(QString::number(m_courseTemplate.options.voiceIndexQ));
+        arguments.append(QString::number(voiceIndexQ));
         arguments.append(QString::number(m_courseTemplate.options.voiceTrimQ));
         arguments.append(QString::number(m_courseTemplate.options.voiceGainQ));
 
@@ -286,7 +291,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         answer.replace("|", " ");
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(question):getTranscript(answer));
-        arguments.append(QString::number(m_courseTemplate.options.voiceIndexA));
+        arguments.append(QString::number(voiceIndexA));
         arguments.append(QString::number(m_courseTemplate.options.voiceTrimA));
         arguments.append(QString::number(m_courseTemplate.options.voiceGainA));
 

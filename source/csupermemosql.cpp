@@ -80,19 +80,19 @@ bool cSuperMemoSQL::getCourses (QStringList *retList)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
+bool cSuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString *path)
 {
     QSqlQuery query (m_database);
     QString q = QString("Select %1, %2 from %3 where %4 = :v1").arg("Id", "Path", "Courses", "Title");
     query.prepare(q);
-    query.bindValue(":v1", QVariant(course));
+    query.bindValue(":v1", QVariant(courseName));
     if (!query.exec()) {
         trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(), traceError);
         return false;
     }
 
     if (!query.first()) {
-        this->trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+course, traceWarning);
+        this->trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+courseName, traceWarning);
         return false;
     }
 
@@ -109,13 +109,13 @@ bool cSuperMemoSQL::getCourseIdPath (QString course, int *id, QString *path)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::setElementSQL (QString elementName, int courseId, int parentItemId, int *itemId)
+bool cSuperMemoSQL::addItem (const QString &elementName, int courseId, int parentItemId, int *itemId)
 {
     QSqlTableModel model(0, m_database);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     QString filter = QString("CourseId = %1 and ParentID = %2 and Name = \"%3\"")
-            .arg(QString::number(courseId), QString::number(parentItemId), elementName.remove("\""));
+            .arg(QString::number(courseId), QString::number(parentItemId), QString(elementName).remove("\""));
 
     model.setTable("items");
     model.setFilter(filter);
@@ -176,7 +176,7 @@ bool cSuperMemoSQL::setElementSQL (QString elementName, int courseId, int parent
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getElementID (int courseId, int parentItemId, QString elementName, int *retID)
+bool cSuperMemoSQL::getItemId (int courseId, int parentItemId, const QString &elementName, int *retID)
 {
     QSqlQuery query (m_database);
     QString q = QString("select %1 from %2 where %3 = :v1 and %4 = :v2 and %4 = :v3")
@@ -184,7 +184,7 @@ bool cSuperMemoSQL::getElementID (int courseId, int parentItemId, QString elemen
     query.prepare(q);
     query.bindValue(":v1", QVariant(courseId));
     query.bindValue(":v2", QVariant(parentItemId));
-    query.bindValue(":v3", QVariant(elementName.remove('\"')));
+    query.bindValue(":v3", QVariant(elementName));
     if (!query.exec()) {
         trace(QString("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text(), traceError);
         return false;

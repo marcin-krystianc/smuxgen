@@ -20,9 +20,9 @@ public:
     cSuperMemoSQL();
     bool open(const QString &fileName);
     bool getCourses (QStringList *retList);
-    bool getCourseIdPath (QString course, int *id, QString *path);
-    bool setElementSQL (QString elementName, int courseId, int parentItemId, int *itemId);
-    bool getElementID (int courseIDSQL, int parentItemId, QString elementName, int *retID);
+    bool getCourseDetails (const QString &courseName, int *id, QString *path);
+    bool addItem (const QString &itemName, int courseId, int parentItemId, int *itemId);
+    bool getItemId (int courseIDSQL, int parentItemId, const QString &elementName, int *retID);
 
     QSqlDatabase getDatabase();
 

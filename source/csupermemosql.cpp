@@ -178,7 +178,7 @@ bool cSuperMemoSQL::addItem (const QString &elementName, int courseId, int paren
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getItemId (int courseId, int parentItemId, const QString &elementName, int *retID)
+bool cSuperMemoSQL::getItemId (const QString &itemName, int courseId, int parentItemId, int *retID)
 {
     QSqlQuery query (m_database);
     QString q = QString("select %1 from %2 where %3 = :v1 and %4 = :v2 and %4 = :v3")
@@ -186,7 +186,7 @@ bool cSuperMemoSQL::getItemId (int courseId, int parentItemId, const QString &el
     query.prepare(q);
     query.bindValue(":v1", QVariant(courseId));
     query.bindValue(":v2", QVariant(parentItemId));
-    query.bindValue(":v3", QVariant(elementName));
+    query.bindValue(":v3", QVariant(itemName));
     if (!query.exec()) {
         trace(QString("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text(), traceError);
         return false;

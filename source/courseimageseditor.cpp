@@ -84,12 +84,12 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
     int topicIDA, topicIDB;
 
-    if (!this->database.getItemId(courseID, 0, topicNameA, &topicIDA))
+    if (!this->database.getItemId(topicNameA, courseID, 0, &topicIDA))
         return;
 
     if (courseTemplate.options.bit.oDouble)
     {
-        if (!this->database.getItemId(courseID, 0, topicNameB, &topicIDB))
+        if (!this->database.getItemId(topicNameB, courseID, 0, &topicIDB))
             return;
     }
 
@@ -108,7 +108,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
             continue;
         }
 
-        if (!this->database.getItemId(courseID, topicIDA, getTextToPrint(list1.at(0)), &id1))
+        if (!this->database.getItemId( getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
             continue;
 
         QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
@@ -129,7 +129,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
         if (courseTemplate.options.bit.oDouble)
         {
-            if (!this->database.getItemId(courseID, topicIDB, getTextToPrint(list1.at(1)), &id2))
+            if (!this->database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
                 continue;
 
             f2m = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";

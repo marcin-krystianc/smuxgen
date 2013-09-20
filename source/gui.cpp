@@ -18,17 +18,17 @@
 /////////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow()
 {
-    this->createActions();
-    this->createMenus();
-    this->createToolBars();
-    this->createStatusBar();
-    this->createDockWindows();
+    createActions();
+    createMenus();
+    createToolBars();
+    createStatusBar();
+    createDockWindows();
 
-    this->m_contentChanged = false;
-    this->setTitle();
-    this->unlockInterface();
-    this->resize(800, 600);
-    this->setWindowIcon(QIcon(":/images/smuxgen.png"));
+    m_contentChanged = false;
+    setTitle();
+    unlockInterface();
+    resize(800, 600);
+    setWindowIcon(QIcon(":/images/smuxgen.png"));
 
     connect(&m_courseGenerator, SIGNAL(finished()) , this , SLOT(generateCourseFinishedSlot()));
     connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&)) , this , SLOT(progressSlot(const QString&)));
@@ -42,11 +42,12 @@ MainWindow::~MainWindow()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::about()
 {
-    QMessageBox::about(this, QString("SMUXGEN"),
-                       QString ( "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
-                                 "<center><br/>License : GPL"
-                                 "<center><br/><a href = \"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> "));
+    QMessageBox::about(this, "SMUXGEN",
+                       "<center><b> SMUXGEN </b> - SuperMemo UX generator</center>"
+                       "<center><br/>License : GPL"
+                       "<center><br/><a href = \"http://code.google.com/p/smuxgen\">http://code.google.com/p/smuxgen</a> ");
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createMenus()
 {
@@ -79,7 +80,7 @@ void MainWindow::createMenus()
     m_helpMenu->addAction(m_aboutAction);
     m_helpMenu->addAction(m_aboutQtAction);
 
-    this->updateRecentFileActions();
+    updateRecentFileActions();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -156,45 +157,43 @@ void MainWindow::createToolBars()
     m_toolBar->addAction(m_generateCourseAction);
     m_toolBar->addAction(m_courseBrowserAction);
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createDockWindows()
 {
-    //QDockWidget *dock;
+    m_dockOptionsPage = new QDockWidget(tr("Options"), this);
+    m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
+    addDockWidget(Qt::LeftDockWidgetArea, m_dockOptionsPage);
+    m_optionsPage = new cOptionsPage(m_dockOptionsPage);
+    m_dockOptionsPage->setWidget(m_optionsPage);
+    m_viewMenu->addAction(m_dockOptionsPage->toggleViewAction());
 
-    this->m_dockOptionsPage = new QDockWidget(tr("Options"), this);
-    this->m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
-    this->addDockWidget(Qt::LeftDockWidgetArea, this->m_dockOptionsPage);
-    this->m_optionsPage = new cOptionsPage(this->m_dockOptionsPage);
-    this->m_dockOptionsPage->setWidget(this->m_optionsPage);
-    m_viewMenu->addAction(this->m_dockOptionsPage->toggleViewAction());
+    m_dockContentPage = new QDockWidget(tr("Word list"), this);
+    m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
+    addDockWidget(Qt::RightDockWidgetArea, m_dockContentPage);
+    m_contentPage = new cContentPage(m_dockContentPage);
+    m_dockContentPage->setWidget(m_contentPage);
+    m_viewMenu->addAction(m_dockContentPage->toggleViewAction());
 
-    this->m_dockContentPage = new QDockWidget(tr("Word list"), this);
-    this->m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
-    addDockWidget(Qt::RightDockWidgetArea, this->m_dockContentPage);
-    this->m_contentPage = new cContentPage(this->m_dockContentPage);
-    this->m_dockContentPage->setWidget(this->m_contentPage);
-    m_viewMenu->addAction(this->m_dockContentPage->toggleViewAction());
+    m_dockConsolePage = new QDockWidget(tr("Console"), this);
+    m_dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, m_dockConsolePage);
+    m_consolePage = new cConsolePage(m_dockConsolePage);
+    m_dockConsolePage->setWidget(m_consolePage);
+    m_viewMenu->addAction(m_dockConsolePage->toggleViewAction());
+    m_dockConsolePage->hide();
 
-    this->m_dockConsolePage = new QDockWidget(tr("Console"), this);
-    this->m_dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, this->m_dockConsolePage);
-    this->m_consolePage = new cConsolePage(this->m_dockConsolePage);
-    this->m_dockConsolePage->setWidget(this->m_consolePage);
-    m_viewMenu->addAction(this->m_dockConsolePage->toggleViewAction());
-    this->m_dockConsolePage->hide();
-
-    this->m_dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
-    this->m_dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
-    addDockWidget(Qt::TopDockWidgetArea, this->m_dockCourseBrowser);
-    this->m_imageWidget = new cCourseImageEditor(this->m_dockCourseBrowser);
-    this->m_dockCourseBrowser->setWidget(this->m_imageWidget);
-    this->m_dockCourseBrowser->hide();
-    connect( this->m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )), this, SLOT(courseBrowserVisibleSlot(bool)));
+    m_dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
+    m_dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, m_dockCourseBrowser);
+    m_imageWidget = new cCourseImageEditor(m_dockCourseBrowser);
+    m_dockCourseBrowser->setWidget(m_imageWidget);
+    m_dockCourseBrowser->hide();
+    connect( m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )), this, SLOT(courseBrowserVisibleSlot(bool)));
 
 
-    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), this->m_consolePage , SLOT(traceSlot(const QString&, const int&)));
-    connect( this->m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
-
+    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), m_consolePage , SLOT(traceSlot(const QString&, const int&)));
+    connect( m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -225,11 +224,11 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
         return;
     }
 
-    this->m_courseTemplateFileName = fileName;
-    trace (QString("Opened: ")+this->m_courseTemplateFileName, traceLevel1);
+    m_courseTemplateFileName = fileName;
+    trace (QString("Opened: ")+m_courseTemplateFileName, traceLevel1);
 
-    this->m_optionsPage->setOptions(m_courseTemplate.options);
-    this->m_contentPage->setContent(m_courseTemplate.content);
+    m_optionsPage->setOptions(m_courseTemplate.options);
+    m_contentPage->setContent(m_courseTemplate.content);
 
     QSettings settings("Smuxgen", "Smuxgen");
     QStringList files = settings.value("recentFileList").toStringList();
@@ -238,29 +237,28 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     while (files.size() > MaxRecentFiles)
         files.removeLast();
     settings.setValue("recentFileList", files);
-    this->updateRecentFileActions();
+    updateRecentFileActions();
 
-    this->m_contentChanged = false;
-    this->setTitle();
-
+    m_contentChanged = false;
+    setTitle();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool MainWindow::saveCourseTemplateSlot()
 {
-    if (this->m_courseTemplateFileName.isEmpty())
-        return this->saveAsCourseTemplateSlot();
+    if (m_courseTemplateFileName.isEmpty())
+        return saveAsCourseTemplateSlot();
 
-    QFile::remove(this->m_courseTemplateFileName+"~");
-    QFile::copy(this->m_courseTemplateFileName, this->m_courseTemplateFileName+"~");
+    QFile::remove(m_courseTemplateFileName+"~");
+    QFile::copy(m_courseTemplateFileName, m_courseTemplateFileName+"~");
 
-    this->m_contentChanged = false;
+    m_contentChanged = false;
 
-    this->m_courseTemplate.options = this->m_optionsPage->getOptions();
-    this->m_courseTemplate.content = this->m_contentPage->getContent();
-    this->m_courseTemplate.save(this->m_courseTemplateFileName);
-    trace (QString("Saved: ")+this->m_courseTemplateFileName, traceLevel1);
-    this->setTitle();
+    m_courseTemplate.options = m_optionsPage->getOptions();
+    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseTemplate.save(m_courseTemplateFileName);
+    trace (QString("Saved: ")+m_courseTemplateFileName, traceLevel1);
+    setTitle();
 
     return true;
 }
@@ -276,12 +274,12 @@ void MainWindow::importQASlot()
         return;
 
     setLastDir(strippedDir(fileName));
-    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    m_courseTemplate.content = m_contentPage->getContent();
     if (!m_courseTemplate.importQA(fileName)) {
         trace (tr("Error importing Q&A file:")+fileName, traceError);
         return;
     }
-    this->m_contentPage->setContent(m_courseTemplate.content);
+    m_contentPage->setContent(m_courseTemplate.content);
     trace (QString::fromUtf8("Imported Q&A:")+fileName, traceLevel1);
 }
 
@@ -297,7 +295,7 @@ void MainWindow::exportQASlot()
 
     setLastDir(strippedDir(fileName));
 
-    this->m_courseTemplate.content = this->m_contentPage->getContent();
+    m_courseTemplate.content = m_contentPage->getContent();
     if (!m_courseTemplate.exportQA(fileName)) {
         trace (tr("Error exporting Q&A file:")+fileName, traceError);
         return;
@@ -324,110 +322,108 @@ bool MainWindow::saveAsCourseTemplateSlot()
     while (files.size() > MaxRecentFiles)
         files.removeLast();
     settings.setValue("recentFileList", files);
-    this->updateRecentFileActions();
+    updateRecentFileActions();
 
-    this->m_courseTemplateFileName = fileName;
-    this->setTitle();
-    this->saveCourseTemplateSlot();
+    m_courseTemplateFileName = fileName;
+    setTitle();
+    saveCourseTemplateSlot();
     return true;
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseSlot()
 {
-    if (this->m_courseGenerator.isRunning()) {
+    if (m_courseGenerator.isRunning()) {
         return generateStop();
     }
 
-    this->m_courseTemplate.options = this->m_optionsPage->getOptions();
-    this->m_courseTemplate.content = this->m_contentPage->getContent();
-    this->m_courseGenerator.generate(this->m_courseTemplate);
-    this->lockInterface();
-    this->setTitle();
-    trace (QString("Started to generate: ")+this->m_courseTemplate.options.subname, traceLevel1);
+    m_courseTemplate.options = m_optionsPage->getOptions();
+    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseGenerator.generate(m_courseTemplate);
+    lockInterface();
+    setTitle();
+    trace (QString("Started to generate: ")+m_courseTemplate.options.subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::courseBrowserOpenCloseSlot()
 {
-    if (this->m_dockCourseBrowser->isVisible())
-        this->m_dockCourseBrowser->hide();
+    if (m_dockCourseBrowser->isVisible())
+        m_dockCourseBrowser->hide();
     else
-        this->m_dockCourseBrowser->show();
+        m_dockCourseBrowser->show();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::courseBrowserVisibleSlot(bool visible)
 {
-    if (!visible)
-    {
-        this->m_generateCourseAction->setEnabled(true);
-        this->m_dockContentPage->show();
-        this->m_dockOptionsPage->show();
-        this->m_dockContentPage->toggleViewAction()->setEnabled(true);
-        this->m_dockOptionsPage->toggleViewAction()->setEnabled(true);
+    if (!visible) {
+        m_generateCourseAction->setEnabled(true);
+        m_dockContentPage->show();
+        m_dockOptionsPage->show();
+        m_dockContentPage->toggleViewAction()->setEnabled(true);
+        m_dockOptionsPage->toggleViewAction()->setEnabled(true);
     }
-    else
-    {
-        this->m_courseTemplate.options = this->m_optionsPage->getOptions();
-        this->m_courseTemplate.content = this->m_contentPage->getContent();
-        this->m_imageWidget->workWith(this->m_courseTemplate);
+    else {
+        m_courseTemplate.options = m_optionsPage->getOptions();
+        m_courseTemplate.content = m_contentPage->getContent();
+        m_imageWidget->workWith(m_courseTemplate);
 
-        this->m_generateCourseAction->setEnabled(false);
-        this->m_dockContentPage->hide();
-        this->m_dockOptionsPage->hide();
-        this->m_dockContentPage->toggleViewAction()->setEnabled(false);
-        this->m_dockOptionsPage->toggleViewAction()->setEnabled(false);
+        m_generateCourseAction->setEnabled(false);
+        m_dockContentPage->hide();
+        m_dockOptionsPage->hide();
+        m_dockContentPage->toggleViewAction()->setEnabled(false);
+        m_dockOptionsPage->toggleViewAction()->setEnabled(false);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::setTitle()
 {
-    QFileInfo fileInfo(this->m_courseTemplateFileName);
+    QFileInfo fileInfo(m_courseTemplateFileName);
 
     QString title = "SMUXGEN: ";
-    if (this->m_contentChanged)
+    if (m_contentChanged)
         title += QString("*");
 
     title += fileInfo.fileName()+QString(" ");
 
-    if (this->m_courseGenerator.isRunning())
+    if (m_courseGenerator.isRunning())
         title += QString("[Running]");
 
     setWindowTitle(title);
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::unlockInterface()
 {
-    this->m_courseBrowserAction->setEnabled(true);
-    this->m_generateCourseAction->setIcon(QIcon(":/images/generate.png"));
-    this->m_generateCourseAction->setStatusTip(tr("Generate course"));
-    this->m_generateCourseAction->setText(tr("Generate "));
+    m_courseBrowserAction->setEnabled(true);
+    m_generateCourseAction->setIcon(QIcon(":/images/generate.png"));
+    m_generateCourseAction->setStatusTip(tr("Generate course"));
+    m_generateCourseAction->setText(tr("Generate "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
-    this->m_courseBrowserAction->setEnabled(false);
-    this->m_generateCourseAction->setIcon(QIcon(":/images/stop.png"));
-    this->m_generateCourseAction->setStatusTip(tr("Stop"));
-    this->m_generateCourseAction->setText(tr("Stop "));
+    m_courseBrowserAction->setEnabled(false);
+    m_generateCourseAction->setIcon(QIcon(":/images/stop.png"));
+    m_generateCourseAction->setStatusTip(tr("Stop"));
+    m_generateCourseAction->setText(tr("Stop "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::generateCourseFinishedSlot()
 {
-    if (this->m_courseGenerator.isFailed())
+    if (m_courseGenerator.isFailed())
         trace (QString("Course generation failed !"), traceLevel1);
     else
         trace (QString("Course generatad successfully"), traceLevel1);
 
-    this->unlockInterface();
+    unlockInterface();
     statusBar()->showMessage("");
 
-    this->setTitle();
+    setTitle();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -439,8 +435,8 @@ void MainWindow::progressSlot(const QString &progress)
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::contentChangedSlot()
 {
-    this->m_contentChanged = true;
-    this->setTitle();
+    m_contentChanged = true;
+    setTitle();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -452,20 +448,18 @@ void MainWindow::closeSlot ()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (this->m_courseGenerator.isRunning())
-    {
+    if (m_courseGenerator.isRunning()) {
         event->ignore();
         return generateStop();
     }
 
-    if (this->m_contentChanged)
-    {
+    if (m_contentChanged) {
         int q = QMessageBox::question(0, "Save changes", "Do You want to save changes ?", "Yes", "No", "Cancel");
 
         switch (q)
         {
         case 0:
-            if (!this->saveCourseTemplateSlot())
+            if (!saveCourseTemplateSlot())
                 event->ignore();
             break;
         case 1:
@@ -482,7 +476,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::generateStop()
 {
     trace (QString("Stopping "), traceLevel1);
-    this->m_courseGenerator.stop();
+    m_courseGenerator.stop();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -516,5 +510,5 @@ void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
-        this->openCourseTemplateSlot(action->data().toString());
+        openCourseTemplateSlot(action->data().toString());
 }

@@ -234,17 +234,16 @@ bool cSuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
 {
     // TODO: remove this function
 
-    QString filter; // CourseID
-    filter += QString::fromUtf8("select max(PageNum) from items where ");
-    filter += QString::fromUtf8("CourseId = ") + QString::number(courseID);
-
-    QSqlQuery query (this->m_database);
-    if (!query.exec(filter)) {
-        trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ") + query.lastError().text(), traceError);
-        return false;
+    QSqlQuery query (m_database);
+    QString q1 = QString("select max(%1) from items where CourseId = :v1").arg("PageNum");
+    query.prepare(q1);
+    query.bindValue(":v1", QVariant(courseID));
+    if (!query.exec()) {
+       trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ") + query.lastError().text(), traceError);
+       return false;
     }
 
-    *maxId = 0;
+    *maxId = 1;
     if (!query.first())
         return true;
 

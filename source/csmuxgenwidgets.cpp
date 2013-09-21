@@ -210,11 +210,11 @@ void OptionsPage::voiceCheckBoxChangedA (int state)
 /////////////////////////////////////////////////////////////////////////////
 void OptionsPage::setOptions(const CourseTemplateOptions &options)
 {
-    m_oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
-    m_oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
-    m_oImageCheckBox ->setCheckState(options.bit.oImage ? Qt::Checked : Qt::Unchecked);
-    m_oVoiceCheckBoxQ ->setCheckState(options.bit.oVoiceQ ? Qt::Checked : Qt::Unchecked);
-    m_oVoiceCheckBoxA ->setCheckState(options.bit.oVoiceA ? Qt::Checked : Qt::Unchecked);
+    m_oForceCheckBox ->setCheckState(options.m_oForce ? Qt::Checked : Qt::Unchecked);
+    m_oDoubleCheckBox ->setCheckState(options.m_oBothDirections ? Qt::Checked : Qt::Unchecked);
+    m_oImageCheckBox ->setCheckState(options.m_oImage ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxQ ->setCheckState(options.m_oVoiceQ ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxA ->setCheckState(options.m_oVoiceA ? Qt::Checked : Qt::Unchecked);
     
     m_fileEdit->setText(options.m_dbPath);
     m_courseCombo->clear();
@@ -283,11 +283,11 @@ void OptionsPage::voiceTestButtonTriggered ()
 CourseTemplateOptions OptionsPage::getOptions()
 {
     CourseTemplateOptions options;
-    options.bit.oForce = m_oForceCheckBox->isChecked();
-    options.bit.oDouble = m_oDoubleCheckBox->isChecked();
-    options.bit.oImage = m_oImageCheckBox->isChecked();
-    options.bit.oVoiceQ = m_oVoiceCheckBoxQ->isChecked();
-    options.bit.oVoiceA = m_oVoiceCheckBoxA->isChecked();
+    options.m_oForce = m_oForceCheckBox->isChecked();
+    options.m_oBothDirections = m_oDoubleCheckBox->isChecked();
+    options.m_oImage = m_oImageCheckBox->isChecked();
+    options.m_oVoiceQ = m_oVoiceCheckBoxQ->isChecked();
+    options.m_oVoiceA = m_oVoiceCheckBoxA->isChecked();
     
     options.m_dbPath = m_fileEdit->text();
     options.m_subname = m_subnameEdit->text();

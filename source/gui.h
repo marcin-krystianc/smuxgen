@@ -55,7 +55,7 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    static const int MaxRecentFiles = 15;
+    static const int MAX_RECENT_FILES = 15;
 
     void createMenus();
     void createActions();

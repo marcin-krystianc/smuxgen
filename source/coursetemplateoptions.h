@@ -32,14 +32,11 @@ public:
     int m_voiceGainA;
     double m_voiceTrimA;
 
-    struct
-    {
-        unsigned int oForce : 1; // force to create agian all course elements
-        unsigned int oDouble : 1; // make also alternative course
-        unsigned int oVoiceQ : 1; // make mp3 files (Questions)
-        unsigned int oVoiceA : 1; // make mp3 files (Answers)
-        unsigned int oImage : 1; // get Images
-    } bit;
+    bool m_oForce; // force to create agian all course elements
+    bool m_oBothDirections; // make also alternative course
+    bool m_oVoiceQ; // make mp3 files (Questions)
+    bool m_oVoiceA; // make mp3 files (Answers)
+    bool m_oImage; // get Images
 
     bool fromString (const QString &line);
     QString toString () ;

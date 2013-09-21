@@ -34,27 +34,27 @@ bool CourseTemplateOptions::fromString(const QString &line)
         QString first = chunks.at(i++);
 
         if (first == QString::fromUtf8("-Force")) {
-            bit.oForce = true;
+            m_oForce = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-Double")) {
-            bit.oDouble = true;
+            m_oBothDirections = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-VoiceQ")){
-            bit.oVoiceQ = true;
+            m_oVoiceQ = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-VoiceA")){
-            bit.oVoiceA = true;
+            m_oVoiceA = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-Image")){
-            bit.oImage = true;
+            m_oImage = true;
             continue;
         }
 
@@ -153,11 +153,11 @@ QString CourseTemplateOptions::toString()
     ret+= QString("-vNameA ") +"\""+m_voiceNameA+"\" ";
     ret+= QString("-gainA ") +QString::number(m_voiceGainA) +" ";
 
-    if ( bit.oForce) ret+= "-Force ";
-    if ( bit.oDouble) ret+= "-Double ";
-    if ( bit.oVoiceQ) ret+= "-VoiceQ ";
-    if ( bit.oVoiceA) ret+= "-VoiceA ";
-    if ( bit.oImage) ret+= "-Image ";
+    if ( m_oForce) ret+= "-Force ";
+    if ( m_oBothDirections) ret+= "-Double ";
+    if ( m_oVoiceQ) ret+= "-VoiceQ ";
+    if ( m_oVoiceA) ret+= "-VoiceA ";
+    if ( m_oImage) ret+= "-Image ";
 
     return ret;
 }
@@ -170,11 +170,11 @@ void CourseTemplateOptions::trace(const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void CourseTemplateOptions::clear()
 {
-    bit.oDouble = false;
-    bit.oForce = false;
-    bit.oVoiceQ = false;
-    bit.oVoiceA = false;
-    bit.oImage = false;
+    m_oBothDirections = false;
+    m_oForce = false;
+    m_oVoiceQ = false;
+    m_oVoiceA = false;
+    m_oImage = false;
 
     m_courseName.clear();
     m_dbPath.clear();

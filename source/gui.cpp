@@ -130,7 +130,7 @@ void MainWindow::createActions()
     m_aboutQtAction->setStatusTip(tr("Show the Qt library's About box"));
     connect(m_aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    for (int i = 0; i < MaxRecentFiles; ++i) {
+    for (int i = 0; i < MAX_RECENT_FILES; ++i) {
         m_recentFileActions.push_back(new QAction(this));
         m_recentFileActions[i]->setVisible(false);
         connect(m_recentFileActions[i], SIGNAL(triggered()),
@@ -228,7 +228,7 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > MaxRecentFiles)
+    while (files.size() > MAX_RECENT_FILES)
         files.removeLast();
     settings.setValue("recentFileList", files);
     updateRecentFileActions();
@@ -313,7 +313,7 @@ bool MainWindow::saveAsCourseTemplateSlot()
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > MaxRecentFiles)
+    while (files.size() > MAX_RECENT_FILES)
         files.removeLast();
     settings.setValue("recentFileList", files);
     updateRecentFileActions();

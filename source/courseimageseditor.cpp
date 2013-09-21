@@ -87,7 +87,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
     if (!m_database.getItemId(topicNameA, courseID, 0, &topicIDA))
         return;
 
-    if (courseTemplate.m_options.bit.oDouble)
+    if (courseTemplate.m_options.m_oBothDirections)
     {
         if (!m_database.getItemId(topicNameB, courseID, 0, &topicIDB))
             return;
@@ -127,7 +127,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
         QString q2;
         QString a2;
 
-        if (courseTemplate.m_options.bit.oDouble)
+        if (courseTemplate.m_options.m_oBothDirections)
         {
             if (!m_database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
                 continue;

@@ -58,7 +58,7 @@ void CourseGenerator::generate (const cCourseTemplate &courseTemplate)
 {
     m_courseTemplate = courseTemplate;
     m_abortProces = false;
-    this->start();
+    start();
 }
 
 /////////////////////////////////////////////////////////////////////////////

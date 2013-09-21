@@ -38,33 +38,28 @@ class cImageList : public QListWidget
 {
     Q_OBJECT
 public:
-
-    cImageList(QWidget *parent = 0, int maxCount = 128);
+    cImageList(QWidget *parent = 0, int m_maxCount = 128);
     void addPiece(const QPixmap &pixmap, const QString &hint = "");
     void resetPosition();
+
 public slots:
     void addPieceSlot (const QPixmap &, const QString &hint = "");
     void setIconSizeSlot (int size );
 
 private:
-    int maxCount;
-    int rowIndex;
-
     QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
-
-    static const unsigned int tileSizeX = 100;
-    static const unsigned int tileSizeY = 100;
-
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
-protected:
-    /*
- void dragEnterEvent(QDragEnterEvent *event);
- void dragMoveEvent(QDragMoveEvent *event);
- void dropEvent(QDropEvent *event);
- */
-    void startDrag(Qt::DropActions supportedActions);
+    int m_maxCount;
+    int m_rowIndex;
 
+    enum TILE_SIZE {
+     e_tileSizeX = 100,
+     e_tileSizeY = 100
+    };
+
+protected:
+    void startDrag(Qt::DropActions supportedActions);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +70,6 @@ public:
     cImageSearch(QWidget *parent = 0);
     ~cImageSearch();
 
-
 public slots:
     void setNewKeywordsChangedL (const QString &txt);
     void setNewKeywordsChangedR (const QString &txt);
@@ -85,26 +79,20 @@ public slots:
     void newKeywordsR ();
 
 private:
-    QLineEdit *leftEdit;
-    QLineEdit *rightEdit;
-    QProgressBar *leftProgress;
-    QProgressBar *rightProgress;
-    QTimer *timerL;
-    QTimer *timerR;
-
-    QSlider *zoomSlider;
-
-    QString textL;
-    QString textR;
-
-    cImageList *imagelist;
-    cImageDownloader *imageDownloader[2];
     void newKeywords (const QString &txt, int id);
-
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
-
-protected:
+    QLineEdit *m_leftEdit;
+    QLineEdit *m_rightEdit;
+    QProgressBar *m_leftProgress;
+    QProgressBar *m_rightProgress;
+    QTimer *m_timerL;
+    QTimer *m_timerR;
+    QSlider *m_zoomSlider;
+    QString m_textL;
+    QString m_textR;
+    cImageList *m_imagelist;
+    cImageDownloader *m_imageDownloader[2];
 
 };
 
@@ -117,14 +105,13 @@ public:
     bool setFile (const QString &path);
 
 private:
+    QLabel *m_label;
+    QPixmap m_pixmap;
 
-    QLabel *label;
-    QPixmap pixmap;
-
-    QString filePath;
+    QString m_filePath;
     QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
     void trace (const QString &text, const int & flags = traceLevel1|0);
-    void setPixmap (const QPixmap &pixmap);
+    void setPixmap (const QPixmap &m_pixmap);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -142,7 +129,6 @@ public:
     void setFiles (const QStringList &list);
 
 private:
-
     cImageButtonWidget *imageButtonWidget[2][2];
 
 protected:
@@ -163,12 +149,10 @@ signals:
     void elementSelectedMP3Signal (const QStringList &list);
 
 private:
-    QListWidget *listWidget;
+    QListWidget *m_listWidget;
 
 private slots:
     void itemActivatedSlot ( QListWidgetItem * item );
-
-protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -180,13 +164,13 @@ public:
     void setData (const QString &label, const QString &path);
 
 private:
-    QLabel *label;
-    QPushButton *playButton;
-    QPushButton *openButton;
-    QString filePath;
+    QLabel *m_label;
+    QString m_filePath;
+    QPushButton *m_playButton;
+    QPushButton *m_openButton;
+    Phonon::AudioOutput *m_audioOutput;
+    Phonon::MediaObject *m_mediaObject;
 
-    Phonon::AudioOutput *audioOutput;
-    Phonon::MediaObject *mediaObject;
 private slots:
     void play();
     void openFile();
@@ -201,7 +185,7 @@ public:
     void setData (const QStringList &list);
 
 private:
-    cMp3Widget *mp3Widget[4];
+    cMp3Widget *m_mp3Widget[4];
 
 private slots:
     void elementSelectedMp3Slot (const QStringList& mp3Data);
@@ -220,17 +204,14 @@ private:
     void clear ();
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
-    cSuperMemoSQL database;
-
-    cReadyCourseElementList *readyCourseElementList;
-    cImageTargetWidget *imageTargetWidget;
-    cImageSearch *imageSearch;
-    cMp3TargetWidget *mp3TargetWidget;
+    cSuperMemoSQL m_database;
+    cReadyCourseElementList *m_readyCourseElementList;
+    cImageTargetWidget *m_imageTargetWidget;
+    cImageSearch *m_imageSearch;
+    cMp3TargetWidget *m_mp3TargetWidget;
 
 private slots:
     void elementSelectedImgSlot (const QStringList &imgData);
-
-protected:
 };
 
 

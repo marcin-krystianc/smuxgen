@@ -16,18 +16,18 @@
 /////////////////////////////////////////////////////////////////////////////
 cCourseTemplate::cCourseTemplate()
 {
-    this->clear();
+    clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool cCourseTemplate::open(const QString &fileName)
 {
-    this->clear();
+    clear();
 
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::open - Cannot open file: "+fileName, traceError);
+        trace("cCourseTemplate::open - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -36,9 +36,9 @@ bool cCourseTemplate::open(const QString &fileName)
     inputFileStream.setCodec("UTF-8");
 
 
-    if (!this->options.fromString (inputFileStream.readLine()))
+    if (!options.fromString (inputFileStream.readLine()))
     {
-        this->trace("cCourseTemplate::open - Error in options: "+fileName, traceError);
+        trace("cCourseTemplate::open - Error in options: "+fileName, traceError);
         return false;
     }
 
@@ -47,7 +47,7 @@ bool cCourseTemplate::open(const QString &fileName)
         QString line = (inputFileStream.readLine()).trimmed();
         if (line.isNull()) break; //end of file
         if (line.length() == 0) continue;
-        this->content.push_back(line);
+        content.push_back(line);
     }
     return true;
 }
@@ -58,7 +58,7 @@ bool cCourseTemplate::save(const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::save - Cannot open file: "+fileName, traceError);
+        trace("cCourseTemplate::save - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -66,10 +66,10 @@ bool cCourseTemplate::save(const QString &fileName)
     outputFileStream.setDevice( &file );
     outputFileStream.setCodec("UTF-8");
 
-    outputFileStream<<this->options.toString()<<endl;
+    outputFileStream<<options.toString()<<endl;
 
-    for (int i = 0;i<this->content.count();++i)
-        outputFileStream<<this->content.at(i)<<endl;
+    for (int i = 0;i<content.count();++i)
+        outputFileStream<<content.at(i)<<endl;
 
     return true;
 }
@@ -79,7 +79,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::importQA - Cannot open file: "+fileName, traceError);
+        trace("cCourseTemplate::importQA - Cannot open file: "+fileName, traceError);
         return false;
     }
     QTextStream inputFileStream;
@@ -98,7 +98,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
         if (line.startsWith(QString::fromUtf8("Q:"), Qt::CaseInsensitive))
         {
             if (q&&a)
-                this->content.push_back(entry);
+                content.push_back(entry);
 
             a = false;
             entry = (line.remove(0, 2)).trimmed()+QString::fromUtf8(":");
@@ -121,7 +121,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
         continue;
     }
     if (q&&a)
-        this->content.push_back(entry);
+        content.push_back(entry);
 
     return true;
 }
@@ -131,7 +131,7 @@ bool cCourseTemplate::exportQA (const QString &fileName)
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        this->trace("cCourseTemplate::exportQA - Cannot open file: "+fileName, traceError);
+        trace("cCourseTemplate::exportQA - Cannot open file: "+fileName, traceError);
         return false;
     }
 
@@ -139,9 +139,9 @@ bool cCourseTemplate::exportQA (const QString &fileName)
     outputFileStream.setDevice( &file );
     outputFileStream.setCodec("UTF-8");
 
-    for (int i = 0;i<this->content.count();++i)
+    for (int i = 0;i<content.count();++i)
     {
-        QString s = this->content.at(i);
+        QString s = content.at(i);
         QStringList l1 = s.split(":");
         if (l1.count()!= 2)
             continue;
@@ -168,6 +168,6 @@ void cCourseTemplate::trace (const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void cCourseTemplate::clear()
 {
-    this->options.clear();
-    this->content.clear();
+    options.clear();
+    content.clear();
 }

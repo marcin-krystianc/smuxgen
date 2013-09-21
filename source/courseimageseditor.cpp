@@ -24,56 +24,56 @@
 cCourseImageEditor::cCourseImageEditor(QWidget *parent)
     : QWidget (parent)
 {
-    this->readyCourseElementList = new cReadyCourseElementList;
-    this->imageTargetWidget = new cImageTargetWidget;
-    this->imageSearch = new cImageSearch;
-    this->mp3TargetWidget = new cMp3TargetWidget;
+    m_readyCourseElementList = new cReadyCourseElementList;
+    m_imageTargetWidget = new cImageTargetWidget;
+    m_imageSearch = new cImageSearch;
+    m_mp3TargetWidget = new cMp3TargetWidget;
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
     QWidget *tmpWidget = new QWidget;
     QVBoxLayout *l1 = new QVBoxLayout;
-    l1->addWidget(this->readyCourseElementList);
-    l1->addWidget(this->mp3TargetWidget);
+    l1->addWidget(m_readyCourseElementList);
+    l1->addWidget(m_mp3TargetWidget);
     l1->setMargin(0);
     tmpWidget->setLayout(l1);
 
     splitter->setChildrenCollapsible(false);
     splitter->addWidget(tmpWidget);
-    splitter->addWidget(this->imageTargetWidget );
-    splitter->addWidget(this->imageSearch);
+    splitter->addWidget(m_imageTargetWidget );
+    splitter->addWidget(m_imageSearch);
     splitter->setHandleWidth(10);
     QHBoxLayout *l0 = new QHBoxLayout;
     l0->addWidget(splitter);
 
     setLayout(l0);
 
-    connect( this->readyCourseElementList , SIGNAL(elementSelectedImgSignal(const QStringList&)),
+    connect( m_readyCourseElementList , SIGNAL(elementSelectedImgSignal(const QStringList&)),
              this , SLOT(elementSelectedImgSlot (const QStringList&)));
 
-    connect( readyCourseElementList , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
-             mp3TargetWidget , SLOT(elementSelectedMp3Slot(const QStringList&)));
+    connect( m_readyCourseElementList , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
+             m_mp3TargetWidget , SLOT(elementSelectedMp3Slot(const QStringList&)));
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cCourseImageEditor::clear()
 {
-    this->readyCourseElementList->clear();
+    m_readyCourseElementList->clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 {
-    this->trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.course+" lesson:"+courseTemplate.options.subname, traceLevel1);
-    this->clear();
+    trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.course+" lesson:"+courseTemplate.options.subname, traceLevel1);
+    clear();
 
-    if (!this->database.open(courseTemplate.options.database))
+    if (!m_database.open(courseTemplate.options.database))
         return;
 
     int courseID;
     QString courseFileName, courseFileDirectoryName, mediaDirectoryName;
-    if (!this->database.getCourseDetails (courseTemplate.options.course, &courseID, &courseFileName))
+    if (!m_database.getCourseDetails (courseTemplate.options.course, &courseID, &courseFileName))
         return;
 
     QFileInfo courseFileInfo(courseFileName);
@@ -84,12 +84,12 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
     int topicIDA, topicIDB;
 
-    if (!this->database.getItemId(topicNameA, courseID, 0, &topicIDA))
+    if (!m_database.getItemId(topicNameA, courseID, 0, &topicIDA))
         return;
 
     if (courseTemplate.options.bit.oDouble)
     {
-        if (!this->database.getItemId(topicNameB, courseID, 0, &topicIDB))
+        if (!m_database.getItemId(topicNameB, courseID, 0, &topicIDB))
             return;
     }
 
@@ -108,7 +108,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
             continue;
         }
 
-        if (!this->database.getItemId( getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
+        if (!m_database.getItemId( getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
             continue;
 
         QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
@@ -129,7 +129,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
 
         if (courseTemplate.options.bit.oDouble)
         {
-            if (!this->database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
+            if (!m_database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
                 continue;
 
             f2m = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
@@ -144,7 +144,7 @@ void cCourseImageEditor::workWith (const cCourseTemplate &courseTemplate)
         QStringList imgList, mp3List;
         imgList<<k1<<f1m<<f1n<<k2<<f2m<<f2n;
         mp3List<<f1a<<f1q<<a1<<q1<<f2a<<f2q<<a2<<q2;
-        this->readyCourseElementList->addItem(line, imgList, mp3List);
+        m_readyCourseElementList->addItem(line, imgList, mp3List);
     }
 }
 
@@ -159,15 +159,15 @@ void cCourseImageEditor::trace(const QString &text, const int & flags)
 void cCourseImageEditor::elementSelectedImgSlot (const QStringList &imgData)
 {
     if (!imgData.at(0).isEmpty()) // keyword1
-        this->imageSearch->setNewKeywordsChangedL(imgData.at(0));
+        m_imageSearch->setNewKeywordsChangedL(imgData.at(0));
 
     if (!imgData.at(3).isEmpty()) // keyword2
-        this->imageSearch->setNewKeywordsChangedR(imgData.at(3));
+        m_imageSearch->setNewKeywordsChangedR(imgData.at(3));
 
     QStringList list = imgData;
     list.removeAt(3); // keyword1
     list.removeAt(0); // keyword2
-    this->imageTargetWidget->setFiles(list);
+    m_imageTargetWidget->setFiles(list);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -177,44 +177,44 @@ cImageList::cImageList(QWidget *parent, int maxCount )
     : QListWidget (parent)
 {
     setViewMode(QListView::IconMode);
-    setIconSize(QSize(tileSizeX, tileSizeX));
+    setIconSize(QSize(e_tileSizeX, e_tileSizeX));
     setSpacing(1);
     setAcceptDrops(true);
     setDropIndicatorShown(true);
 
-    this->maxCount = maxCount;
-    this->resetPosition();
-    this->setMouseTracking(true);
+    maxCount = maxCount;
+    resetPosition();
+    setMouseTracking(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::resetPosition()
 {
-    this->rowIndex = 0;
+    m_rowIndex = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 {
-    if (this->count() >= this->maxCount)
-        delete takeItem(this->count()-1);
+    if (count() >= m_maxCount)
+        delete takeItem(count()-1);
 
     QListWidgetItem *pieceItem = new QListWidgetItem();
     pieceItem->setStatusTip(hint);
 
     if (!hint.isNull())
     {
-        for (int i = 0;i<this->count();i++)
+        for (int i = 0;i<count();i++)
         {
-            if(this->item(i)->data(Qt::UserRole+1).toString() == hint)
+            if(item(i)->data(Qt::UserRole+1).toString() == hint)
             {
-                this->insertItem(this->rowIndex++, this->takeItem(i)); // move to the beginning of list
+                insertItem(m_rowIndex++, takeItem(i)); // move to the beginning of list
                 return;
             }
         }
     }
 
-    this->insertItem(this->rowIndex++, pieceItem);
+    insertItem(m_rowIndex++, pieceItem);
     pieceItem->setIcon(QIcon(pixmap));
 
     pieceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable
@@ -228,7 +228,7 @@ void cImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::addPieceSlot(const QPixmap &pixmap, const QString& hint)
 {
-    this->addPiece(pixmap, hint);
+    addPiece(pixmap, hint);
 }
 /////////////////////////////////////////////////////////////////////////////
 void cImageList::trace(const QString &text, const int & flags)
@@ -246,7 +246,7 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
     QPixmap pixmap = qVariantValue<QPixmap>(item->data(Qt::UserRole));
 
     dataStream << pixmap ;
-    pixmap = pixmap.scaled(tileSizeX, tileSizeY);
+    pixmap = pixmap.scaled(e_tileSizeX, e_tileSizeY);
     QMimeData *mimeData = new QMimeData;
     mimeData->setData(tileMimeFormat(), itemData);
 
@@ -260,7 +260,7 @@ void cImageList::startDrag(Qt::DropActions /*supportedActions*/)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cImageList::setIconSizeSlot (int size )
+void cImageList::setIconSizeSlot (int size)
 {
     setIconSize(QSize(size, size));
 }
@@ -272,33 +272,33 @@ cImageSearch::cImageSearch(QWidget *parent)
     : QWidget (parent)
 {
 
-    this->setMinimumWidth(200);
+    setMinimumWidth(200);
 
-    this->leftEdit = new QLineEdit;
-    this->rightEdit = new QLineEdit;
+    m_leftEdit = new QLineEdit;
+    m_rightEdit = new QLineEdit;
     QHBoxLayout *l1 = new QHBoxLayout;
-    l1->addWidget(this->leftEdit);
-    l1->addWidget(this->rightEdit);
+    l1->addWidget(m_leftEdit);
+    l1->addWidget(m_rightEdit);
 
-    this->leftProgress = new QProgressBar;
-    this->rightProgress = new QProgressBar;
+    m_leftProgress = new QProgressBar;
+    m_rightProgress = new QProgressBar;
     QHBoxLayout *l2 = new QHBoxLayout;
-    l2->addWidget(this->leftProgress);
-    l2->addWidget(this->rightProgress);
+    l2->addWidget(m_leftProgress);
+    l2->addWidget(m_rightProgress);
 
-    this->zoomSlider = new QSlider(Qt::Horizontal);
-    this->zoomSlider->setMinimum(100);
-    this->zoomSlider->setMaximum(500);
+    m_zoomSlider = new QSlider(Qt::Horizontal);
+    m_zoomSlider->setMinimum(100);
+    m_zoomSlider->setMaximum(500);
     QHBoxLayout *l3 = new QHBoxLayout;
     l3->addWidget(new QLabel("Zoom:"));
-    l3->addWidget(this->zoomSlider, 1);
+    l3->addWidget(m_zoomSlider, 1);
 
-    this->imagelist = new cImageList();
+    m_imagelist = new cImageList();
     QVBoxLayout *l0 = new QVBoxLayout;
     l0->addLayout(l1);
     l0->addLayout(l2);
     l0->addLayout(l3);
-    l0->addWidget(this->imagelist);
+    l0->addWidget(m_imagelist);
 
     QGroupBox *groubBox = new QGroupBox ("Picture search");
     groubBox->setLayout(l0);
@@ -308,32 +308,32 @@ cImageSearch::cImageSearch(QWidget *parent)
     l4->setMargin(0);
     setLayout(l4);
 
-    this->timerL = new QTimer;
-    this->timerR = new QTimer;
+    m_timerL = new QTimer;
+    m_timerR = new QTimer;
 
-    this->timerL->setSingleShot(true);
-    this->timerR->setSingleShot(true);
+    m_timerL->setSingleShot(true);
+    m_timerR->setSingleShot(true);
 
-    connect(this->leftEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedL(const QString&)));
-    connect(this->rightEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedR(const QString&)));
-    connect(this->timerL , SIGNAL(timeout()) , this, SLOT(newKeywordsL()));
-    connect(this->timerR , SIGNAL(timeout()) , this, SLOT(newKeywordsR()));
-
-
+    connect(m_leftEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedL(const QString&)));
+    connect(m_rightEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedR(const QString&)));
+    connect(m_timerL , SIGNAL(timeout()) , this, SLOT(newKeywordsL()));
+    connect(m_timerR , SIGNAL(timeout()) , this, SLOT(newKeywordsR()));
 
 
-    this->imageDownloader[0] = new cImageDownloader("L");
-    this->imageDownloader[1] = new cImageDownloader("R");
 
-    connect(this->imageDownloader[0] , SIGNAL(signalImage(const QPixmap&, const QString&)) , this->imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
-    connect(this->imageDownloader[1] , SIGNAL(signalImage(const QPixmap&, const QString&)) , this->imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
 
-    connect(this->imageDownloader[0] , SIGNAL(sProgressRange (int , int)) , this->leftProgress , SLOT(setRange (int , int)));
-    connect(this->imageDownloader[1] , SIGNAL(sProgressRange (int , int)) , this->rightProgress , SLOT(setRange (int , int)));
-    connect(this->imageDownloader[0] , SIGNAL(sProgressValue(int)) , this->leftProgress , SLOT(setValue(int)));
-    connect(this->imageDownloader[1] , SIGNAL(sProgressValue(int)) , this->rightProgress , SLOT(setValue(int)));
+    m_imageDownloader[0] = new cImageDownloader("L");
+    m_imageDownloader[1] = new cImageDownloader("R");
 
-    connect (this->zoomSlider , SIGNAL(valueChanged(int)) , this->imagelist , SLOT(setIconSizeSlot(int)));
+    connect(m_imageDownloader[0] , SIGNAL(signalImage(const QPixmap&, const QString&)) , m_imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
+    connect(m_imageDownloader[1] , SIGNAL(signalImage(const QPixmap&, const QString&)) , m_imagelist, SLOT(addPieceSlot(const QPixmap&, const QString&)));
+
+    connect(m_imageDownloader[0] , SIGNAL(sProgressRange (int , int)) , m_leftProgress , SLOT(setRange (int , int)));
+    connect(m_imageDownloader[1] , SIGNAL(sProgressRange (int , int)) , m_rightProgress , SLOT(setRange (int , int)));
+    connect(m_imageDownloader[0] , SIGNAL(sProgressValue(int)) , m_leftProgress , SLOT(setValue(int)));
+    connect(m_imageDownloader[1] , SIGNAL(sProgressValue(int)) , m_rightProgress , SLOT(setValue(int)));
+
+    connect (m_zoomSlider , SIGNAL(valueChanged(int)) , m_imagelist , SLOT(setIconSizeSlot(int)));
     /*
  QHBoxLayout *textFiledsLayout = new QHBoxLayout;
  textFiledsLayout->addWidget(courseLabel);
@@ -344,28 +344,28 @@ cImageSearch::cImageSearch(QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 cImageSearch::~cImageSearch()
 {
-    delete this->imageDownloader[0];
-    delete this->imageDownloader[1];
+    delete m_imageDownloader[0];
+    delete m_imageDownloader[1];
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywords (const QString &txt, int id)
 {
-    this->imagelist->resetPosition();
-    this->trace(txt+QString::fromUtf8(" id:")+QString::number(id), traceLevel2);
-    this->imageDownloader[id]->getImages(txt);
+    m_imagelist->resetPosition();
+    trace(txt+QString::fromUtf8(" id:")+QString::number(id), traceLevel2);
+    m_imageDownloader[id]->getImages(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsL ()
 {
-    this->newKeywords(textL, 0);
+    newKeywords(m_textL, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsR ()
 {
-    this->newKeywords(textR, 1);
+    newKeywords(m_textR, 1);
 }
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::trace(const QString &text, const int & flags)
@@ -376,32 +376,32 @@ void cImageSearch::trace(const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsChangedL (const QString &txt)
 {
-    this->timerL->stop();
-    this->timerL->setInterval(200);
-    this->timerL->start();
-    this->textL = txt;
+    m_timerL->stop();
+    m_timerL->setInterval(200);
+    m_timerL->start();
+    m_textL = txt;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::newKeywordsChangedR (const QString &txt)
 {
-    this->timerR->stop();
-    this->timerR->setInterval(200);
-    this->timerR->start();
-    this->textR = txt;
+    m_timerR->stop();
+    m_timerR->setInterval(200);
+    m_timerR->start();
+    m_textR = txt;
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::setNewKeywordsChangedL (const QString &txt)
 {
-    this->leftEdit->setText(txt);
+    m_leftEdit->setText(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageSearch::setNewKeywordsChangedR (const QString &txt)
 {
-    this->rightEdit->setText(txt);
+    m_rightEdit->setText(txt);
 }
 
 
@@ -412,42 +412,42 @@ cImageButtonWidget::cImageButtonWidget(QWidget *parent)
     : QWidget (parent)
 {
 
-    this->label = new QLabel;
+    m_label = new QLabel;
     QVBoxLayout *l0 = new QVBoxLayout;
-    l0->addWidget(this->label);
+    l0->addWidget(m_label);
     l0->setMargin(0);
     setLayout(l0);
     setAcceptDrops(true);
-    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    this->resize(1, 1);
-    this->setFile("");
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    resize(1, 1);
+    setFile("");
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cImageButtonWidget::setPixmap (const QPixmap &pixmap)
 {
-    this->label->setPixmap(pixmap.scaled(this->size()));
+    m_label->setPixmap(pixmap.scaled(size()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool cImageButtonWidget::setFile(const QString &path)
 {
-    this->filePath = path;
+    m_filePath = path;
     QImage tmpImg;
 
-    if (!tmpImg.load(this->filePath))
+    if (!tmpImg.load(m_filePath))
     {
-        trace(QString("cImageButtonWidget::setFile cannot open file:")+filePath, traceError);
-        this->setStatusTip(QString("Cannot open file:")+filePath);
-        this->pixmap = QPixmap(":/images/monkey_off.png");
-        this->setPixmap(this->pixmap);
+        trace(QString("cImageButtonWidget::setFile cannot open file:")+m_filePath, traceError);
+        setStatusTip(QString("Cannot open file:")+m_filePath);
+        m_pixmap = QPixmap(":/images/monkey_off.png");
+        setPixmap(m_pixmap);
 
         return false;
     }
 
-    this->setStatusTip(filePath);
-    this->pixmap = QPixmap(this->filePath);
-    this->setPixmap(this->pixmap);
+    setStatusTip(m_filePath);
+    m_pixmap = QPixmap(m_filePath);
+    setPixmap(m_pixmap);
 
     return true;
 }
@@ -482,16 +482,16 @@ void cImageButtonWidget::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat(tileMimeFormat()))
     {
-        QByteArray pieceData = event->mimeData()->data(this->tileMimeFormat());
+        QByteArray pieceData = event->mimeData()->data(tileMimeFormat());
         QDataStream dataStream(&pieceData, QIODevice::ReadOnly);
         QPixmap pixmap;
 
         dataStream >> pixmap;
 
-        if (!this->filePath.isEmpty())
+        if (!m_filePath.isEmpty())
         {
-            if (pixmap.toImage().save(this->filePath))
-                this->setPixmap(pixmap);
+            if (pixmap.toImage().save(m_filePath))
+                setPixmap(pixmap);
         }
         event->setDropAction(Qt::MoveAction);
         event->accept();
@@ -501,7 +501,7 @@ void cImageButtonWidget::dropEvent(QDropEvent *event)
 /////////////////////////////////////////////////////////////////////////////
 void cImageButtonWidget::resizeEvent(QResizeEvent *)
 {
-    this->setPixmap(this->pixmap);
+    setPixmap(m_pixmap);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -510,10 +510,10 @@ void cImageButtonWidget::resizeEvent(QResizeEvent *)
 cImageTargetWidget::cImageTargetWidget(QWidget *parent)
     : QWidget (parent)
 {
-    this->imageButtonWidget[0][0] = new cImageButtonWidget;
-    this->imageButtonWidget[0][1] = new cImageButtonWidget;
-    this->imageButtonWidget[1][0] = new cImageButtonWidget;
-    this->imageButtonWidget[1][1] = new cImageButtonWidget;
+    imageButtonWidget[0][0] = new cImageButtonWidget;
+    imageButtonWidget[0][1] = new cImageButtonWidget;
+    imageButtonWidget[1][0] = new cImageButtonWidget;
+    imageButtonWidget[1][1] = new cImageButtonWidget;
 
     QVBoxLayout *l1 = new QVBoxLayout;
     l1->addWidget(imageButtonWidget[0][0], 1);
@@ -535,16 +535,16 @@ cImageTargetWidget::cImageTargetWidget(QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 void cImageTargetWidget::setFiles (const QStringList &list)
 {
-    this->imageButtonWidget[0][0]->setFile(list.at(0));
-    this->imageButtonWidget[0][1]->setFile(list.at(1));
-    this->imageButtonWidget[1][0]->setFile(list.at(2));
-    this->imageButtonWidget[1][1]->setFile(list.at(3));
+    imageButtonWidget[0][0]->setFile(list.at(0));
+    imageButtonWidget[0][1]->setFile(list.at(1));
+    imageButtonWidget[1][0]->setFile(list.at(2));
+    imageButtonWidget[1][1]->setFile(list.at(3));
 }
 /////////////////////////////////////////////////////////////////////////////
 void cImageTargetWidget::resizeEvent (QResizeEvent*)
 {
-    this->setMaximumWidth(this->imageButtonWidget[0][0]->height()*2);
-    this->setMinimumWidth(this->imageButtonWidget[0][0]->height()*1);
+    setMaximumWidth(imageButtonWidget[0][0]->height()*2);
+    setMinimumWidth(imageButtonWidget[0][0]->height()*1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -554,9 +554,9 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
     : QWidget (parent)
 {
 
-    this->listWidget = new QListWidget;
+    m_listWidget = new QListWidget;
     QVBoxLayout *l0 = new QVBoxLayout;
-    l0->addWidget(this->listWidget);
+    l0->addWidget(m_listWidget);
 
     QGroupBox *groupBox = new QGroupBox ("Course items");
     groupBox->setLayout(l0);
@@ -566,24 +566,24 @@ cReadyCourseElementList::cReadyCourseElementList(QWidget *parent)
     l1->setMargin(0);
     setLayout(l1);
 
-    this->setMinimumWidth(200);
+    setMinimumWidth(200);
 
-    connect(this->listWidget , SIGNAL(currentItemChanged( QListWidgetItem*, QListWidgetItem*)) , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
+    connect(m_listWidget , SIGNAL(currentItemChanged( QListWidgetItem*, QListWidgetItem*)) , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cReadyCourseElementList::addItem (const QString &text, const QStringList &imgData, const QStringList &mp3Data)
 {
-    this->listWidget->insertItem(0, text);
-    this->listWidget->item(0)->setData(Qt::UserRole , imgData);
-    this->listWidget->item(0)->setData(Qt::UserRole+1 , mp3Data);
+    m_listWidget->insertItem(0, text);
+    m_listWidget->item(0)->setData(Qt::UserRole , imgData);
+    m_listWidget->item(0)->setData(Qt::UserRole+1 , mp3Data);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cReadyCourseElementList::clear ()
 {
-    this->listWidget->clear();
+    m_listWidget->clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -606,61 +606,61 @@ void cReadyCourseElementList::itemActivatedSlot ( QListWidgetItem * item )
 cMp3Widget::cMp3Widget (QWidget *parent)
     : QWidget (parent)
 {
-    label = new QLabel;
-    playButton = new QPushButton ("Play");
-    openButton = new QPushButton ("Load");
+    m_label = new QLabel;
+    m_playButton = new QPushButton ("Play");
+    m_openButton = new QPushButton ("Load");
 
     QHBoxLayout *l0 = new QHBoxLayout;
-    l0->addWidget(label);
+    l0->addWidget(m_label);
     l0->addStretch(1);
-    l0->addWidget(playButton);
-    l0->addWidget(openButton);
+    l0->addWidget(m_playButton);
+    l0->addWidget(m_openButton);
     l0->setMargin(0);
     setLayout(l0);
 
-    this->audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
-    this->mediaObject = new Phonon::MediaObject (this);
+    m_audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
+    m_mediaObject = new Phonon::MediaObject (this);
 
-    connect(playButton , SIGNAL(clicked()) , this , SLOT(play()));
-    connect(openButton , SIGNAL(clicked()) , this , SLOT(openFile()));
+    connect(m_playButton , SIGNAL(clicked()) , this , SLOT(play()));
+    connect(m_openButton , SIGNAL(clicked()) , this , SLOT(openFile()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cMp3Widget::setData (const QString &label, const QString &path)
 {
-    this->label->setText(label);
-    this->filePath = path;
+    m_label->setText(label);
+    m_filePath = path;
 
-    playButton->setStatusTip(path);
-    openButton->setStatusTip(path);
+    m_playButton->setStatusTip(path);
+    m_openButton->setStatusTip(path);
 
     if (path.isEmpty())
     {
-        playButton->setEnabled(false);
-        openButton->setEnabled(false);
+        m_playButton->setEnabled(false);
+        m_openButton->setEnabled(false);
         return;
     }
 
-    playButton->setEnabled(true);
+    m_playButton->setEnabled(true);
     if (checkIsFileOk(path))
-        playButton->setEnabled(true);
+        m_playButton->setEnabled(true);
     else
-        playButton->setEnabled(false);
+        m_playButton->setEnabled(false);
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cMp3Widget::play()
 {
-    Phonon::createPath(mediaObject, audioOutput);
-    mediaObject->setCurrentSource(Phonon::MediaSource(filePath));
-    mediaObject->play();
+    Phonon::createPath(m_mediaObject, m_audioOutput);
+    m_mediaObject->setCurrentSource(Phonon::MediaSource(m_filePath));
+    m_mediaObject->play();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cMp3Widget::openFile()
 {
-    if (filePath.isEmpty())
+    if (m_filePath.isEmpty())
         return;
 
     QFileDialog::Options opt = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
@@ -677,13 +677,13 @@ void cMp3Widget::openFile()
 
     setLastDir(strippedDir(fileName));
 
-    QFile::remove(filePath); // remove old file
-    QFile::copy(fileName, filePath); //
+    QFile::remove(m_filePath); // remove old file
+    QFile::copy(fileName, m_filePath); //
 
-    if (checkIsFileOk(filePath))
-        playButton->setEnabled(true);
+    if (checkIsFileOk(m_filePath))
+        m_playButton->setEnabled(true);
     else
-        playButton->setEnabled(false);
+        m_playButton->setEnabled(false);
 
 }
 
@@ -694,17 +694,17 @@ cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
     : QWidget (parent)
 {
 
-    mp3Widget[0] = new cMp3Widget;
-    mp3Widget[1] = new cMp3Widget;
-    mp3Widget[2] = new cMp3Widget;
-    mp3Widget[3] = new cMp3Widget;
+    m_mp3Widget[0] = new cMp3Widget;
+    m_mp3Widget[1] = new cMp3Widget;
+    m_mp3Widget[2] = new cMp3Widget;
+    m_mp3Widget[3] = new cMp3Widget;
 
     QVBoxLayout *l0 = new QVBoxLayout;
-    l0->addWidget(mp3Widget[0]);
-    l0->addWidget(mp3Widget[1]);
+    l0->addWidget(m_mp3Widget[0]);
+    l0->addWidget(m_mp3Widget[1]);
     l0->addSpacing(10);
-    l0->addWidget(mp3Widget[2]);
-    l0->addWidget(mp3Widget[3]);
+    l0->addWidget(m_mp3Widget[2]);
+    l0->addWidget(m_mp3Widget[3]);
 
     QGroupBox *groupBox = new QGroupBox ("Mp3 panel");
     groupBox->setLayout(l0);
@@ -718,10 +718,10 @@ cMp3TargetWidget::cMp3TargetWidget (QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 void cMp3TargetWidget::setData (const QStringList &list)
 {
-    mp3Widget[0]->setData(QString("Q:")+list.at(3), list.at(1));
-    mp3Widget[1]->setData(QString("A:")+list.at(2), list.at(0));
-    mp3Widget[2]->setData(QString("Q:")+list.at(7), list.at(5));
-    mp3Widget[3]->setData(QString("A:")+list.at(6), list.at(4));
+    m_mp3Widget[0]->setData(QString("Q:")+list.at(3), list.at(1));
+    m_mp3Widget[1]->setData(QString("A:")+list.at(2), list.at(0));
+    m_mp3Widget[2]->setData(QString("Q:")+list.at(7), list.at(5));
+    m_mp3Widget[3]->setData(QString("A:")+list.at(6), list.at(4));
 }
 
 /////////////////////////////////////////////////////////////////////////////

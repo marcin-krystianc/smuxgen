@@ -144,21 +144,21 @@ cOptionsPage::cOptionsPage(QWidget *parent)
 
     setLayout(configLayout);
 
-    this->audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
-    this->mediaObject = new Phonon::MediaObject (this);
+    audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
+    mediaObject = new Phonon::MediaObject (this);
 
     connect(fileChooseButton, SIGNAL(clicked()) , this , SLOT(fileButtonTriggered()));
-    connect(this->fileEdit , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
+    connect(fileEdit , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
     connect(voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
     connect(voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
 
-    connect(this->oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
-    connect(this->oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
+    connect(oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
+    connect(oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
 
-    connect(this->mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
+    connect(mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
 
-    this->voiceCheckBoxChangedQ(this->oVoiceCheckBoxQ->checkState());
-    this->voiceCheckBoxChangedA(this->oVoiceCheckBoxA->checkState());
+    voiceCheckBoxChangedQ(oVoiceCheckBoxQ->checkState());
+    voiceCheckBoxChangedA(oVoiceCheckBoxA->checkState());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -209,39 +209,39 @@ void cOptionsPage::voiceCheckBoxChangedA (int state)
 /////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
 {
-    this->oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
-    this->oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
-    this->oImageCheckBox ->setCheckState(options.bit.oImage ? Qt::Checked : Qt::Unchecked);
-    this->oVoiceCheckBoxQ ->setCheckState(options.bit.oVoiceQ ? Qt::Checked : Qt::Unchecked);
-    this->oVoiceCheckBoxA ->setCheckState(options.bit.oVoiceA ? Qt::Checked : Qt::Unchecked);
+    oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
+    oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
+    oImageCheckBox ->setCheckState(options.bit.oImage ? Qt::Checked : Qt::Unchecked);
+    oVoiceCheckBoxQ ->setCheckState(options.bit.oVoiceQ ? Qt::Checked : Qt::Unchecked);
+    oVoiceCheckBoxA ->setCheckState(options.bit.oVoiceA ? Qt::Checked : Qt::Unchecked);
 
-    this->fileEdit->setText(options.database);
-    this->courseCombo->clear();
-    this->courseCombo->insertItem(0, options.course);
-    this->subnameEdit->setText(options.subname);
-    this->instructionEdit->setText(options.instruction);
+    fileEdit->setText(options.database);
+    courseCombo->clear();
+    courseCombo->insertItem(0, options.course);
+    subnameEdit->setText(options.subname);
+    instructionEdit->setText(options.instruction);
 
-    this->voiceComboQ ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
-    this->voiceGainQ ->setValue(options.voiceGainQ);
-    this->voiceTrimBeginQ->setValue(options.voiceTrimQ);
+    voiceComboQ ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
+    voiceGainQ ->setValue(options.voiceGainQ);
+    voiceTrimBeginQ->setValue(options.voiceTrimQ);
 
-    this->voiceComboA ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
-    this->voiceGainA ->setValue(options.voiceGainA);
-    this->voiceTrimBeginA->setValue(options.voiceTrimA);
+    voiceComboA ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
+    voiceGainA ->setValue(options.voiceGainA);
+    voiceTrimBeginA->setValue(options.voiceTrimA);
 
-    this->fileEditChanged(this->fileEdit->text());
+    fileEditChanged(fileEdit->text());
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::voiceTestButtonTriggered ()
 {
-    cCourseTemplateOptions options = this->getOptions();
+    cCourseTemplateOptions options = getOptions();
     QStringList arguments; // filename, text, trim, gain
 
     if (sender() == voiceTestbuttonQ)
     {
         arguments.append("test");
-        arguments.append(this->voiceTesttextQ->text());
+        arguments.append(voiceTesttextQ->text());
         arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)+1));
         arguments.append(QString::number(options.voiceTrimQ));
         arguments.append(QString::number(options.voiceGainQ));
@@ -249,7 +249,7 @@ void cOptionsPage::voiceTestButtonTriggered ()
     else if (sender() == voiceTestbuttonA)
     {
         arguments.append("test");
-        arguments.append(this->voiceTesttextA->text());
+        arguments.append(voiceTesttextA->text());
         arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)+1));
         arguments.append(QString::number(options.voiceTrimA));
         arguments.append(QString::number(options.voiceGainA));
@@ -282,25 +282,25 @@ void cOptionsPage::voiceTestButtonTriggered ()
 cCourseTemplateOptions cOptionsPage::getOptions()
 {
     cCourseTemplateOptions options;
-    options.bit.oForce = this->oForceCheckBox->isChecked();
-    options.bit.oDouble = this->oDoubleCheckBox->isChecked();
-    options.bit.oImage = this->oImageCheckBox->isChecked();
-    options.bit.oVoiceQ = this->oVoiceCheckBoxQ->isChecked();
-    options.bit.oVoiceA = this->oVoiceCheckBoxA->isChecked();
+    options.bit.oForce = oForceCheckBox->isChecked();
+    options.bit.oDouble = oDoubleCheckBox->isChecked();
+    options.bit.oImage = oImageCheckBox->isChecked();
+    options.bit.oVoiceQ = oVoiceCheckBoxQ->isChecked();
+    options.bit.oVoiceA = oVoiceCheckBoxA->isChecked();
 
-    options.database = this->fileEdit->text();
-    options.subname = this->subnameEdit->text();
-    options.instruction = this->instructionEdit->text();
+    options.database = fileEdit->text();
+    options.subname = subnameEdit->text();
+    options.instruction = instructionEdit->text();
 
-    options.course = this->courseCombo->currentText();
+    options.course = courseCombo->currentText();
 
-    options.voiceNameQ = this->voiceComboQ->currentText();
-    options.voiceGainQ = this->voiceGainQ->value();
-    options.voiceTrimQ = this->voiceTrimBeginQ->value();
+    options.voiceNameQ = voiceComboQ->currentText();
+    options.voiceGainQ = voiceGainQ->value();
+    options.voiceTrimQ = voiceTrimBeginQ->value();
 
-    options.voiceNameA = this->voiceComboA->currentText();
-    options.voiceGainA = this->voiceGainA->value();
-    options.voiceTrimA = this->voiceTrimBeginA->value();
+    options.voiceNameA = voiceComboA->currentText();
+    options.voiceGainA = voiceGainA->value();
+    options.voiceTrimA = voiceTrimBeginA->value();
 
     return options;
 }
@@ -319,41 +319,41 @@ void cOptionsPage::fileButtonTriggered()
                                                     opt);
     if (fileName.isEmpty())
         return;
-    this->fileEdit->setText(fileName);
+    fileEdit->setText(fileName);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::fileEditChanged(const QString &fileName)
 {
-    if (!this->superMemoSQL.open(fileName))
+    if (!superMemoSQL.open(fileName))
     {
-        QPalette palette = this->fileEdit->palette();
+        QPalette palette = fileEdit->palette();
         palette.setColor(QPalette::Text, Qt::red ); // fg
-        this->fileEdit->setPalette( palette );
+        fileEdit->setPalette( palette );
         return;
     }
 
-    this->fileEdit->setPalette( this->subnameEdit->palette() ); // fileEdit to default colour
+    fileEdit->setPalette( subnameEdit->palette() ); // fileEdit to default colour
 
-    QString oldText = this->courseCombo->currentText();
+    QString oldText = courseCombo->currentText();
 
-    this->courseCombo->clear();
+    courseCombo->clear();
 
     QStringList courseList;
-    this->superMemoSQL.getCourses(&courseList);
+    superMemoSQL.getCourses(&courseList);
 
     for (int i = 0;i<courseList.count();++i)
-        this->courseCombo->insertItem(0, courseList.at(i));
+        courseCombo->insertItem(0, courseList.at(i));
 
-    int pos = this->courseCombo->findText(oldText);
+    int pos = courseCombo->findText(oldText);
 
     if (pos == -1) // text not found
     {
-        this->courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
-        this->courseCombo->setCurrentIndex(0);
+        courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
+        courseCombo->setCurrentIndex(0);
     }
     else
-        this->courseCombo->setCurrentIndex(pos);
+        courseCombo->setCurrentIndex(pos);
 
     return;
 }
@@ -361,7 +361,7 @@ void cOptionsPage::fileEditChanged(const QString &fileName)
 ////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::testFileRemoveSlot()
 {
-    this->mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
+    mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
     if (!QFile::remove("test.mp3"))
         trace(QString("cannot remove test.mp3 "), traceError);
 }
@@ -402,10 +402,10 @@ void cConsolePage::traceLevelSlot ()
 {
     unsigned int flags = traceError|traceWarning|traceLevel1;
 
-    if (this->cTracelevel2->checkState() == Qt::Checked)
+    if (cTracelevel2->checkState() == Qt::Checked)
         flags |= traceLevel2;
 
-    if (this->cTracelevel3->checkState() == Qt::Checked)
+    if (cTracelevel3->checkState() == Qt::Checked)
         flags |= traceLevel3;
 
     globalTracer.setTraceFlags(flags);
@@ -414,19 +414,19 @@ void cConsolePage::traceLevelSlot ()
 /////////////////////////////////////////////////////////////////////////////
 void cConsolePage::traceSlot(const QString &txt, const int & flags)
 {
-    this->traceMutex.lock();
+    traceMutex.lock();
 
     QDateTime dateTime = QDateTime::currentDateTime ();
 
-    this->consoleText->setTextColor(Qt::black);
+    consoleText->setTextColor(Qt::black);
     if (flags & traceWarning)
-        this->consoleText->setTextColor(Qt::darkMagenta);
+        consoleText->setTextColor(Qt::darkMagenta);
     if (flags & traceError)
-        this->consoleText->setTextColor(Qt::red);
+        consoleText->setTextColor(Qt::red);
 
-    this->consoleText->append(dateTime.toString("hh:mm:ss: ")+txt);
+    consoleText->append(dateTime.toString("hh:mm:ss: ")+txt);
 
-    this->traceMutex.unlock();
+    traceMutex.unlock();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -435,40 +435,40 @@ void cConsolePage::traceSlot(const QString &txt, const int & flags)
 cContentPage::cContentPage(QWidget *parent)
     : QWidget(parent)
 {
-    this->contentTextEdit = new CodeEditor;
-    this->findToolbar = new cFindToolbar;
-    this->findToolbar->layout()->setMargin(0);
-    //this->contentTextEdit->setAcceptRichText(false);
+    contentTextEdit = new CodeEditor;
+    findToolbar = new cFindToolbar;
+    findToolbar->layout()->setMargin(0);
+    //contentTextEdit->setAcceptRichText(false);
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget( this->findToolbar);
-    mainLayout->addWidget(this->contentTextEdit);
+    mainLayout->addWidget( findToolbar);
+    mainLayout->addWidget(contentTextEdit);
     setLayout(mainLayout);
 
-    connect (this->contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
+    connect (contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
 
-    connect (this->findToolbar , SIGNAL(findNext(const QString& )) , this, SLOT(findNext(const QString& )));
-    connect (this->findToolbar , SIGNAL(findPrev(const QString& )) , this, SLOT(findPrev(const QString& )));
+    connect (findToolbar , SIGNAL(findNext(const QString& )) , this, SLOT(findNext(const QString& )));
+    connect (findToolbar , SIGNAL(findPrev(const QString& )) , this, SLOT(findPrev(const QString& )));
 
 }
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::setContent (const QStringList & content)
 {
-    this->contentTextEdit->setPlainText(content.join(QString("\n")));
+    contentTextEdit->setPlainText(content.join(QString("\n")));
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList cContentPage::getContent ()
 {
-    QString str = this->contentTextEdit->toPlainText();
+    QString str = contentTextEdit->toPlainText();
     return str.split(QString("\n"));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::contentChangedSlot()
 {
-    this->findToolbar->hide();
-    emit this->contentChangedSignal();
+    findToolbar->hide();
+    emit contentChangedSignal();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -477,8 +477,8 @@ void cContentPage::keyPressEvent ( QKeyEvent * event )
     if ((event->modifiers()&Qt::ControlModifier) &&
             (event->key() == Qt::Key_F))
     {
-        this->findToolbar->show();
-        this->findToolbar->setFindFocus();
+        findToolbar->show();
+        findToolbar->setFindFocus();
     }
     else
         QWidget::keyPressEvent(event);
@@ -487,13 +487,13 @@ void cContentPage::keyPressEvent ( QKeyEvent * event )
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::findNext(const QString &txt )
 {
-    this->contentTextEdit->find(txt);
+    contentTextEdit->find(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cContentPage::findPrev(const QString &txt )
 {
-    this->contentTextEdit->find(txt, QTextDocument::FindBackward);
+    contentTextEdit->find(txt, QTextDocument::FindBackward);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -502,27 +502,27 @@ void cContentPage::findPrev(const QString &txt )
 cFindToolbar::cFindToolbar(QWidget *parent)
     : QWidget(parent)
 {
-    this->lineEdit = new QLineEdit;
-    this->forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
-    this->backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
+    lineEdit = new QLineEdit;
+    forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
+    backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(new QLabel("Find:"));
-    mainLayout->addWidget(this->lineEdit);
-    mainLayout->addWidget(this->backwardButton);
-    mainLayout->addWidget(this->forwardButton);
+    mainLayout->addWidget(lineEdit);
+    mainLayout->addWidget(backwardButton);
+    mainLayout->addWidget(forwardButton);
     setLayout(mainLayout);
 
-    connect (this->lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
-    connect (this->forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
-    connect (this->backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
+    connect (lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
+    connect (forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
+    connect (backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void cFindToolbar::nextSlot()
 {
-    QString txt = this->lineEdit->text();
+    QString txt = lineEdit->text();
     if (txt.isEmpty())
         return;
 
@@ -532,7 +532,7 @@ void cFindToolbar::nextSlot()
 /////////////////////////////////////////////////////////////////////////////
 void cFindToolbar::prevSlot()
 {
-    QString txt = this->lineEdit->text();
+    QString txt = lineEdit->text();
     if (txt.isEmpty())
         return;
 
@@ -542,5 +542,5 @@ void cFindToolbar::prevSlot()
 /////////////////////////////////////////////////////////////////////////////
 void cFindToolbar::setFindFocus ()
 {
-    this->lineEdit->setFocus();
+    lineEdit->setFocus();
 }

@@ -88,7 +88,7 @@ bool cSuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QStrin
     }
 
     if (!query.first()) {
-        this->trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+courseName, traceWarning);
+        trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+courseName, traceWarning);
         return false;
     }
 
@@ -98,8 +98,8 @@ bool cSuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QStrin
     QVariant v2 = query.value(1);
     *path = QFileInfo(v2.toString()).path()+QString("\\override\\course.xml");
 
-    this->trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(*id), traceLevel2);
-    this->trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);
+    trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(*id), traceLevel2);
+    trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);
 
     return true;
 }

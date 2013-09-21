@@ -32,7 +32,7 @@ public slots:
 
 private:
     int ID;
-    QString url;
+    QString m_url;
     QString EXT;
 
     QString myFileName();
@@ -60,7 +60,7 @@ public slots:
 
 private:
     QString ID;
-    QString keyWords;
+    QString m_keyWords;
     QStringList urls;
     volatile bool newTask;
 

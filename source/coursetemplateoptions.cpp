@@ -34,27 +34,27 @@ bool cCourseTemplateOptions::fromString(const QString &line)
         QString first = chunks.at(i++);
 
         if (first == QString::fromUtf8("-Force")) {
-            this->bit.oForce = true;
+            bit.oForce = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-Double")) {
-            this->bit.oDouble = true;
+            bit.oDouble = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-VoiceQ")){
-            this->bit.oVoiceQ = true;
+            bit.oVoiceQ = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-VoiceA")){
-            this->bit.oVoiceA = true;
+            bit.oVoiceA = true;
             continue;
         }
 
         if (first == QString::fromUtf8("-Image")){
-            this->bit.oImage = true;
+            bit.oImage = true;
             continue;
         }
 
@@ -81,51 +81,51 @@ bool cCourseTemplateOptions::fromString(const QString &line)
 
 
         if (first == QString::fromUtf8("-course")) {
-            this->course = second.remove("\"");;
+            course = second.remove("\"");;
             continue;
         }
 
         if (first == QString::fromUtf8("-database")) {
-            this->database = second.remove("\"");
+            database = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-subname")) {
-            this->subname = second.remove("\"");
+            subname = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-instruction")) {
-            this->instruction = second.remove("\"");
+            instruction = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-trimQ")) {
-            this->voiceTrimQ = second.toDouble();
+            voiceTrimQ = second.toDouble();
             continue;
         }
 
         if (first == QString::fromUtf8("-vNameQ")) {
-            this->voiceNameQ = second.remove("\"");
+            voiceNameQ = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-gainQ")) {
-            this->voiceGainQ = second.toInt();
+            voiceGainQ = second.toInt();
             continue;
         }
         if (first == QString::fromUtf8("-trimA")) {
-            this->voiceTrimA = second.toDouble();
+            voiceTrimA = second.toDouble();
             continue;
         }
 
         if (first == QString::fromUtf8("-vNameA")) {
-            this->voiceNameA = second.remove("\"");
+            voiceNameA = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-gainA")) {
-            this->voiceGainA = second.toInt();
+            voiceGainA = second.toInt();
             continue;
         }
 
@@ -140,24 +140,24 @@ QString cCourseTemplateOptions::toString()
 {
     QString ret;
 
-    ret+= QString("-course ") +"\""+this->course +"\" ";
-    ret+= QString("-database ") +"\""+this->database +"\" ";
-    ret+= QString("-subname ") +"\""+this->subname +"\" ";
-    ret+= QString("-instruction ") +"\""+this->instruction +"\" ";
+    ret+= QString("-course ") +"\""+course +"\" ";
+    ret+= QString("-database ") +"\""+database +"\" ";
+    ret+= QString("-subname ") +"\""+subname +"\" ";
+    ret+= QString("-instruction ") +"\""+instruction +"\" ";
 
-    ret+= QString("-trimQ ") +QString::number(this->voiceTrimQ) +" ";
-    ret+= QString("-vNameQ ") +"\""+this->voiceNameQ+"\" ";
-    ret+= QString("-gainQ ") +QString::number(this->voiceGainQ) +" ";
+    ret+= QString("-trimQ ") +QString::number(voiceTrimQ) +" ";
+    ret+= QString("-vNameQ ") +"\""+voiceNameQ+"\" ";
+    ret+= QString("-gainQ ") +QString::number(voiceGainQ) +" ";
 
-    ret+= QString("-trimA ") +QString::number(this->voiceTrimA) +" ";
-    ret+= QString("-vNameA ") +"\""+this->voiceNameA+"\" ";
-    ret+= QString("-gainA ") +QString::number(this->voiceGainA) +" ";
+    ret+= QString("-trimA ") +QString::number(voiceTrimA) +" ";
+    ret+= QString("-vNameA ") +"\""+voiceNameA+"\" ";
+    ret+= QString("-gainA ") +QString::number(voiceGainA) +" ";
 
-    if ( this->bit.oForce) ret+= "-Force ";
-    if ( this->bit.oDouble) ret+= "-Double ";
-    if ( this->bit.oVoiceQ) ret+= "-VoiceQ ";
-    if ( this->bit.oVoiceA) ret+= "-VoiceA ";
-    if ( this->bit.oImage) ret+= "-Image ";
+    if ( bit.oForce) ret+= "-Force ";
+    if ( bit.oDouble) ret+= "-Double ";
+    if ( bit.oVoiceQ) ret+= "-VoiceQ ";
+    if ( bit.oVoiceA) ret+= "-VoiceA ";
+    if ( bit.oImage) ret+= "-Image ";
 
     return ret;
 }
@@ -170,16 +170,16 @@ void cCourseTemplateOptions::trace(const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void cCourseTemplateOptions::clear()
 {
-    this->bit.oDouble = false;
-    this->bit.oForce = false;
-    this->bit.oVoiceQ = false;
-    this->bit.oVoiceA = false;
-    this->bit.oImage = false;
+    bit.oDouble = false;
+    bit.oForce = false;
+    bit.oVoiceQ = false;
+    bit.oVoiceA = false;
+    bit.oImage = false;
 
-    this->course.clear();
-    this->database.clear();
-    this->subname.clear();
-    this->instruction.clear();
+    course.clear();
+    database.clear();
+    subname.clear();
+    instruction.clear();
 
     voiceNameQ.clear();
     voiceGainQ = 0;

@@ -16,11 +16,6 @@
 #include "globalsmuxgentools.h"
 #include "cglobaltracer.h"
 
-const QString tmpDir = QString::fromUtf8("tmp")+QDir::separator();
-
-const int IMG_WIDTH = 320;
-const int IMG_HEIGHT = 320;
-
 /////////////////////////////////////////////////////////////////////////////
 QStringList parseGoogleHtml (const QString &fileName)
 {

@@ -1,3 +1,4 @@
+
 //============================================================================
 // Author : Marcin Krystianc (marcin.krystianc@gmail.com)
 // Version : 2.0
@@ -19,114 +20,114 @@
 #include "csapi.h"
 
 /////////////////////////////////////////////////////////////////////////////
-cOptionsPage::cOptionsPage(QWidget *parent)
+OptionsPage::OptionsPage(QWidget *parent)
     : QWidget(parent)
 {
     QGroupBox *configGroup = new QGroupBox(tr("Choose options:"));
-    oForceCheckBox = new QCheckBox(tr("Regenerate"));
-    oDoubleCheckBox = new QCheckBox(tr("Alternative"));
-    oImageCheckBox = new QCheckBox(tr("Images"));
-    oVoiceCheckBoxQ = new QCheckBox(tr("Lector (Questions)"));
-    oVoiceCheckBoxA = new QCheckBox(tr("Lector (Answers)"));
-
+    m_oForceCheckBox = new QCheckBox(tr("Regenerate"));
+    m_oDoubleCheckBox = new QCheckBox(tr("Alternative"));
+    m_oImageCheckBox = new QCheckBox(tr("Images"));
+    m_oVoiceCheckBoxQ = new QCheckBox(tr("Lector (Questions)"));
+    m_oVoiceCheckBoxA = new QCheckBox(tr("Lector (Answers)"));
+    
     QGridLayout *checkLayout = new QGridLayout;
-    checkLayout->addWidget(oForceCheckBox , 0 , 0);
-    checkLayout->addWidget(oDoubleCheckBox , 0 , 1);
-    checkLayout->addWidget(oImageCheckBox , 1 , 0);
-
+    checkLayout->addWidget(m_oForceCheckBox , 0 , 0);
+    checkLayout->addWidget(m_oDoubleCheckBox , 0 , 1);
+    checkLayout->addWidget(m_oImageCheckBox , 1 , 0);
+    
     QLabel *fileLabel = new QLabel(tr("Database file:"));
-    fileEdit = new QLineEdit;
+    m_fileEdit = new QLineEdit;
     QPushButton *fileChooseButton = new QPushButton(tr("Choose"));
-    fileEdit->setReadOnly(true);
-
+    m_fileEdit->setReadOnly(true);
+    
     QGridLayout *fileLayout = new QGridLayout;
     fileLayout->addWidget(fileLabel, 0, 0);
     fileLayout->addWidget(fileChooseButton, 0, 1);
-    fileLayout->addWidget(fileEdit, 1, 0, 1, 0);
-
+    fileLayout->addWidget(m_fileEdit, 1, 0, 1, 0);
+    
     QLabel *courseLabel = new QLabel(tr("Course:"));
-    courseCombo = new QComboBox;
-
+    m_courseCombo = new QComboBox;
+    
     QHBoxLayout *courseLayout = new QHBoxLayout;
     courseLayout->addWidget(courseLabel);
-    courseLayout->addWidget(courseCombo);
-
+    courseLayout->addWidget(m_courseCombo);
+    
     QLabel *subnameLabel = new QLabel(tr("Lesson"));
-    subnameEdit = new QLineEdit;
-
+    m_subnameEdit = new QLineEdit;
+    
     QHBoxLayout *subnameLayout = new QHBoxLayout;
     subnameLayout->addWidget(subnameLabel);
-    subnameLayout->addWidget(subnameEdit);
-
+    subnameLayout->addWidget(m_subnameEdit);
+    
     QLabel *instructionLabel = new QLabel(tr("Instruction"));
-    instructionEdit = new QLineEdit;
-
+    m_instructionEdit = new QLineEdit;
+    
     QHBoxLayout *instructionLayout = new QHBoxLayout;
     instructionLayout->addWidget(instructionLabel);
-    instructionLayout->addWidget(instructionEdit);
-
-    voiceComboQ = new QComboBox;
-    voiceComboQ->insertItems(0, getVoiceEngines());
-    voiceGainQ = new QSpinBox;
-    voiceTrimBeginQ = new QDoubleSpinBox;
-    voiceTrimBeginQ->setSingleStep(0.1);
-    voiceTrimBeginQ->setDecimals(1);
-
-    voiceComboA = new QComboBox;
-    voiceComboA->insertItems(0, getVoiceEngines());
-    voiceGainA = new QSpinBox;
-    voiceTrimBeginA = new QDoubleSpinBox;
-    voiceTrimBeginA->setSingleStep(0.1);
-    voiceTrimBeginA->setDecimals(1);
-
-    voiceTesttextQ = new QLineEdit;
-    voiceTestbuttonQ = new QPushButton(tr("Test this text below"));
-
-    voiceTesttextA = new QLineEdit;
-    voiceTestbuttonA = new QPushButton(tr("Test this text below"));
-
-    voiceTesttextQ->setText("Test Testing Testen");
+    instructionLayout->addWidget(m_instructionEdit);
+    
+    m_voiceComboQ = new QComboBox;
+    m_voiceComboQ->insertItems(0, getVoiceEngines());
+    m_voiceGainQ = new QSpinBox;
+    m_voiceTrimBeginQ = new QDoubleSpinBox;
+    m_voiceTrimBeginQ->setSingleStep(0.1);
+    m_voiceTrimBeginQ->setDecimals(1);
+    
+    m_voiceComboA = new QComboBox;
+    m_voiceComboA->insertItems(0, getVoiceEngines());
+    m_voiceGainA = new QSpinBox;
+    m_voiceTrimBeginA = new QDoubleSpinBox;
+    m_voiceTrimBeginA->setSingleStep(0.1);
+    m_voiceTrimBeginA->setDecimals(1);
+    
+    m_voiceTesttextQ = new QLineEdit;
+    m_voiceTestbuttonQ = new QPushButton(tr("Test this text below"));
+    
+    m_voiceTesttextA = new QLineEdit;
+    m_voiceTestbuttonA = new QPushButton(tr("Test this text below"));
+    
+    m_voiceTesttextQ->setText("Test Testing Testen");
     QLabel *voiceIndexLabelQ = new QLabel(tr("Voice name"));
     QLabel *voiceGainLabelQ = new QLabel(tr("Gain [dB] "));
     QLabel *voiceTrimBeginLabelQ = new QLabel(tr("Trim [s]"));
-
-    voiceTesttextA->setText("Test Testing Testen");
+    
+    m_voiceTesttextA->setText("Test Testing Testen");
     QLabel *voiceIndexLabelA = new QLabel(tr("Voice name"));
     QLabel *voiceGainLabelA = new QLabel(tr("Gain [dB] "));
     QLabel *voiceTrimBeginLabelA = new QLabel(tr("Trim [s]"));
-
+    
     QGridLayout *voiceLayoutQ = new QGridLayout;
     /*
  QFrame *frameQ = new QFrame;
  frameQ->setFrameStyle(QFrame::HLine);
  voiceLayoutQ->addWidget(frameQ , 0 , 0 , 1 , 0);
  */
-    voiceLayoutQ->addWidget(oVoiceCheckBoxQ , 1 , 0 , 1 , 0);
+    voiceLayoutQ->addWidget(m_oVoiceCheckBoxQ , 1 , 0 , 1 , 0);
     voiceLayoutQ->addWidget(voiceIndexLabelQ , 2 , 0);
-    voiceLayoutQ->addWidget(voiceComboQ , 2 , 1);
+    voiceLayoutQ->addWidget(m_voiceComboQ , 2 , 1);
     voiceLayoutQ->addWidget(voiceGainLabelQ , 3 , 0);
-    voiceLayoutQ->addWidget(voiceGainQ , 3 , 1);
+    voiceLayoutQ->addWidget(m_voiceGainQ , 3 , 1);
     voiceLayoutQ->addWidget(voiceTrimBeginLabelQ , 4 , 0);
-    voiceLayoutQ->addWidget(voiceTrimBeginQ , 4 , 1);
-    voiceLayoutQ->addWidget(voiceTestbuttonQ , 5 , 0 , 1 , 0);
-    voiceLayoutQ->addWidget(voiceTesttextQ , 6 , 0 , 1 , 0);
-
+    voiceLayoutQ->addWidget(m_voiceTrimBeginQ , 4 , 1);
+    voiceLayoutQ->addWidget(m_voiceTestbuttonQ , 5 , 0 , 1 , 0);
+    voiceLayoutQ->addWidget(m_voiceTesttextQ , 6 , 0 , 1 , 0);
+    
     QGridLayout *voiceLayoutA = new QGridLayout;
     /*
  QFrame *frameA = new QFrame;
  frameA->setFrameStyle(QFrame::HLine);
  voiceLayoutA->addWidget(frameA , 0 , 0 , 1 , 0);
  */
-    voiceLayoutA->addWidget(oVoiceCheckBoxA , 1 , 0 , 1 , 0);
+    voiceLayoutA->addWidget(m_oVoiceCheckBoxA , 1 , 0 , 1 , 0);
     voiceLayoutA->addWidget(voiceIndexLabelA , 2 , 0);
-    voiceLayoutA->addWidget(voiceComboA , 2 , 1);
+    voiceLayoutA->addWidget(m_voiceComboA , 2 , 1);
     voiceLayoutA->addWidget(voiceGainLabelA , 3 , 0);
-    voiceLayoutA->addWidget(voiceGainA , 3 , 1);
+    voiceLayoutA->addWidget(m_voiceGainA , 3 , 1);
     voiceLayoutA->addWidget(voiceTrimBeginLabelA , 4 , 0);
-    voiceLayoutA->addWidget(voiceTrimBeginA , 4 , 1);
-    voiceLayoutA->addWidget(voiceTestbuttonA , 5 , 0 , 1 , 0);
-    voiceLayoutA->addWidget(voiceTesttextA , 6 , 0 , 1 , 0);
-
+    voiceLayoutA->addWidget(m_voiceTrimBeginA , 4 , 1);
+    voiceLayoutA->addWidget(m_voiceTestbuttonA , 5 , 0 , 1 , 0);
+    voiceLayoutA->addWidget(m_voiceTesttextA , 6 , 0 , 1 , 0);
+    
     QVBoxLayout *configLayout = new QVBoxLayout;
     configLayout->addLayout(fileLayout);
     configLayout->addSpacing(10);
@@ -141,125 +142,125 @@ cOptionsPage::cOptionsPage(QWidget *parent)
     configLayout->addLayout(voiceLayoutA);
     configLayout->addStretch(1);
     configGroup->setLayout(configLayout);
-
+    
     setLayout(configLayout);
-
-    audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
-    mediaObject = new Phonon::MediaObject (this);
-
+    
+    m_audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
+    m_mediaObject = new Phonon::MediaObject (this);
+    
     connect(fileChooseButton, SIGNAL(clicked()) , this , SLOT(fileButtonTriggered()));
-    connect(fileEdit , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
-    connect(voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
-    connect(voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
-
-    connect(oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
-    connect(oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
-
-    connect(mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
-
-    voiceCheckBoxChangedQ(oVoiceCheckBoxQ->checkState());
-    voiceCheckBoxChangedA(oVoiceCheckBoxA->checkState());
+    connect(m_fileEdit , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
+    connect(m_voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
+    connect(m_voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
+    
+    connect(m_oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
+    connect(m_oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
+    
+    connect(m_mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
+    
+    voiceCheckBoxChangedQ(m_oVoiceCheckBoxQ->checkState());
+    voiceCheckBoxChangedA(m_oVoiceCheckBoxA->checkState());
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::voiceCheckBoxChangedQ (int state)
+void OptionsPage::voiceCheckBoxChangedQ (int state)
 {
     switch (state)
     {
     case Qt::Unchecked:
-        voiceComboQ-> setEnabled(false);
-        voiceGainQ-> setEnabled(false);
-        voiceTrimBeginQ-> setEnabled(false);
-        voiceTesttextQ-> setEnabled(false);
-        voiceTestbuttonQ-> setEnabled(false);
+        m_voiceComboQ-> setEnabled(false);
+        m_voiceGainQ-> setEnabled(false);
+        m_voiceTrimBeginQ-> setEnabled(false);
+        m_voiceTesttextQ-> setEnabled(false);
+        m_voiceTestbuttonQ-> setEnabled(false);
         break;
-
+        
     case Qt::Checked:
-        voiceComboQ-> setEnabled(true);
-        voiceGainQ-> setEnabled(true);
-        voiceTrimBeginQ-> setEnabled(true);
-        voiceTesttextQ-> setEnabled(true);
-        voiceTestbuttonQ-> setEnabled(true);
+        m_voiceComboQ-> setEnabled(true);
+        m_voiceGainQ-> setEnabled(true);
+        m_voiceTrimBeginQ-> setEnabled(true);
+        m_voiceTesttextQ-> setEnabled(true);
+        m_voiceTestbuttonQ-> setEnabled(true);
         break;
     }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::voiceCheckBoxChangedA (int state)
+void OptionsPage::voiceCheckBoxChangedA (int state)
 {
     switch (state)
     {
     case Qt::Unchecked:
-        voiceComboA-> setEnabled(false);
-        voiceGainA-> setEnabled(false);
-        voiceTrimBeginA-> setEnabled(false);
-        voiceTesttextA-> setEnabled(false);
-        voiceTestbuttonA-> setEnabled(false);
+        m_voiceComboA-> setEnabled(false);
+        m_voiceGainA-> setEnabled(false);
+        m_voiceTrimBeginA-> setEnabled(false);
+        m_voiceTesttextA-> setEnabled(false);
+        m_voiceTestbuttonA-> setEnabled(false);
         break;
-
+        
     case Qt::Checked:
-        voiceComboA-> setEnabled(true);
-        voiceGainA-> setEnabled(true);
-        voiceTrimBeginA-> setEnabled(true);
-        voiceTesttextA-> setEnabled(true);
-        voiceTestbuttonA-> setEnabled(true);
+        m_voiceComboA-> setEnabled(true);
+        m_voiceGainA-> setEnabled(true);
+        m_voiceTrimBeginA-> setEnabled(true);
+        m_voiceTesttextA-> setEnabled(true);
+        m_voiceTestbuttonA-> setEnabled(true);
         break;
     }
 }
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::setOptions(const CourseTemplateOptions &options)
+void OptionsPage::setOptions(const CourseTemplateOptions &options)
 {
-    oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
-    oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
-    oImageCheckBox ->setCheckState(options.bit.oImage ? Qt::Checked : Qt::Unchecked);
-    oVoiceCheckBoxQ ->setCheckState(options.bit.oVoiceQ ? Qt::Checked : Qt::Unchecked);
-    oVoiceCheckBoxA ->setCheckState(options.bit.oVoiceA ? Qt::Checked : Qt::Unchecked);
-
-    fileEdit->setText(options.database);
-    courseCombo->clear();
-    courseCombo->insertItem(0, options.course);
-    subnameEdit->setText(options.subname);
-    instructionEdit->setText(options.instruction);
-
-    voiceComboQ ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
-    voiceGainQ ->setValue(options.voiceGainQ);
-    voiceTrimBeginQ->setValue(options.voiceTrimQ);
-
-    voiceComboA ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
-    voiceGainA ->setValue(options.voiceGainA);
-    voiceTrimBeginA->setValue(options.voiceTrimA);
-
-    fileEditChanged(fileEdit->text());
+    m_oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
+    m_oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
+    m_oImageCheckBox ->setCheckState(options.bit.oImage ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxQ ->setCheckState(options.bit.oVoiceQ ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxA ->setCheckState(options.bit.oVoiceA ? Qt::Checked : Qt::Unchecked);
+    
+    m_fileEdit->setText(options.m_dbPath);
+    m_courseCombo->clear();
+    m_courseCombo->insertItem(0, options.m_courseName);
+    m_subnameEdit->setText(options.m_subname);
+    m_instructionEdit->setText(options.m_instruction);
+    
+    m_voiceComboQ ->setCurrentIndex(getVoiceEngineIndex(options.m_voiceNameQ));
+    m_voiceGainQ ->setValue(options.m_voiceGainQ);
+    m_voiceTrimBeginQ->setValue(options.m_voiceTrimQ);
+    
+    m_voiceComboA ->setCurrentIndex(getVoiceEngineIndex(options.m_voiceNameA));
+    m_voiceGainA ->setValue(options.m_voiceGainA);
+    m_voiceTrimBeginA->setValue(options.m_voiceTrimA);
+    
+    fileEditChanged(m_fileEdit->text());
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::voiceTestButtonTriggered ()
+void OptionsPage::voiceTestButtonTriggered ()
 {
     CourseTemplateOptions options = getOptions();
     QStringList arguments; // filename, text, trim, gain
-
-    if (sender() == voiceTestbuttonQ)
+    
+    if (sender() == m_voiceTestbuttonQ)
     {
         arguments.append("test");
-        arguments.append(voiceTesttextQ->text());
-        arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)+1));
-        arguments.append(QString::number(options.voiceTrimQ));
-        arguments.append(QString::number(options.voiceGainQ));
+        arguments.append(m_voiceTesttextQ->text());
+        arguments.append(QString::number(getVoiceEngineIndex(options.m_voiceNameQ)+1));
+        arguments.append(QString::number(options.m_voiceTrimQ));
+        arguments.append(QString::number(options.m_voiceGainQ));
     }
-    else if (sender() == voiceTestbuttonA)
+    else if (sender() == m_voiceTestbuttonA)
     {
         arguments.append("test");
-        arguments.append(voiceTesttextA->text());
-        arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)+1));
-        arguments.append(QString::number(options.voiceTrimA));
-        arguments.append(QString::number(options.voiceGainA));
+        arguments.append(m_voiceTesttextA->text());
+        arguments.append(QString::number(getVoiceEngineIndex(options.m_voiceNameA)+1));
+        arguments.append(QString::number(options.m_voiceTrimA));
+        arguments.append(QString::number(options.m_voiceGainA));
     }
     else
         return;
-
+    
     trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
     QProcess myProcess;
-
+    
     myProcess.start("createMp3.bat", arguments );
     if (!myProcess.waitForStarted())
     {
@@ -272,44 +273,44 @@ void cOptionsPage::voiceTestButtonTriggered ()
         trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
         return;
     }
-
-    Phonon::createPath(mediaObject, audioOutput);
-    mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));
-    mediaObject->play();
-
+    
+    Phonon::createPath(m_mediaObject, m_audioOutput);
+    m_mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));
+    m_mediaObject->play();
+    
 }
 /////////////////////////////////////////////////////////////////////////////
-CourseTemplateOptions cOptionsPage::getOptions()
+CourseTemplateOptions OptionsPage::getOptions()
 {
     CourseTemplateOptions options;
-    options.bit.oForce = oForceCheckBox->isChecked();
-    options.bit.oDouble = oDoubleCheckBox->isChecked();
-    options.bit.oImage = oImageCheckBox->isChecked();
-    options.bit.oVoiceQ = oVoiceCheckBoxQ->isChecked();
-    options.bit.oVoiceA = oVoiceCheckBoxA->isChecked();
-
-    options.database = fileEdit->text();
-    options.subname = subnameEdit->text();
-    options.instruction = instructionEdit->text();
-
-    options.course = courseCombo->currentText();
-
-    options.voiceNameQ = voiceComboQ->currentText();
-    options.voiceGainQ = voiceGainQ->value();
-    options.voiceTrimQ = voiceTrimBeginQ->value();
-
-    options.voiceNameA = voiceComboA->currentText();
-    options.voiceGainA = voiceGainA->value();
-    options.voiceTrimA = voiceTrimBeginA->value();
-
+    options.bit.oForce = m_oForceCheckBox->isChecked();
+    options.bit.oDouble = m_oDoubleCheckBox->isChecked();
+    options.bit.oImage = m_oImageCheckBox->isChecked();
+    options.bit.oVoiceQ = m_oVoiceCheckBoxQ->isChecked();
+    options.bit.oVoiceA = m_oVoiceCheckBoxA->isChecked();
+    
+    options.m_dbPath = m_fileEdit->text();
+    options.m_subname = m_subnameEdit->text();
+    options.m_instruction = m_instructionEdit->text();
+    
+    options.m_courseName = m_courseCombo->currentText();
+    
+    options.m_voiceNameQ = m_voiceComboQ->currentText();
+    options.m_voiceGainQ = m_voiceGainQ->value();
+    options.m_voiceTrimQ = m_voiceTrimBeginQ->value();
+    
+    options.m_voiceNameA = m_voiceComboA->currentText();
+    options.m_voiceGainA = m_voiceGainA->value();
+    options.m_voiceTrimA = m_voiceTrimBeginA->value();
+    
     return options;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::fileButtonTriggered()
+void OptionsPage::fileButtonTriggered()
 {
     QFileDialog::Options opt = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
-
+    
     QString selectedFilter = "";
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open database file"),
@@ -319,55 +320,55 @@ void cOptionsPage::fileButtonTriggered()
                                                     opt);
     if (fileName.isEmpty())
         return;
-    fileEdit->setText(fileName);
+    m_fileEdit->setText(fileName);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::fileEditChanged(const QString &fileName)
+void OptionsPage::fileEditChanged(const QString &fileName)
 {
-    if (!superMemoSQL.open(fileName))
+    if (!m_superDb.open(fileName))
     {
-        QPalette palette = fileEdit->palette();
+        QPalette palette = m_fileEdit->palette();
         palette.setColor(QPalette::Text, Qt::red ); // fg
-        fileEdit->setPalette( palette );
+        m_fileEdit->setPalette( palette );
         return;
     }
-
-    fileEdit->setPalette( subnameEdit->palette() ); // fileEdit to default colour
-
-    QString oldText = courseCombo->currentText();
-
-    courseCombo->clear();
-
+    
+    m_fileEdit->setPalette( m_subnameEdit->palette() ); // fileEdit to default colour
+    
+    QString oldText = m_courseCombo->currentText();
+    
+    m_courseCombo->clear();
+    
     QStringList courseList;
-    superMemoSQL.getCourses(&courseList);
-
+    m_superDb.getCourses(&courseList);
+    
     for (int i = 0;i<courseList.count();++i)
-        courseCombo->insertItem(0, courseList.at(i));
-
-    int pos = courseCombo->findText(oldText);
-
+        m_courseCombo->insertItem(0, courseList.at(i));
+    
+    int pos = m_courseCombo->findText(oldText);
+    
     if (pos == -1) // text not found
     {
-        courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
-        courseCombo->setCurrentIndex(0);
+        m_courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
+        m_courseCombo->setCurrentIndex(0);
     }
     else
-        courseCombo->setCurrentIndex(pos);
-
+        m_courseCombo->setCurrentIndex(pos);
+    
     return;
 }
 
 ////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::testFileRemoveSlot()
+void OptionsPage::testFileRemoveSlot()
 {
-    mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
+    m_mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
     if (!QFile::remove("test.mp3"))
         trace(QString("cannot remove test.mp3 "), traceError);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::trace (const QString &text, const int & flags)
+void OptionsPage::trace (const QString &text, const int & flags)
 {
     globalTracer.trace(text, flags);
 }
@@ -375,172 +376,172 @@ void cOptionsPage::trace (const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-cConsolePage::cConsolePage(QWidget *parent)
+ConsolePage::ConsolePage(QWidget *parent)
     : QWidget(parent)
 {
-    consoleText = new QTextEdit;
+    m_consoleText = new QTextEdit;
     QVBoxLayout *mainLayout = new QVBoxLayout;
-
+    
     QHBoxLayout *bLayout = new QHBoxLayout;
-    cTracelevel2 = new QCheckBox("Trace 2");
-    cTracelevel3 = new QCheckBox("Trace 3");
-    bLayout->addWidget(cTracelevel2);
-    bLayout->addWidget(cTracelevel3);
+    m_traceLevel2 = new QCheckBox("Trace 2");
+    m_traceLevel3 = new QCheckBox("Trace 3");
+    bLayout->addWidget(m_traceLevel2);
+    bLayout->addWidget(m_traceLevel3);
     bLayout->addStretch(1);
-
-    mainLayout->addWidget(consoleText);
+    
+    mainLayout->addWidget(m_consoleText);
     mainLayout->addLayout(bLayout);
     setLayout(mainLayout);
-
-    consoleText->setReadOnly(true);
-
-    connect(cTracelevel2 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
-    connect(cTracelevel3 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
+    
+    m_consoleText->setReadOnly(true);
+    
+    connect(m_traceLevel2 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
+    connect(m_traceLevel3 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
 }
 /////////////////////////////////////////////////////////////////////////////
-void cConsolePage::traceLevelSlot ()
+void ConsolePage::traceLevelSlot ()
 {
     unsigned int flags = traceError|traceWarning|traceLevel1;
-
-    if (cTracelevel2->checkState() == Qt::Checked)
+    
+    if (m_traceLevel2->checkState() == Qt::Checked)
         flags |= traceLevel2;
-
-    if (cTracelevel3->checkState() == Qt::Checked)
+    
+    if (m_traceLevel3->checkState() == Qt::Checked)
         flags |= traceLevel3;
-
+    
     globalTracer.setTraceFlags(flags);
-
+    
 }
 /////////////////////////////////////////////////////////////////////////////
-void cConsolePage::traceSlot(const QString &txt, const int & flags)
+void ConsolePage::traceSlot(const QString &txt, const int & flags)
 {
-    traceMutex.lock();
-
+    m_traceMutex.lock();
+    
     QDateTime dateTime = QDateTime::currentDateTime ();
-
-    consoleText->setTextColor(Qt::black);
+    
+    m_consoleText->setTextColor(Qt::black);
     if (flags & traceWarning)
-        consoleText->setTextColor(Qt::darkMagenta);
+        m_consoleText->setTextColor(Qt::darkMagenta);
     if (flags & traceError)
-        consoleText->setTextColor(Qt::red);
-
-    consoleText->append(dateTime.toString("hh:mm:ss: ")+txt);
-
-    traceMutex.unlock();
+        m_consoleText->setTextColor(Qt::red);
+    
+    m_consoleText->append(dateTime.toString("hh:mm:ss: ")+txt);
+    
+    m_traceMutex.unlock();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-cContentPage::cContentPage(QWidget *parent)
+ContentPage::ContentPage(QWidget *parent)
     : QWidget(parent)
 {
-    contentTextEdit = new CodeEditor;
-    findToolbar = new cFindToolbar;
-    findToolbar->layout()->setMargin(0);
+    n_contentTextEdit = new CodeEditor;
+    m_findToolbar = new FindToolbar;
+    m_findToolbar->layout()->setMargin(0);
     //contentTextEdit->setAcceptRichText(false);
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget( findToolbar);
-    mainLayout->addWidget(contentTextEdit);
+    mainLayout->addWidget( m_findToolbar);
+    mainLayout->addWidget(n_contentTextEdit);
     setLayout(mainLayout);
-
-    connect (contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
-
-    connect (findToolbar , SIGNAL(findNext(const QString& )) , this, SLOT(findNext(const QString& )));
-    connect (findToolbar , SIGNAL(findPrev(const QString& )) , this, SLOT(findPrev(const QString& )));
-
+    
+    connect (n_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
+    
+    connect (m_findToolbar , SIGNAL(findNext(const QString& )) , this, SLOT(findNext(const QString& )));
+    connect (m_findToolbar , SIGNAL(findPrev(const QString& )) , this, SLOT(findPrev(const QString& )));
+    
 }
 /////////////////////////////////////////////////////////////////////////////
-void cContentPage::setContent (const QStringList & content)
+void ContentPage::setContent (const QStringList & content)
 {
-    contentTextEdit->setPlainText(content.join(QString("\n")));
+    n_contentTextEdit->setPlainText(content.join(QString("\n")));
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList cContentPage::getContent ()
+QStringList ContentPage::getContent ()
 {
-    QString str = contentTextEdit->toPlainText();
+    QString str = n_contentTextEdit->toPlainText();
     return str.split(QString("\n"));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cContentPage::contentChangedSlot()
+void ContentPage::contentChangedSlot()
 {
-    findToolbar->hide();
+    m_findToolbar->hide();
     emit contentChangedSignal();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cContentPage::keyPressEvent ( QKeyEvent * event )
+void ContentPage::keyPressEvent ( QKeyEvent * event )
 {
     if ((event->modifiers()&Qt::ControlModifier) &&
             (event->key() == Qt::Key_F))
     {
-        findToolbar->show();
-        findToolbar->setFindFocus();
+        m_findToolbar->show();
+        m_findToolbar->setFindFocus();
     }
     else
         QWidget::keyPressEvent(event);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cContentPage::findNext(const QString &txt )
+void ContentPage::findNext(const QString &txt )
 {
-    contentTextEdit->find(txt);
+    n_contentTextEdit->find(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cContentPage::findPrev(const QString &txt )
+void ContentPage::findPrev(const QString &txt )
 {
-    contentTextEdit->find(txt, QTextDocument::FindBackward);
+    n_contentTextEdit->find(txt, QTextDocument::FindBackward);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-cFindToolbar::cFindToolbar(QWidget *parent)
+FindToolbar::FindToolbar(QWidget *parent)
     : QWidget(parent)
 {
-    lineEdit = new QLineEdit;
-    forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
-    backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
-
+    m_lineEdit = new QLineEdit;
+    m_forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
+    m_backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
+    
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(new QLabel("Find:"));
-    mainLayout->addWidget(lineEdit);
-    mainLayout->addWidget(backwardButton);
-    mainLayout->addWidget(forwardButton);
+    mainLayout->addWidget(m_lineEdit);
+    mainLayout->addWidget(m_backwardButton);
+    mainLayout->addWidget(m_forwardButton);
     setLayout(mainLayout);
-
-    connect (lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
-    connect (forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
-    connect (backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
-
+    
+    connect (m_lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
+    connect (m_forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
+    connect (m_backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cFindToolbar::nextSlot()
+void FindToolbar::nextSlot()
 {
-    QString txt = lineEdit->text();
+    QString txt = m_lineEdit->text();
     if (txt.isEmpty())
         return;
-
+    
     emit findNext(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cFindToolbar::prevSlot()
+void FindToolbar::prevSlot()
 {
-    QString txt = lineEdit->text();
+    QString txt = m_lineEdit->text();
     if (txt.isEmpty())
         return;
-
+    
     emit findPrev(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cFindToolbar::setFindFocus ()
+void FindToolbar::setFindFocus ()
 {
-    lineEdit->setFocus();
+    m_lineEdit->setFocus();
 }

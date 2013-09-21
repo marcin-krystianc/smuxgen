@@ -81,51 +81,51 @@ bool CourseTemplateOptions::fromString(const QString &line)
 
 
         if (first == QString::fromUtf8("-course")) {
-            course = second.remove("\"");;
+            m_courseName = second.remove("\"");;
             continue;
         }
 
         if (first == QString::fromUtf8("-database")) {
-            database = second.remove("\"");
+            m_dbPath = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-subname")) {
-            subname = second.remove("\"");
+            m_subname = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-instruction")) {
-            instruction = second.remove("\"");
+            m_instruction = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-trimQ")) {
-            voiceTrimQ = second.toDouble();
+            m_voiceTrimQ = second.toDouble();
             continue;
         }
 
         if (first == QString::fromUtf8("-vNameQ")) {
-            voiceNameQ = second.remove("\"");
+            m_voiceNameQ = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-gainQ")) {
-            voiceGainQ = second.toInt();
+            m_voiceGainQ = second.toInt();
             continue;
         }
         if (first == QString::fromUtf8("-trimA")) {
-            voiceTrimA = second.toDouble();
+            m_voiceTrimA = second.toDouble();
             continue;
         }
 
         if (first == QString::fromUtf8("-vNameA")) {
-            voiceNameA = second.remove("\"");
+            m_voiceNameA = second.remove("\"");
             continue;
         }
 
         if (first == QString::fromUtf8("-gainA")) {
-            voiceGainA = second.toInt();
+            m_voiceGainA = second.toInt();
             continue;
         }
 
@@ -140,18 +140,18 @@ QString CourseTemplateOptions::toString()
 {
     QString ret;
 
-    ret+= QString("-course ") +"\""+course +"\" ";
-    ret+= QString("-database ") +"\""+database +"\" ";
-    ret+= QString("-subname ") +"\""+subname +"\" ";
-    ret+= QString("-instruction ") +"\""+instruction +"\" ";
+    ret+= QString("-course ") +"\""+m_courseName +"\" ";
+    ret+= QString("-database ") +"\""+m_dbPath +"\" ";
+    ret+= QString("-subname ") +"\""+m_subname +"\" ";
+    ret+= QString("-instruction ") +"\""+m_instruction +"\" ";
 
-    ret+= QString("-trimQ ") +QString::number(voiceTrimQ) +" ";
-    ret+= QString("-vNameQ ") +"\""+voiceNameQ+"\" ";
-    ret+= QString("-gainQ ") +QString::number(voiceGainQ) +" ";
+    ret+= QString("-trimQ ") +QString::number(m_voiceTrimQ) +" ";
+    ret+= QString("-vNameQ ") +"\""+m_voiceNameQ+"\" ";
+    ret+= QString("-gainQ ") +QString::number(m_voiceGainQ) +" ";
 
-    ret+= QString("-trimA ") +QString::number(voiceTrimA) +" ";
-    ret+= QString("-vNameA ") +"\""+voiceNameA+"\" ";
-    ret+= QString("-gainA ") +QString::number(voiceGainA) +" ";
+    ret+= QString("-trimA ") +QString::number(m_voiceTrimA) +" ";
+    ret+= QString("-vNameA ") +"\""+m_voiceNameA+"\" ";
+    ret+= QString("-gainA ") +QString::number(m_voiceGainA) +" ";
 
     if ( bit.oForce) ret+= "-Force ";
     if ( bit.oDouble) ret+= "-Double ";
@@ -176,16 +176,16 @@ void CourseTemplateOptions::clear()
     bit.oVoiceA = false;
     bit.oImage = false;
 
-    course.clear();
-    database.clear();
-    subname.clear();
-    instruction.clear();
+    m_courseName.clear();
+    m_dbPath.clear();
+    m_subname.clear();
+    m_instruction.clear();
 
-    voiceNameQ.clear();
-    voiceGainQ = 0;
-    voiceTrimQ = 0;
+    m_voiceNameQ.clear();
+    m_voiceGainQ = 0;
+    m_voiceTrimQ = 0;
 
-    voiceNameA.clear();
-    voiceGainA = 0;
-    voiceTrimA = 0;
+    m_voiceNameA.clear();
+    m_voiceGainA = 0;
+    m_voiceTrimA = 0;
 }

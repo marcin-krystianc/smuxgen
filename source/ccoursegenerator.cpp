@@ -66,12 +66,12 @@ void CourseGenerator::run ()
 {
     m_isFailed = true;
 
-    if (!m_db.open(m_courseTemplate.m_options.database))
+    if (!m_db.open(m_courseTemplate.m_options.m_dbPath))
         return;
 
     int courseID;
     QString courseFileName;
-    if (!m_db.getCourseDetails (m_courseTemplate.m_options.course, &courseID, &courseFileName))
+    if (!m_db.getCourseDetails (m_courseTemplate.m_options.m_courseName, &courseID, &courseFileName))
         return;
 
     QString courseFileDirectoryName = QFileInfo(courseFileName).dir().path()+QDir::separator();
@@ -86,10 +86,10 @@ void CourseGenerator::run ()
     }
 
     QDomElement rootElement = doc.documentElement();
-    QString topicNameA = m_courseTemplate.m_options.subname;
-    QString topicNameB = m_courseTemplate.m_options.subname+"*";
-    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.m_options.voiceNameA)+1;
-    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.m_options.voiceNameQ)+1;
+    QString topicNameA = m_courseTemplate.m_options.m_subname;
+    QString topicNameB = m_courseTemplate.m_options.m_subname+"*";
+    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.m_options.m_voiceNameA)+1;
+    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.m_options.m_voiceNameQ)+1;
 
     int topicAID, topicBID;
     // A course
@@ -111,7 +111,7 @@ void CourseGenerator::run ()
             continue;
         }
 
-        emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameA+"@"+m_courseTemplate.m_options.course+":"
+        emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameA+"@"+m_courseTemplate.m_options.m_courseName+":"
                             +list1.at(0));
 
         if (m_abortProces)
@@ -145,7 +145,7 @@ void CourseGenerator::run ()
                 continue;
             }
 
-            emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameB+"@"+m_courseTemplate.m_options.course+":"
+            emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameB+"@"+m_courseTemplate.m_options.m_courseName+":"
                                 +list1.at(0));
 
             if (m_abortProces)
@@ -234,7 +234,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
             (checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)))
     {
         forceMedia = true;
-        QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.m_options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
+        QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.m_options.m_instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
         writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
     }
 
@@ -250,8 +250,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(answer):getTranscript(question));
         arguments.append(QString::number(voiceIndexQ));
-        arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimQ));
-        arguments.append(QString::number(m_courseTemplate.m_options.voiceGainQ));
+        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceTrimQ));
+        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceGainQ));
 
         trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
 
@@ -274,8 +274,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(question):getTranscript(answer));
         arguments.append(QString::number(voiceIndexA));
-        arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimA));
-        arguments.append(QString::number(m_courseTemplate.m_options.voiceGainA));
+        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceTrimA));
+        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceGainA));
 
         trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
 
@@ -293,11 +293,11 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg"))))
     {
-        deleteFile(tmpDir+"HTML");
+        deleteFile(TMPDIR+"HTML");
         QStringList arguments;
 
         arguments.append(getKeyWord(question));
-        arguments.append(tmpDir+"HTML");
+        arguments.append(TMPDIR+"HTML");
 
         myProcess.start("getGoogleHtml.bat", arguments );
         if (!myProcess.waitForStarted())
@@ -306,7 +306,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         if (myProcess.exitCode())
             trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
 
-        QStringList fileUrls = parseGoogleHtml(tmpDir+"HTML");
+        QStringList fileUrls = parseGoogleHtml(TMPDIR+"HTML");
 
         int i = 0; // download 2 images
         while ((fileUrls.count())>0&&(i<2))

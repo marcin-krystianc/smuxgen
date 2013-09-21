@@ -83,9 +83,9 @@ private:
     QAction *m_aboutQtAction;
     QAction *m_quitAction;
 
-    cOptionsPage *m_optionsPage;
-    cConsolePage *m_consolePage;
-    cContentPage *m_contentPage;
+    OptionsPage *m_optionsPage;
+    ConsolePage *m_consolePage;
+    ContentPage *m_contentPage;
     CourseImageEditor *m_imageWidget;
 
     QDockWidget *m_dockOptionsPage;

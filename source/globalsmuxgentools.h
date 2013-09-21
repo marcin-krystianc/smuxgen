@@ -12,9 +12,9 @@
 #ifndef GLOBALSMUXGENTOOLS_H
 #define GLOBALSMUXGENTOOLS_H
 
-extern const QString tmpDir;
-extern const int IMG_WIDTH;
-extern const int IMG_HEIGHT;
+const QString TMPDIR = QString("tmp\\");
+const int IMG_WIDTH = 320;
+const int IMG_HEIGHT = 320;
 
 QStringList parseGoogleHtml (const QString &fileName);
 void deleteFile (const QString &fileName);
@@ -30,8 +30,6 @@ QString removeAllSpecialCharacters (const QString &input, const QStringList &lis
 QString getKeyWord (const QString &input); // get keywords for google search
 QString getTranscript (const QString &input); // get text to read
 QString getTextToPrint (const QString &input); // get text to show to user
-
-
 
 QString strippedFile(const QString &fullFileName);
 QString strippedDir (const QString &fullFileName);

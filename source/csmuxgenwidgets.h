@@ -32,16 +32,17 @@
 #include "cimagedownloader.h"
 
 /////////////////////////////////////////////////////////////////////////////
-class cFindToolbar : public QWidget
+class FindToolbar : public QWidget
 {
     Q_OBJECT
 public:
-    cFindToolbar(QWidget *parent = 0);
+    FindToolbar(QWidget *parent = 0);
     void setFindFocus();
+
 private:
-    QLineEdit *lineEdit;
-    QPushButton *forwardButton;
-    QPushButton *backwardButton;
+    QLineEdit *m_lineEdit;
+    QPushButton *m_forwardButton;
+    QPushButton *m_backwardButton;
 
 signals:
     void findNext (const QString &text);
@@ -50,48 +51,50 @@ signals:
 private slots:
     void nextSlot();
     void prevSlot();
-
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cOptionsPage : public QWidget
+class OptionsPage : public QWidget
 {
     Q_OBJECT
 public:
-    cOptionsPage(QWidget *parent = 0);
+    OptionsPage(QWidget *parent = 0);
     void setOptions(const CourseTemplateOptions &options);
     CourseTemplateOptions getOptions ();
 
-private:
-    QCheckBox *oForceCheckBox ;
-    QCheckBox *oDoubleCheckBox;
-    QCheckBox *oImageCheckBox ;
-    QCheckBox *oVoiceCheckBoxQ ;
-    QCheckBox *oVoiceCheckBoxA ;
-
-    QLineEdit *fileEdit ;
-    QComboBox *courseCombo;
-    QLineEdit *subnameEdit;
-    QLineEdit *instructionEdit;
-
-    QComboBox *voiceComboQ;
-    QSpinBox *voiceGainQ;
-    QDoubleSpinBox *voiceTrimBeginQ;
-    QLineEdit *voiceTesttextQ;
-    QPushButton *voiceTestbuttonQ;
-
-    QComboBox *voiceComboA;
-    QSpinBox *voiceGainA;
-    QDoubleSpinBox *voiceTrimBeginA;
-    QLineEdit *voiceTesttextA;
-    QPushButton *voiceTestbuttonA;
+    QComboBox *getVoiceComboA() const;
+    void setVoiceComboA(QComboBox *value);
 
 private:
-    SuperMemoSQL superMemoSQL;
+    QCheckBox *m_oForceCheckBox;
+    QCheckBox *m_oDoubleCheckBox;
+    QCheckBox *m_oImageCheckBox;
+    QCheckBox *m_oVoiceCheckBoxQ;
+    QCheckBox *m_oVoiceCheckBoxA;
+
+    QLineEdit *m_fileEdit;
+    QComboBox *m_courseCombo;
+    QLineEdit *m_subnameEdit;
+    QLineEdit *m_instructionEdit;
+
+    QComboBox *m_voiceComboQ;
+    QSpinBox *m_voiceGainQ;
+    QDoubleSpinBox *m_voiceTrimBeginQ;
+    QLineEdit *m_voiceTesttextQ;
+    QPushButton *m_voiceTestbuttonQ;
+
+    QComboBox *m_voiceComboA;
+    QSpinBox *m_voiceGainA;
+    QDoubleSpinBox *m_voiceTrimBeginA;
+    QLineEdit *m_voiceTesttextA;
+    QPushButton *m_voiceTestbuttonA;
+
+private:
+    SuperMemoSQL m_superDb;
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
-    Phonon::AudioOutput *audioOutput;
-    Phonon::MediaObject *mediaObject;
+    Phonon::AudioOutput *m_audioOutput;
+    Phonon::MediaObject *m_mediaObject;
 
 private slots:
     void fileButtonTriggered ();
@@ -103,45 +106,43 @@ private slots:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cConsolePage : public QWidget
+class ConsolePage : public QWidget
 {
     Q_OBJECT
 public:
-    cConsolePage(QWidget *parent = 0);
+    ConsolePage(QWidget *parent = 0);
 
 public slots:
     void traceSlot(const QString &txt, const int & flags);
     void traceLevelSlot ();
 
 private:
-    QTextEdit *consoleText;
-    QMutex traceMutex;
-    QCheckBox *cTracelevel2; // checkbox for tracelevel2
-    QCheckBox *cTracelevel3; // checkbox for tracelevel3
-
+    QTextEdit *m_consoleText;
+    QMutex m_traceMutex;
+    QCheckBox *m_traceLevel2; // checkbox for tracelevel2
+    QCheckBox *m_traceLevel3; // checkbox for tracelevel3
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cContentPage : public QWidget
+class ContentPage : public QWidget
 {
     Q_OBJECT
 public:
-    cContentPage(QWidget *parent = 0);
+    ContentPage(QWidget *parent = 0);
     void setContent (const QStringList & content);
     QStringList getContent ();
 signals:
     void contentChangedSignal ();
 
 private:
-    QPlainTextEdit *contentTextEdit;
-    cFindToolbar *findToolbar;
+    QPlainTextEdit *n_contentTextEdit;
+    FindToolbar *m_findToolbar;
 private slots:
     void findNext(const QString &txt);
     void findPrev(const QString &txt);
 
     void contentChangedSlot();
     void keyPressEvent ( QKeyEvent * event );
-
 };
 
 

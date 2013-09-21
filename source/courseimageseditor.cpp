@@ -65,22 +65,22 @@ void CourseImageEditor::clear()
 /////////////////////////////////////////////////////////////////////////////
 void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
 {
-    trace(QString("Course Browser::WorkWith course:")+courseTemplate.m_options.course+" lesson:"+courseTemplate.m_options.subname, traceLevel1);
+    trace(QString("Course Browser::WorkWith course:")+courseTemplate.m_options.m_courseName+" lesson:"+courseTemplate.m_options.m_subname, traceLevel1);
     clear();
 
-    if (!m_database.open(courseTemplate.m_options.database))
+    if (!m_database.open(courseTemplate.m_options.m_dbPath))
         return;
 
     int courseID;
     QString courseFileName, courseFileDirectoryName, mediaDirectoryName;
-    if (!m_database.getCourseDetails (courseTemplate.m_options.course, &courseID, &courseFileName))
+    if (!m_database.getCourseDetails (courseTemplate.m_options.m_courseName, &courseID, &courseFileName))
         return;
 
     QFileInfo courseFileInfo(courseFileName);
     courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
 
-    QString topicNameA = courseTemplate.m_options.subname;
-    QString topicNameB = courseTemplate.m_options.subname+"*";
+    QString topicNameA = courseTemplate.m_options.m_subname;
+    QString topicNameB = courseTemplate.m_options.m_subname+"*";
 
     int topicIDA, topicIDB;
 

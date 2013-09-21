@@ -31,7 +31,7 @@ ImageDownloadHelper::~ImageDownloadHelper()
 /////////////////////////////////////////////////////////////////////////////
 QString ImageDownloadHelper::myFileName()
 {
-    return tmpDir+"IMG"+m_ext+".jpg";
+    return TMPDIR+"IMG"+m_ext+".jpg";
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ ImageDownloader::~ImageDownloader()
 /////////////////////////////////////////////////////////////////////////////
 QString ImageDownloader::myFileName ()
 {
-    return tmpDir+"HTML"+m_id;
+    return TMPDIR+"HTML"+m_id;
 }
 
 

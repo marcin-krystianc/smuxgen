@@ -19,18 +19,18 @@ class CourseTemplateOptions {
 public:
     CourseTemplateOptions();
 
-    QString course;
-    QString database;
-    QString subname;
-    QString instruction;
+    QString m_courseName;
+    QString m_dbPath;
+    QString m_subname;
+    QString m_instruction;
 
-    QString voiceNameQ;
-    int voiceGainQ;
-    double voiceTrimQ;
+    QString m_voiceNameQ;
+    int m_voiceGainQ;
+    double m_voiceTrimQ;
 
-    QString voiceNameA;
-    int voiceGainA;
-    double voiceTrimA;
+    QString m_voiceNameA;
+    int m_voiceGainA;
+    double m_voiceTrimA;
 
     struct
     {

@@ -159,21 +159,21 @@ void MainWindow::createDockWindows()
     m_dockOptionsPage = new QDockWidget(tr("Options"), this);
     m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
     addDockWidget(Qt::LeftDockWidgetArea, m_dockOptionsPage);
-    m_optionsPage = new cOptionsPage(m_dockOptionsPage);
+    m_optionsPage = new OptionsPage(m_dockOptionsPage);
     m_dockOptionsPage->setWidget(m_optionsPage);
     m_viewMenu->addAction(m_dockOptionsPage->toggleViewAction());
 
     m_dockContentPage = new QDockWidget(tr("Word list"), this);
     m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
     addDockWidget(Qt::RightDockWidgetArea, m_dockContentPage);
-    m_contentPage = new cContentPage(m_dockContentPage);
+    m_contentPage = new ContentPage(m_dockContentPage);
     m_dockContentPage->setWidget(m_contentPage);
     m_viewMenu->addAction(m_dockContentPage->toggleViewAction());
 
     m_dockConsolePage = new QDockWidget(tr("Console"), this);
     m_dockConsolePage->setAllowedAreas(Qt::BottomDockWidgetArea);
     addDockWidget(Qt::BottomDockWidgetArea, m_dockConsolePage);
-    m_consolePage = new cConsolePage(m_dockConsolePage);
+    m_consolePage = new ConsolePage(m_dockConsolePage);
     m_dockConsolePage->setWidget(m_consolePage);
     m_viewMenu->addAction(m_dockConsolePage->toggleViewAction());
     m_dockConsolePage->hide();
@@ -336,7 +336,7 @@ void MainWindow::generateCourseSlot()
     m_courseGenerator.generate(m_courseTemplate);
     lockInterface();
     setTitle();
-    trace (QString("Started to generate: ")+m_courseTemplate.m_options.subname, traceLevel1);
+    trace (QString("Started to generate: ")+m_courseTemplate.m_options.m_subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////

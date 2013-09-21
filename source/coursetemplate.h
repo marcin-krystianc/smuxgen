@@ -26,7 +26,7 @@ public:
     bool importQA (const QString &fileName); // import from Q&A file - false if not succeeded
     bool exportQA (const QString &fileName); // export to Q&A file - false if not succeeded
 
-    CourseTemplateOptions m_options;
+    CourseOptions m_options;
     QStringList m_content;
 private:
 

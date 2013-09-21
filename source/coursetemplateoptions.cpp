@@ -13,13 +13,13 @@
 #include <QStringList>
 
 /////////////////////////////////////////////////////////////////////////////
-CourseTemplateOptions::CourseTemplateOptions()
+CourseOptions::CourseOptions()
 {
     clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseTemplateOptions::fromString(const QString &line)
+bool CourseOptions::fromString(const QString &line)
 {
     QStringList chunks = line.split(" ", QString::SkipEmptyParts);
     int i = 0;
@@ -127,39 +127,39 @@ bool CourseTemplateOptions::fromString(const QString &line)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString CourseTemplateOptions::toString()
+QString CourseOptions::toString(const CourseOptions &options)
 {
     QString ret;
 
-    ret+= QString("-course ") +"\""+m_courseName +"\" ";
-    ret+= QString("-database ") +"\""+m_dbPath +"\" ";
-    ret+= QString("-subname ") +"\""+m_subname +"\" ";
-    ret+= QString("-instruction ") +"\""+m_instruction +"\" ";
+    ret+= QString("-course ") +"\""+options.m_courseName +"\" ";
+    ret+= QString("-database ") +"\""+options.m_dbPath +"\" ";
+    ret+= QString("-subname ") +"\""+options.m_subname +"\" ";
+    ret+= QString("-instruction ") +"\""+options.m_instruction +"\" ";
 
-    ret+= QString("-trimQ ") +QString::number(m_voiceTrimQ) +" ";
-    ret+= QString("-vNameQ ") +"\""+m_voiceNameQ+"\" ";
-    ret+= QString("-gainQ ") +QString::number(m_voiceGainQ) +" ";
+    ret+= QString("-trimQ ") +QString::number(options.m_voiceTrimQ) +" ";
+    ret+= QString("-vNameQ ") +"\""+options.m_voiceNameQ+"\" ";
+    ret+= QString("-gainQ ") +QString::number(options.m_voiceGainQ) +" ";
 
-    ret+= QString("-trimA ") +QString::number(m_voiceTrimA) +" ";
-    ret+= QString("-vNameA ") +"\""+m_voiceNameA+"\" ";
-    ret+= QString("-gainA ") +QString::number(m_voiceGainA) +" ";
+    ret+= QString("-trimA ") +QString::number(options.m_voiceTrimA) +" ";
+    ret+= QString("-vNameA ") +"\""+options.m_voiceNameA+"\" ";
+    ret+= QString("-gainA ") +QString::number(options.m_voiceGainA) +" ";
 
-    if ( m_oForce) ret+= "-Force ";
-    if ( m_oBothDirections) ret+= "-Double ";
-    if ( m_oVoiceQ) ret+= "-VoiceQ ";
-    if ( m_oVoiceA) ret+= "-VoiceA ";
-    if ( m_oImage) ret+= "-Image ";
+    if (options.m_oForce) ret+= "-Force ";
+    if (options.m_oBothDirections) ret+= "-Double ";
+    if (options.m_oVoiceQ) ret+= "-VoiceQ ";
+    if (options.m_oVoiceA) ret+= "-VoiceA ";
+    if (options.m_oImage) ret+= "-Image ";
 
     return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CourseTemplateOptions::trace(const QString &text, const int & flags)
+void CourseOptions::trace(const QString &text, const int & flags)
 {
     globalTracer.trace(text, flags);
 }
 /////////////////////////////////////////////////////////////////////////////
-void CourseTemplateOptions::clear()
+void CourseOptions::clear()
 {
     m_oBothDirections = false;
     m_oForce = false;

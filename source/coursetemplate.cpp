@@ -66,7 +66,7 @@ bool CourseTemplate::save(const QString &fileName)
     outputFileStream.setDevice( &file );
     outputFileStream.setCodec("UTF-8");
 
-    outputFileStream<<m_options.toString()<<endl;
+    outputFileStream<<CourseOptions::toString(m_options)<<endl;
 
     for (int i = 0;i<m_content.count();++i)
         outputFileStream<<m_content.at(i)<<endl;

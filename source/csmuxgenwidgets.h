@@ -59,8 +59,8 @@ class OptionsPage : public QWidget
     Q_OBJECT
 public:
     OptionsPage(QWidget *parent = 0);
-    void setOptions(const CourseTemplateOptions &options);
-    CourseTemplateOptions getOptions ();
+    void setOptions(const CourseOptions &options);
+    CourseOptions getOptions ();
 
     QComboBox *getVoiceComboA() const;
     void setVoiceComboA(QComboBox *value);

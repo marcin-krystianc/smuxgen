@@ -14,10 +14,10 @@
 #include <QObject>
 #include "cglobaltracer.h"
 
-class CourseTemplateOptions {
+class CourseOptions {
 
 public:
-    CourseTemplateOptions();
+    CourseOptions();
 
     QString m_courseName;
     QString m_dbPath;
@@ -39,7 +39,7 @@ public:
     bool m_oImage; // get Images
 
     bool fromString (const QString &line);
-    QString toString () ;
+    static QString toString (const CourseOptions &options);
     void clear();
 
 private:

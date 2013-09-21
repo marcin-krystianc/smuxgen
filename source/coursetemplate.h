@@ -9,7 +9,7 @@
 #ifndef COURSETEMPLATE_H
 #define COURSETEMPLATE_H
 
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 
 #include <QObject>
 #include <QString>

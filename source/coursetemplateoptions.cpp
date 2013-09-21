@@ -6,21 +6,24 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "cglobaltracer.h"
 
 #include <QString>
 #include <QStringList>
 
 /////////////////////////////////////////////////////////////////////////////
-CourseOptions::CourseOptions()
+CourseOptions::CourseOptions() :
+    m_oBothDirections(false), m_oForce(false), m_oVoiceQ(false), m_oVoiceA(false), m_oImage(false),
+    m_voiceGainQ(0), m_voiceTrimQ(0), m_voiceGainA(0), m_voiceTrimA(0)
 {
-    clear();
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseOptions::fromString(const QString &line)
+CourseOptions CourseOptions::fromString (const QString &line)
 {
+    CourseOptions options;
     QStringList chunks = line.split(" ", QString::SkipEmptyParts);
     int i = 0;
     while (i<chunks.count())
@@ -28,33 +31,33 @@ bool CourseOptions::fromString(const QString &line)
         QString first = chunks.at(i++);
 
         if (first == "-Force") {
-            m_oForce = true;
+            options.m_oForce = true;
             continue;
         }
 
         if (first == "-Double") {
-            m_oBothDirections = true;
+            options.m_oBothDirections = true;
             continue;
         }
 
         if (first == "-VoiceQ"){
-            m_oVoiceQ = true;
+            options.m_oVoiceQ = true;
             continue;
         }
 
         if (first == "-VoiceA"){
-            m_oVoiceA = true;
+            options.m_oVoiceA = true;
             continue;
         }
 
         if (first == "-Image"){
-            m_oImage = true;
+            options.m_oImage = true;
             continue;
         }
 
         if (i == chunks.count()) {
             trace("cCourseTemplateOptions::fromString - Missing value after: "+first, traceError);
-            return false;
+            return options;
         }
 
 
@@ -64,7 +67,7 @@ bool CourseOptions::fromString(const QString &line)
         while (second.startsWith("\"")^second.endsWith("\"")) {
             if (i >= chunks.count()) {
                 trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second, traceError);
-                return false; // wrong parameters
+                return options; // wrong parameters
             }
             second += " ";
             second += chunks.at(i++);
@@ -72,58 +75,58 @@ bool CourseOptions::fromString(const QString &line)
 
 
         if (first == "-course") {
-            m_courseName = second.remove("\"");;
+            options.m_courseName = second.remove("\"");;
             continue;
         }
 
         if (first == "-database") {
-            m_dbPath = second.remove("\"");
+            options.m_dbPath = second.remove("\"");
             continue;
         }
 
         if (first == "-subname") {
-            m_subname = second.remove("\"");
+            options.m_subname = second.remove("\"");
             continue;
         }
 
         if (first == "-instruction") {
-            m_instruction = second.remove("\"");
+            options.m_instruction = second.remove("\"");
             continue;
         }
 
         if (first == "-trimQ") {
-            m_voiceTrimQ = second.toDouble();
+            options.m_voiceTrimQ = second.toDouble();
             continue;
         }
 
         if (first == "-vNameQ") {
-            m_voiceNameQ = second.remove("\"");
+            options.m_voiceNameQ = second.remove("\"");
             continue;
         }
 
         if (first == "-gainQ") {
-            m_voiceGainQ = second.toInt();
+            options.m_voiceGainQ = second.toInt();
             continue;
         }
         if (first == "-trimA") {
-            m_voiceTrimA = second.toDouble();
+            options.m_voiceTrimA = second.toDouble();
             continue;
         }
 
         if (first == "-vNameA") {
-            m_voiceNameA = second.remove("\"");
+            options.m_voiceNameA = second.remove("\"");
             continue;
         }
 
         if (first == "-gainA") {
-            m_voiceGainA = second.toInt();
+            options.m_voiceGainA = second.toInt();
             continue;
         }
 
         trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first, traceError);
         continue; // wrong parameters
     }
-    return true;
+    return options;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -158,25 +161,4 @@ void CourseOptions::trace(const QString &text, const int & flags)
 {
     globalTracer.trace(text, flags);
 }
-/////////////////////////////////////////////////////////////////////////////
-void CourseOptions::clear()
-{
-    m_oBothDirections = false;
-    m_oForce = false;
-    m_oVoiceQ = false;
-    m_oVoiceA = false;
-    m_oImage = false;
 
-    m_courseName.clear();
-    m_dbPath.clear();
-    m_subname.clear();
-    m_instruction.clear();
-
-    m_voiceNameQ.clear();
-    m_voiceGainQ = 0;
-    m_voiceTrimQ = 0;
-
-    m_voiceNameA.clear();
-    m_voiceGainA = 0;
-    m_voiceTrimA = 0;
-}

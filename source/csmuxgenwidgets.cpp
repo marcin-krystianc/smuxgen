@@ -15,7 +15,7 @@
 #include <Phonon>
 
 #include "csmuxgenwidgets.h"
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "ccodeeditor.h"
 #include "csapi.h"
 

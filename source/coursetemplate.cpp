@@ -7,7 +7,7 @@
 //============================================================================
 
 #include "coursetemplate.h"
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "globalsmuxgentools.h"
 #include <QFile>
 #include <QString>
@@ -25,8 +25,7 @@ bool CourseTemplate::open(const QString &fileName)
     clear();
 
     QFile file (fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         trace("cCourseTemplate::open - Cannot open file: "+fileName, traceError);
         return false;
     }
@@ -36,14 +35,9 @@ bool CourseTemplate::open(const QString &fileName)
     inputFileStream.setCodec("UTF-8");
 
 
-    if (!m_options.fromString (inputFileStream.readLine()))
-    {
-        trace("cCourseTemplate::open - Error in options: "+fileName, traceError);
-        return false;
-    }
+    m_options = CourseOptions::fromString (inputFileStream.readLine());
 
-    while (1)
-    {
+    for(;;) {
         QString line = (inputFileStream.readLine()).trimmed();
         if (line.isNull()) break; //end of file
         if (line.length() == 0) continue;
@@ -168,6 +162,6 @@ void CourseTemplate::trace (const QString &text, const int & flags)
 /////////////////////////////////////////////////////////////////////////////
 void CourseTemplate::clear()
 {
-    m_options.clear();
+    m_options = CourseOptions();
     m_content.clear();
 }

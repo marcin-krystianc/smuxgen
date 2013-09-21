@@ -23,7 +23,6 @@ SOURCES += main.cpp \
  csapi.cpp
 HEADERS += gui.h \
  coursetemplate.h \
- coursetemplateoptions.h \
  csmuxgenwidgets.h \
  cglobaltracer.h \
  csupermemosql.h \
@@ -32,6 +31,7 @@ HEADERS += gui.h \
  globalsmuxgentools.h \
  courseimageseditor.h \
  ccodeeditor.h \
- csapi.h
+ csapi.h \
+    courseoptions.h
 RESOURCES += gui.qrc
 FORMS += 

@@ -12,7 +12,7 @@
 
 #include "coursetemplate.h"
 #include "cglobaltracer.h"
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "csupermemosql.h"
 
 #include <QDomDocument>

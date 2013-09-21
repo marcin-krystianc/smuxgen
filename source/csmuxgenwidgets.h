@@ -26,7 +26,7 @@
 #include <QToolButton>
 #include <QPlainTextEdit>
 
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "csupermemosql.h"
 #include "cglobaltracer.h"
 #include "cimagedownloader.h"

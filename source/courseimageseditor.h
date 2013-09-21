@@ -23,7 +23,7 @@
 #include <QLabel>
 #include <QScrollBar>
 
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 #include "csupermemosql.h"
 #include "cglobaltracer.h"
 #include "cimagedownloader.h"

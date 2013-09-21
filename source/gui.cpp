@@ -30,7 +30,7 @@ MainWindow::MainWindow()
     resize(800, 600);
     setWindowIcon(QIcon(":/images/smuxgen.png"));
 
-    connect(&m_courseGenerator, SIGNAL(finished()) , this , SLOT(generateCourseFinishedSlot()));
+    connect(&m_courseGenerator, SIGNAL(finished()) , this , SLOT(buildCourseFinishedSlot()));
     connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&)) , this , SLOT(progressSlot(const QString&)));
 }
 
@@ -55,19 +55,16 @@ void MainWindow::createMenus()
     m_fileMenu->addAction(m_openCourseTemplateAction);
     m_fileMenu->addAction(m_saveCourseTemplateAction);
     m_fileMenu->addAction(m_saveAsCourseTemplateAction);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_importQAAction);
-    m_fileMenu->addAction(m_exportQAAction);
-    m_fileMenu->addSeparator();
 
+    m_fileMenu->addSeparator();
     m_recentMenu = m_fileMenu->addMenu("&Recent");
     for (int i = 0; i < m_recentFileActions.size(); ++i)
         m_recentMenu->addAction(m_recentFileActions[i]);
 
     m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_generateCourseAction);
-    m_fileMenu->addAction(m_courseBrowserAction);
-    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_importQAAction);
+    m_fileMenu->addAction(m_exportQAAction);
+
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_quitAction);
 
@@ -108,9 +105,13 @@ void MainWindow::createActions()
     m_saveAsCourseTemplateAction->setStatusTip(tr("Save as..."));
     connect(m_saveAsCourseTemplateAction, SIGNAL(triggered()), this, SLOT(saveAsCourseTemplateSlot()));
 
-    m_generateCourseAction = new QAction(this);
-    m_generateCourseAction->setShortcuts(QKeySequence::UnknownKey);
-    connect(m_generateCourseAction, SIGNAL(triggered()), this, SLOT(generateCourseSlot()));
+    m_buildCourseAction = new QAction(this);
+    m_buildCourseAction->setShortcuts(QKeySequence::UnknownKey);
+    connect(m_buildCourseAction, SIGNAL(triggered()), this, SLOT(buildCourseSlot()));
+
+    m_rebuildCourseAction = new QAction(this);
+    m_rebuildCourseAction->setShortcuts(QKeySequence::UnknownKey);
+    connect(m_rebuildCourseAction, SIGNAL(triggered()), this, SLOT(rebuildCourseSlot()));
 
     m_courseBrowserAction = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
     m_courseBrowserAction->setShortcuts(QKeySequence::UnknownKey);
@@ -146,10 +147,8 @@ void MainWindow::createToolBars()
     m_toolBar->addAction(m_openCourseTemplateAction);
     m_toolBar->addAction(m_saveCourseTemplateAction);
     m_toolBar->addSeparator();
-    m_toolBar->addAction(m_importQAAction);
-    m_toolBar->addAction(m_exportQAAction);
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_generateCourseAction);
+    m_toolBar->addAction(m_buildCourseAction);
+    m_toolBar->addAction(m_rebuildCourseAction);
     m_toolBar->addAction(m_courseBrowserAction);
 }
 
@@ -325,18 +324,20 @@ bool MainWindow::saveAsCourseTemplateSlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::generateCourseSlot()
+void MainWindow::buildCourseSlot(bool rebuild)
 {
-    if (m_courseGenerator.isRunning()) {
-        return generateStop();
-    }
-
     m_courseTemplate.m_options = m_optionsPage->getOptions();
     m_courseTemplate.m_content = m_contentPage->getContent();
-    m_courseGenerator.generate(m_courseTemplate);
+    m_courseGenerator.build(m_courseTemplate, rebuild);
     lockInterface();
     setTitle();
-    trace (QString("Started to generate: ")+m_courseTemplate.m_options.subname, traceLevel1);
+    trace (QString("Started building: ")+m_courseTemplate.m_options.subname, traceLevel1);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void MainWindow::rebuildCourseSlot()
+{
+    buildCourseSlot (true);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -352,7 +353,8 @@ void MainWindow::courseBrowserOpenCloseSlot()
 void MainWindow::courseBrowserVisibleSlot(bool visible)
 {
     if (!visible) {
-        m_generateCourseAction->setEnabled(true);
+        m_buildCourseAction->setEnabled(true);
+        m_rebuildCourseAction->setEnabled(true);
         m_dockContentPage->show();
         m_dockOptionsPage->show();
         m_dockContentPage->toggleViewAction()->setEnabled(true);
@@ -363,7 +365,8 @@ void MainWindow::courseBrowserVisibleSlot(bool visible)
         m_courseTemplate.m_content = m_contentPage->getContent();
         m_imageWidget->workWith(m_courseTemplate);
 
-        m_generateCourseAction->setEnabled(false);
+        m_buildCourseAction->setEnabled(false);
+        m_rebuildCourseAction->setEnabled(false);
         m_dockContentPage->hide();
         m_dockOptionsPage->hide();
         m_dockContentPage->toggleViewAction()->setEnabled(false);
@@ -392,27 +395,34 @@ void MainWindow::setTitle()
 void MainWindow::unlockInterface()
 {
     m_courseBrowserAction->setEnabled(true);
-    m_generateCourseAction->setIcon(QIcon(":/images/generate.png"));
-    m_generateCourseAction->setStatusTip(tr("Generate course"));
-    m_generateCourseAction->setText(tr("Generate "));
+
+    m_buildCourseAction->setIcon(QIcon(":/images/generate.png"));
+    m_buildCourseAction->setStatusTip(tr("Build course"));
+    m_buildCourseAction->setStatusTip(tr("Build course"));
+    m_buildCourseAction->setText(tr("Build"));
+
+    m_rebuildCourseAction->setIcon(QIcon(":/images/generate.png"));
+    m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
+    m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
+    m_rebuildCourseAction->setText(tr("Reuild"));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
     m_courseBrowserAction->setEnabled(false);
-    m_generateCourseAction->setIcon(QIcon(":/images/stop.png"));
-    m_generateCourseAction->setStatusTip(tr("Stop"));
-    m_generateCourseAction->setText(tr("Stop "));
+    m_buildCourseAction->setIcon(QIcon(":/images/stop.png"));
+    m_buildCourseAction->setStatusTip(tr("Stop"));
+    m_buildCourseAction->setText(tr("Stop "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::generateCourseFinishedSlot()
+void MainWindow::buildCourseFinishedSlot()
 {
     if (m_courseGenerator.isFailed())
-        trace (QString("Course generation failed !"), traceLevel1);
+        trace (QString("Build failed !"), traceLevel1);
     else
-        trace (QString("Course generatad successfully"), traceLevel1);
+        trace (QString("Build succeeded"), traceLevel1);
 
     unlockInterface();
     statusBar()->showMessage("");
@@ -444,7 +454,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (m_courseGenerator.isRunning()) {
         event->ignore();
-        return generateStop();
+        return stopBuild();
     }
 
     if (m_contentChanged) {
@@ -467,7 +477,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::generateStop()
+void MainWindow::stopBuild()
 {
     trace (QString("Stopping "), traceLevel1);
     m_courseGenerator.stop();

@@ -37,11 +37,13 @@ private slots:
     void importQASlot();
     void exportQASlot();
     bool saveAsCourseTemplateSlot();
-    void generateCourseSlot(); // start/stop generate course
+    void buildCourseSlot(bool rebuild=false);
+    void rebuildCourseSlot();
+
     void courseBrowserOpenCloseSlot(); // start/stop picture browser
     void courseBrowserVisibleSlot(bool visible); // picture browser
 
-    void generateCourseFinishedSlot(); // generate finished
+    void buildCourseFinishedSlot(); // generate finished
     void progressSlot(const QString &);
     void contentChangedSlot();
 
@@ -76,7 +78,8 @@ private:
     QAction *m_importQAAction;
     QAction *m_exportQAAction;
     QAction *m_saveAsCourseTemplateAction;
-    QAction *m_generateCourseAction;
+    QAction *m_buildCourseAction;
+    QAction *m_rebuildCourseAction;
     QAction *m_courseBrowserAction;
 
     QAction *m_aboutAction;
@@ -97,7 +100,7 @@ private:
 private:
     void trace (const QString& txt, const unsigned int& flags);
     void setTitle();
-    void generateStop();
+    void stopBuild();
 
     CourseGenerator m_courseGenerator;
     CourseTemplate m_courseTemplate;

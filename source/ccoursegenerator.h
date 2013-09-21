@@ -27,7 +27,7 @@ public:
     CourseGenerator();
     ~CourseGenerator();
 
-    void generate (const CourseTemplate &m_courseTemplate);
+    void build (const CourseTemplate &m_courseTemplate, bool rebuild);
     bool isFailed();
 
 public slots:
@@ -41,12 +41,13 @@ private:
     SuperMemoSQL m_db;
     CourseTemplate m_courseTemplate;
     bool m_isFailed;
+    bool m_rebuild;
 
     void trace (const QString &text, const int &flags = traceLevel1);
     QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
     void setDelete (QDomNode &topicNode);
     bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
-    bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool forceRegenerate = false);
+    bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
     int writeDomDoucumentToFile (QDomDocument &document, QString path);
     QDomDocument createCourseItem (int templateId, QString chapter);
     bool checkIfNewAnswers(QString fileName, QString answers);

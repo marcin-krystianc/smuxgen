@@ -29,7 +29,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 CourseGenerator::CourseGenerator() :
-    m_abortProces(false), m_isFailed(false)
+    m_abortProces(false), m_isFailed(false),m_rebuild(false)
 {
 
 }
@@ -54,10 +54,11 @@ void CourseGenerator::trace (const QString &text, const int & flags)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CourseGenerator::generate (const CourseTemplate &courseTemplate)
+void CourseGenerator::build (const CourseTemplate &courseTemplate, bool rebuild)
 {
     m_courseTemplate = courseTemplate;
     m_abortProces = false;
+    m_rebuild = rebuild;
     start();
 }
 
@@ -117,7 +118,7 @@ void CourseGenerator::run ()
         if (m_abortProces)
             return;
 
-        generateCourseElement(courseID, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false, voiceIndexA, voiceIndexQ);
+        generateCourseElement(courseID, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false, voiceIndexA, voiceIndexQ, m_rebuild);
     }
 
 
@@ -151,7 +152,7 @@ void CourseGenerator::run ()
             if (m_abortProces)
                 return;
 
-            generateCourseElement(courseID, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true, voiceIndexA, voiceIndexQ);
+            generateCourseElement(courseID, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true, voiceIndexA, voiceIndexQ, m_rebuild);
         }
 
         doDelete (courseID, topicBID, topicNodeB, courseFileDirectoryName);
@@ -217,10 +218,10 @@ void CourseGenerator::setDelete (QDomNode &topicNode)
 bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, QString answer
                                             , QString topicName, QDomNode &topicNode, int topicID
                                             , QDomDocument &doc, QString courseFileDirectory, bool bMode
-                                            , int voiceIndexA, int voiceIndexQ, bool forceRegenerate)
+                                            , int voiceIndexA, int voiceIndexQ, bool foreceRebuild)
 {
     int ID = 0;
-    bool forceMedia = forceRegenerate;
+    bool forceMedia = foreceRebuild;
     const int timeOut = -1; // no timeout
     QProcess myProcess;
 
@@ -230,7 +231,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
 
     // create xml course file
-    if (forceRegenerate ||
+    if (foreceRebuild ||
             checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer))
     {
         forceMedia = true;

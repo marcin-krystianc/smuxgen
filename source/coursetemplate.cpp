@@ -14,13 +14,13 @@
 #include <QTextStream>
 
 /////////////////////////////////////////////////////////////////////////////
-cCourseTemplate::cCourseTemplate()
+CourseTemplate::CourseTemplate()
 {
     clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplate::open(const QString &fileName)
+bool CourseTemplate::open(const QString &fileName)
 {
     clear();
 
@@ -36,7 +36,7 @@ bool cCourseTemplate::open(const QString &fileName)
     inputFileStream.setCodec("UTF-8");
 
 
-    if (!options.fromString (inputFileStream.readLine()))
+    if (!m_options.fromString (inputFileStream.readLine()))
     {
         trace("cCourseTemplate::open - Error in options: "+fileName, traceError);
         return false;
@@ -47,13 +47,13 @@ bool cCourseTemplate::open(const QString &fileName)
         QString line = (inputFileStream.readLine()).trimmed();
         if (line.isNull()) break; //end of file
         if (line.length() == 0) continue;
-        content.push_back(line);
+        m_content.push_back(line);
     }
     return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplate::save(const QString &fileName)
+bool CourseTemplate::save(const QString &fileName)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -66,15 +66,15 @@ bool cCourseTemplate::save(const QString &fileName)
     outputFileStream.setDevice( &file );
     outputFileStream.setCodec("UTF-8");
 
-    outputFileStream<<options.toString()<<endl;
+    outputFileStream<<m_options.toString()<<endl;
 
-    for (int i = 0;i<content.count();++i)
-        outputFileStream<<content.at(i)<<endl;
+    for (int i = 0;i<m_content.count();++i)
+        outputFileStream<<m_content.at(i)<<endl;
 
     return true;
 }
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplate::importQA (const QString &fileName)
+bool CourseTemplate::importQA (const QString &fileName)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -98,7 +98,7 @@ bool cCourseTemplate::importQA (const QString &fileName)
         if (line.startsWith(QString::fromUtf8("Q:"), Qt::CaseInsensitive))
         {
             if (q&&a)
-                content.push_back(entry);
+                m_content.push_back(entry);
 
             a = false;
             entry = (line.remove(0, 2)).trimmed()+QString::fromUtf8(":");
@@ -121,12 +121,12 @@ bool cCourseTemplate::importQA (const QString &fileName)
         continue;
     }
     if (q&&a)
-        content.push_back(entry);
+        m_content.push_back(entry);
 
     return true;
 }
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplate::exportQA (const QString &fileName)
+bool CourseTemplate::exportQA (const QString &fileName)
 {
     QFile file (fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -139,9 +139,9 @@ bool cCourseTemplate::exportQA (const QString &fileName)
     outputFileStream.setDevice( &file );
     outputFileStream.setCodec("UTF-8");
 
-    for (int i = 0;i<content.count();++i)
+    for (int i = 0;i<m_content.count();++i)
     {
-        QString s = content.at(i);
+        QString s = m_content.at(i);
         QStringList l1 = s.split(":");
         if (l1.count()!= 2)
             continue;
@@ -160,14 +160,14 @@ bool cCourseTemplate::exportQA (const QString &fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplate::trace (const QString &text, const int & flags)
+void CourseTemplate::trace (const QString &text, const int & flags)
 {
     globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplate::clear()
+void CourseTemplate::clear()
 {
-    options.clear();
-    content.clear();
+    m_options.clear();
+    m_content.clear();
 }

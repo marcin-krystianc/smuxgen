@@ -8,23 +8,23 @@
 
 #include "cglobaltracer.h"
 
-cGlobaTracer globalTracer;
+GlobaTracer globalTracer;
 
 /////////////////////////////////////////////////////////////////////////////
-void cGlobaTracer::trace(const QString &text, const int& flags)
+void GlobaTracer::trace(const QString &text, const int& flags)
 {
     if (m_flags & flags)
         emit traceSignal (text, m_flags & flags);
 };
 
 /////////////////////////////////////////////////////////////////////////////
-cGlobaTracer::cGlobaTracer ()
+GlobaTracer::GlobaTracer ()
 {
     m_flags = traceWarning | traceError | traceLevel1;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cGlobaTracer::setTraceFlags(const unsigned int& flags)
+void GlobaTracer::setTraceFlags(const unsigned int& flags)
 {
     m_flags = flags;
 }

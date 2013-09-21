@@ -27,7 +27,7 @@ public:
     CourseGenerator();
     ~CourseGenerator();
 
-    void generate (const cCourseTemplate &m_courseTemplate);
+    void generate (const CourseTemplate &m_courseTemplate);
     bool isFailed();
 
 public slots:
@@ -38,8 +38,8 @@ signals:
 
 private:
     volatile bool m_abortProces;
-    cSuperMemoSQL m_db;
-    cCourseTemplate m_courseTemplate;
+    SuperMemoSQL m_db;
+    CourseTemplate m_courseTemplate;
     bool m_isFailed;
 
     void trace (const QString &text, const int &flags = traceLevel1);

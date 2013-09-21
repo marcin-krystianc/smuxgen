@@ -59,8 +59,8 @@ class cOptionsPage : public QWidget
     Q_OBJECT
 public:
     cOptionsPage(QWidget *parent = 0);
-    void setOptions(const cCourseTemplateOptions &options);
-    cCourseTemplateOptions getOptions ();
+    void setOptions(const CourseTemplateOptions &options);
+    CourseTemplateOptions getOptions ();
 
 private:
     QCheckBox *oForceCheckBox ;
@@ -87,7 +87,7 @@ private:
     QPushButton *voiceTestbuttonA;
 
 private:
-    cSuperMemoSQL superMemoSQL;
+    SuperMemoSQL superMemoSQL;
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
     Phonon::AudioOutput *audioOutput;

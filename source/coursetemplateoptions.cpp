@@ -13,12 +13,12 @@
 #include <QStringList>
 
 /////////////////////////////////////////////////////////////////////////////
-cCourseTemplateOptions::cCourseTemplateOptions()
+CourseTemplateOptions::CourseTemplateOptions()
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplateOptions::fromString(const QString &line)
+bool CourseTemplateOptions::fromString(const QString &line)
 {
     if (line.isEmpty())
     {
@@ -136,7 +136,7 @@ bool cCourseTemplateOptions::fromString(const QString &line)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString cCourseTemplateOptions::toString()
+QString CourseTemplateOptions::toString()
 {
     QString ret;
 
@@ -163,12 +163,12 @@ QString cCourseTemplateOptions::toString()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplateOptions::trace(const QString &text, const int & flags)
+void CourseTemplateOptions::trace(const QString &text, const int & flags)
 {
     globalTracer.trace(text, flags);
 }
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplateOptions::clear()
+void CourseTemplateOptions::clear()
 {
     bit.oDouble = false;
     bit.oForce = false;

@@ -18,12 +18,12 @@
 
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageDownloadHelper : public QThread
+class ImageDownloadHelper : public QThread
 {
     Q_OBJECT
 public:
-    cImageDownloadHelper(const QString &ext, int id);
-    ~cImageDownloadHelper();
+    ImageDownloadHelper(const QString &ext, int id);
+    ~ImageDownloadHelper();
 
     void getImage(const QString &url);
 
@@ -46,12 +46,12 @@ signals:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageDownloader : public QThread
+class ImageDownloader : public QThread
 {
     Q_OBJECT
 public:
-    cImageDownloader(const QString &id = "");
-    ~cImageDownloader();
+    ImageDownloader(const QString &id = "");
+    ~ImageDownloader();
 
     void getImages(const QString &keyWords);
 
@@ -68,7 +68,7 @@ private:
     int m_progressValue;
 
     static const int m_maxHelpThreads = 8;
-    cImageDownloadHelper *m_imageDownloadHelper[m_maxHelpThreads];
+    ImageDownloadHelper *m_imageDownloadHelper[m_maxHelpThreads];
     QString myFileName ();
 
     void trace (const QString &text, const int & flags = traceLevel1|0);

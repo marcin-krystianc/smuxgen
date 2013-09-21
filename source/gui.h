@@ -86,7 +86,7 @@ private:
     cOptionsPage *m_optionsPage;
     cConsolePage *m_consolePage;
     cContentPage *m_contentPage;
-    cCourseImageEditor *m_imageWidget;
+    CourseImageEditor *m_imageWidget;
 
     QDockWidget *m_dockOptionsPage;
     QDockWidget *m_dockConsolePage;
@@ -100,7 +100,7 @@ private:
     void generateStop();
 
     CourseGenerator m_courseGenerator;
-    cCourseTemplate m_courseTemplate;
+    CourseTemplate m_courseTemplate;
     QString m_courseTemplateFileName;
     bool m_contentChanged;
 };

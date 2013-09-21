@@ -16,7 +16,7 @@
 #include <QSqlDatabase>
 #include "cglobaltracer.h"
 
-class cSuperMemoSQL
+class SuperMemoSQL
 {
 public:
     bool open(const QString &fileName);

@@ -181,7 +181,7 @@ void MainWindow::createDockWindows()
     m_dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
     m_dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
     addDockWidget(Qt::TopDockWidgetArea, m_dockCourseBrowser);
-    m_imageWidget = new cCourseImageEditor(m_dockCourseBrowser);
+    m_imageWidget = new CourseImageEditor(m_dockCourseBrowser);
     m_dockCourseBrowser->setWidget(m_imageWidget);
     m_dockCourseBrowser->hide();
 
@@ -221,8 +221,8 @@ void MainWindow::openCourseTemplateSlot(QString fileName)
     m_courseTemplateFileName = fileName;
     trace (QString("Opened: ")+m_courseTemplateFileName, traceLevel1);
 
-    m_optionsPage->setOptions(m_courseTemplate.options);
-    m_contentPage->setContent(m_courseTemplate.content);
+    m_optionsPage->setOptions(m_courseTemplate.m_options);
+    m_contentPage->setContent(m_courseTemplate.m_content);
 
     QSettings settings("Smuxgen", "Smuxgen");
     QStringList files = settings.value("recentFileList").toStringList();
@@ -248,8 +248,8 @@ bool MainWindow::saveCourseTemplateSlot()
 
     m_contentChanged = false;
 
-    m_courseTemplate.options = m_optionsPage->getOptions();
-    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseTemplate.m_options = m_optionsPage->getOptions();
+    m_courseTemplate.m_content = m_contentPage->getContent();
     m_courseTemplate.save(m_courseTemplateFileName);
     trace (QString("Saved: ")+m_courseTemplateFileName, traceLevel1);
     setTitle();
@@ -268,12 +268,12 @@ void MainWindow::importQASlot()
         return;
 
     setLastDir(strippedDir(fileName));
-    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseTemplate.m_content = m_contentPage->getContent();
     if (!m_courseTemplate.importQA(fileName)) {
         trace (tr("Error importing Q&A file:")+fileName, traceError);
         return;
     }
-    m_contentPage->setContent(m_courseTemplate.content);
+    m_contentPage->setContent(m_courseTemplate.m_content);
     trace (QString::fromUtf8("Imported Q&A:")+fileName, traceLevel1);
 }
 
@@ -289,7 +289,7 @@ void MainWindow::exportQASlot()
 
     setLastDir(strippedDir(fileName));
 
-    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseTemplate.m_content = m_contentPage->getContent();
     if (!m_courseTemplate.exportQA(fileName)) {
         trace (tr("Error exporting Q&A file:")+fileName, traceError);
         return;
@@ -331,12 +331,12 @@ void MainWindow::generateCourseSlot()
         return generateStop();
     }
 
-    m_courseTemplate.options = m_optionsPage->getOptions();
-    m_courseTemplate.content = m_contentPage->getContent();
+    m_courseTemplate.m_options = m_optionsPage->getOptions();
+    m_courseTemplate.m_content = m_contentPage->getContent();
     m_courseGenerator.generate(m_courseTemplate);
     lockInterface();
     setTitle();
-    trace (QString("Started to generate: ")+m_courseTemplate.options.subname, traceLevel1);
+    trace (QString("Started to generate: ")+m_courseTemplate.m_options.subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -359,8 +359,8 @@ void MainWindow::courseBrowserVisibleSlot(bool visible)
         m_dockOptionsPage->toggleViewAction()->setEnabled(true);
     }
     else {
-        m_courseTemplate.options = m_optionsPage->getOptions();
-        m_courseTemplate.content = m_contentPage->getContent();
+        m_courseTemplate.m_options = m_optionsPage->getOptions();
+        m_courseTemplate.m_content = m_contentPage->getContent();
         m_imageWidget->workWith(m_courseTemplate);
 
         m_generateCourseAction->setEnabled(false);

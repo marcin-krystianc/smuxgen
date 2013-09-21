@@ -21,11 +21,11 @@ enum traceFlags
     traceLevel3 = 1<<5
 };
 
-class cGlobaTracer : public QObject
+class GlobaTracer : public QObject
 {
     Q_OBJECT
 public:
-    cGlobaTracer ();
+    GlobaTracer ();
     void trace (const QString &txt, const int& m_flags);
     void setTraceFlags(const unsigned int& m_flags);
 
@@ -37,6 +37,6 @@ signals:
 
 };
 
-extern cGlobaTracer globalTracer;
+extern GlobaTracer globalTracer;
 
 #endif // CGLOBALTRACER_H

@@ -35,7 +35,7 @@ bool isValidSuperMemoDatabase (const QSqlDatabase &db)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::open(const QString &fileName)
+bool SuperMemoSQL::open(const QString &fileName)
 {
     m_database = QSqlDatabase::addDatabase("QSQLITE");
     m_database.setDatabaseName(fileName);
@@ -52,13 +52,13 @@ bool cSuperMemoSQL::open(const QString &fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cSuperMemoSQL::trace(const QString &text, const int &flags)
+void SuperMemoSQL::trace(const QString &text, const int &flags)
 {
     globalTracer.trace(text, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourses (QStringList *retList)
+bool SuperMemoSQL::getCourses (QStringList *retList)
 {
     QSqlQuery query (m_database);
     QString q = QString("Select %1 from %2").arg("Title", "Courses");
@@ -76,7 +76,7 @@ bool cSuperMemoSQL::getCourses (QStringList *retList)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString *path)
+bool SuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString *path)
 {
     QSqlQuery query (m_database);
     QString q = QString("Select %1, %2 from %3 where %4 = :v1").arg("Id", "Path", "Courses", "Title");
@@ -105,7 +105,7 @@ bool cSuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QStrin
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::addItem (const QString &elementName, int courseId, int parentItemId, int *itemId)
+bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parentItemId, int *itemId)
 {
     QSqlTableModel model(0, m_database);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -171,7 +171,7 @@ bool cSuperMemoSQL::addItem (const QString &elementName, int courseId, int paren
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::deleteNotValidItems (int courseId, int parentItemId, const std::set<int> &validItemsId)
+bool SuperMemoSQL::deleteNotValidItems (int courseId, int parentItemId, const std::set<int> &validItemsId)
 {
     std::set<int> itemsId;
     if (!getItems(courseId, parentItemId, &itemsId))
@@ -188,7 +188,7 @@ bool cSuperMemoSQL::deleteNotValidItems (int courseId, int parentItemId, const s
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getItems (int courseId, int parentItemId, std::set<int> *itemsId)
+bool SuperMemoSQL::getItems (int courseId, int parentItemId, std::set<int> *itemsId)
 {
     QSqlQuery query (m_database);
     QString q = QString("select %1 from %2 where %3 = :v3 and %4 = :v4")
@@ -209,7 +209,7 @@ bool cSuperMemoSQL::getItems (int courseId, int parentItemId, std::set<int> *ite
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::deleteItem (int courseId, int parentItemId, int itemId)
+bool SuperMemoSQL::deleteItem (int courseId, int parentItemId, int itemId)
 {
     QSqlQuery query (m_database);
     QString q = QString("delete from %1 where %2 = :v2 and %3 = :v3 and %4 = :v4")
@@ -229,7 +229,7 @@ bool cSuperMemoSQL::deleteItem (int courseId, int parentItemId, int itemId)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getItemId (const QString &itemName, int courseId, int parentItemId, int *retID)
+bool SuperMemoSQL::getItemId (const QString &itemName, int courseId, int parentItemId, int *retID)
 {
     QSqlQuery query (m_database);
     QString q = QString("select %1 from %2 where %3 = :v1 and %4 = :v2 and %4 = :v3")
@@ -251,7 +251,7 @@ bool cSuperMemoSQL::getItemId (const QString &itemName, int courseId, int parent
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cSuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
+bool SuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
 {
     QSqlQuery query (m_database);
     QString q1 = QString("select max(%1) from items where CourseId = :v1").arg("PageNum");

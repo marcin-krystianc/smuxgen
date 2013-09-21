@@ -14,10 +14,10 @@
 #include <QObject>
 #include "cglobaltracer.h"
 
-class cCourseTemplateOptions {
+class CourseTemplateOptions {
 
 public:
-    cCourseTemplateOptions();
+    CourseTemplateOptions();
 
     QString course;
     QString database;

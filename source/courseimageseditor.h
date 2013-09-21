@@ -34,11 +34,11 @@
 
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageList : public QListWidget
+class ImageList : public QListWidget
 {
     Q_OBJECT
 public:
-    cImageList(QWidget *parent = 0, int m_maxCount = 128);
+    ImageList(QWidget *parent = 0, int m_maxCount = 128);
     void addPiece(const QPixmap &pixmap, const QString &hint = "");
     void resetPosition();
 
@@ -63,12 +63,12 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageSearch : public QWidget
+class ImageSearch : public QWidget
 {
     Q_OBJECT
 public:
-    cImageSearch(QWidget *parent = 0);
-    ~cImageSearch();
+    ImageSearch(QWidget *parent = 0);
+    ~ImageSearch();
 
 public slots:
     void setNewKeywordsChangedL (const QString &txt);
@@ -91,16 +91,16 @@ private:
     QSlider *m_zoomSlider;
     QString m_textL;
     QString m_textR;
-    cImageList *m_imagelist;
-    cImageDownloader *m_imageDownloader[2];
+    ImageList *m_imagelist;
+    ImageDownloader *m_imageDownloader[2];
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageButtonWidget : public QWidget
+class ImageButtonWidget : public QWidget
 {
     Q_OBJECT
 public:
-    cImageButtonWidget (QWidget *parent = 0);
+    ImageButtonWidget (QWidget *parent = 0);
     bool setFile (const QString &path);
 
 private:
@@ -120,26 +120,26 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageTargetWidget : public QWidget
+class ImageTargetWidget : public QWidget
 {
     Q_OBJECT
 public:
-    cImageTargetWidget (QWidget *parent = 0);
+    ImageTargetWidget (QWidget *parent = 0);
     void setFiles (const QStringList &list);
 
 private:
-    cImageButtonWidget *imageButtonWidget[2][2];
+    ImageButtonWidget *imageButtonWidget[2][2];
 
 protected:
     void resizeEvent ( QResizeEvent * event ) ;
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cReadyCourseElementList : public QWidget
+class ReadyCourseElementList : public QWidget
 {
     Q_OBJECT
 public:
-    cReadyCourseElementList (QWidget *parent = 0);
+    ReadyCourseElementList (QWidget *parent = 0);
     void clear();
     void addItem (const QString &text, const QStringList &imgData, const QStringList &mp3Data);
 
@@ -155,11 +155,11 @@ private slots:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cMp3Widget : public QWidget
+class Mp3Widget : public QWidget
 {
     Q_OBJECT
 public:
-    cMp3Widget (QWidget *parent = 0);
+    Mp3Widget (QWidget *parent = 0);
     void setData (const QString &label, const QString &path);
 
 private:
@@ -176,15 +176,15 @@ private slots:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cMp3TargetWidget : public QWidget
+class Mp3TargetWidget : public QWidget
 {
     Q_OBJECT
 public:
-    cMp3TargetWidget (QWidget *parent = 0);
+    Mp3TargetWidget (QWidget *parent = 0);
     void setData (const QStringList &list);
 
 private:
-    cMp3Widget *m_mp3Widget[4];
+    Mp3Widget *m_mp3Widget[4];
 
 private slots:
     void elementSelectedMp3Slot (const QStringList& mp3Data);
@@ -192,22 +192,22 @@ private slots:
 
 /////////////////////////////////////////////////////////////////////////////
 // widget which allows to view and modify images for each exercise
-class cCourseImageEditor : public QWidget
+class CourseImageEditor : public QWidget
 {
     Q_OBJECT
 public:
-    cCourseImageEditor (QWidget *parent = 0);
-    void workWith (const cCourseTemplate &courseTemplate);
+    CourseImageEditor (QWidget *parent = 0);
+    void workWith (const CourseTemplate &courseTemplate);
 
 private:
     void clear ();
     void trace (const QString &text, const int & flags = traceLevel1|0);
 
-    cSuperMemoSQL m_database;
-    cReadyCourseElementList *m_readyCourseElementList;
-    cImageTargetWidget *m_imageTargetWidget;
-    cImageSearch *m_imageSearch;
-    cMp3TargetWidget *m_mp3TargetWidget;
+    SuperMemoSQL m_database;
+    ReadyCourseElementList *m_readyCourseElementList;
+    ImageTargetWidget *m_imageTargetWidget;
+    ImageSearch *m_imageSearch;
+    Mp3TargetWidget *m_mp3TargetWidget;
 
 private slots:
     void elementSelectedImgSlot (const QStringList &imgData);

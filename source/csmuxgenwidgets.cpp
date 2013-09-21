@@ -207,7 +207,7 @@ void cOptionsPage::voiceCheckBoxChangedA (int state)
     }
 }
 /////////////////////////////////////////////////////////////////////////////
-void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
+void cOptionsPage::setOptions(const CourseTemplateOptions &options)
 {
     oForceCheckBox ->setCheckState(options.bit.oForce ? Qt::Checked : Qt::Unchecked);
     oDoubleCheckBox ->setCheckState(options.bit.oDouble ? Qt::Checked : Qt::Unchecked);
@@ -235,7 +235,7 @@ void cOptionsPage::setOptions(const cCourseTemplateOptions &options)
 /////////////////////////////////////////////////////////////////////////////
 void cOptionsPage::voiceTestButtonTriggered ()
 {
-    cCourseTemplateOptions options = getOptions();
+    CourseTemplateOptions options = getOptions();
     QStringList arguments; // filename, text, trim, gain
 
     if (sender() == voiceTestbuttonQ)
@@ -279,9 +279,9 @@ void cOptionsPage::voiceTestButtonTriggered ()
 
 }
 /////////////////////////////////////////////////////////////////////////////
-cCourseTemplateOptions cOptionsPage::getOptions()
+CourseTemplateOptions cOptionsPage::getOptions()
 {
-    cCourseTemplateOptions options;
+    CourseTemplateOptions options;
     options.bit.oForce = oForceCheckBox->isChecked();
     options.bit.oDouble = oDoubleCheckBox->isChecked();
     options.bit.oImage = oImageCheckBox->isChecked();

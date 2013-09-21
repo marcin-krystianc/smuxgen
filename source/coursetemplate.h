@@ -15,19 +15,19 @@
 #include <QString>
 #include <QStringList>
 
-class cCourseTemplate
+class CourseTemplate
 {
 
 public:
-    cCourseTemplate();
+    CourseTemplate();
 
     bool open (const QString &fileName); // open from file - false if not succeeded
     bool save (const QString &fileName); // save to file - false if not succeeded
     bool importQA (const QString &fileName); // import from Q&A file - false if not succeeded
     bool exportQA (const QString &fileName); // export to Q&A file - false if not succeeded
 
-    cCourseTemplateOptions options;
-    QStringList content;
+    CourseTemplateOptions m_options;
+    QStringList m_content;
 private:
 
     void trace (const QString &text, const int & flags = traceLevel1|0);

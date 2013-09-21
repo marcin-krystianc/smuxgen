@@ -48,7 +48,7 @@ void CourseGenerator::stop()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CourseGenerator::trace (const QString &text, const int & flags)
+void CourseGenerator::trace (const QString &text, int flags)
 {
     globalTracer.trace(text, flags);
 }
@@ -215,9 +215,9 @@ void CourseGenerator::setDelete (QDomNode &topicNode)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, QString answer
-                                            , QString topicName, QDomNode &topicNode, int topicID
-                                            , QDomDocument &doc, QString courseFileDirectory, bool bMode
+bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &question, const QString &answer
+                                            , const QString &topicName, QDomNode &topicNode, int topicID
+                                            , QDomDocument &doc, const QString &courseFileDirectory, bool bMode
                                             , int voiceIndexA, int voiceIndexQ, bool foreceRebuild)
 {
     int ID = 0;
@@ -247,9 +247,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     {
         QStringList arguments; // filename, text, trim, gain
         arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
-        answer.replace("|", " ");
-        question.replace("|", " ");
-        arguments.append(bMode ? getTranscript(answer):getTranscript(question));
+        arguments.append(bMode ? getTranscript(QString(answer).replace("|", " ")):getTranscript(QString(question).replace("|", " ")));
         arguments.append(QString::number(voiceIndexQ));
         arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimQ));
         arguments.append(QString::number(m_courseTemplate.m_options.voiceGainQ));
@@ -271,9 +269,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     {
         QStringList arguments; // filename, text, trim, gain
         arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A);
-        answer.replace("|", " ");
-        question.replace("|", " ");
-        arguments.append(bMode ? getTranscript(question):getTranscript(answer));
+        arguments.append(!bMode ? getTranscript(QString(answer).replace("|", " ")):getTranscript(QString(question).replace("|", " ")));
         arguments.append(QString::number(voiceIndexA));
         arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimA));
         arguments.append(QString::number(m_courseTemplate.m_options.voiceGainA));
@@ -328,8 +324,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
             if (myProcess.exitCode())
                 trace(QString("Error:getImage.bat ")+arguments.join(" "), traceError);
 
-            if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT))
-            {
+            if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
                 trace(QString("Error:scalePicture ")+fileName, traceError);
                 deleteFile(fileName);
             }
@@ -425,34 +420,34 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::checkIfNewAnswers(QString fileName, QString answers)
+bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &answers)
 {
-    QDomDocument doc("mydocument");
+    QDomDocument doc("");
     QFile docFile(fileName);
-
     if (!doc.setContent(&docFile)) {
         docFile.close();
         trace(QString("cCourseGenerator::checkIfNewAnswers error:")+fileName, traceError);
-        return 1;
+        return true;
     }
-    docFile.close();
 
     QDomElement rootElement = doc.documentElement();
     QDomNode n = rootElement.firstChildElement("question");
-    if (n.isNull()) return 1;
+    if (n.isNull())
+        return true;
+
     QDomNode n1 = n.firstChildElement("spellpad");
-    if (n1.isNull()) return 1;
+    if (n1.isNull())
+        return true;
 
     QDomElement e = n1.toElement(); // try to convert the node to an element.
-    if(!e.isNull())
-    {
+    if(!e.isNull()) {
         QString oAnswer = e.attribute("correct", "");
         if (oAnswer == answers)
-            return 0;
+            return false;
 
         trace(QString("New answers: ")+oAnswer+":"+answers, traceLevel1);
     }
-    return 1;
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////

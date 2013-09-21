@@ -43,14 +43,15 @@ private:
     bool m_isFailed;
     bool m_rebuild;
 
-    void trace (const QString &text, const int &flags = traceLevel1);
+    void trace (const QString &text, int flags = traceLevel1);
     QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
     void setDelete (QDomNode &topicNode);
     bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
-    bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
+    bool generateCourseElement(int courseIDSQL, const QString &question, const QString &answer, const QString &topicName
+                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
     int writeDomDoucumentToFile (QDomDocument &document, QString path);
     QDomDocument createCourseItem (int templateId, QString chapter);
-    bool checkIfNewAnswers(QString fileName, QString answers);
+    bool checkIfNewAnswers(const QString &fileName, const QString &answers);
     QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
 
 protected:

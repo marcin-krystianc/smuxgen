@@ -178,9 +178,8 @@ QString removeAllSpecialCharacters (const QString &input, const QStringList &lis
 {
     QString ret = input;
     for (int i = 0;i<list.count();i++)
-    {
         ret.remove(list.at(i));
-    }
+
     return ret;
 }
 

@@ -141,10 +141,11 @@ bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parent
 
    trace(QString("setElementSQL, generate new record: ")
          + QString(" CourseId:") + QString::number(courseId)
+         + QString(" ParentId:") + QString::number(parentItemId)
          + QString(" Name:") + elementName
          + QString(" PageNum:") + QString::number(*itemId)
          + QString(" QueueOrder:") + QString::number(*itemId)
-         + QString(" ParentId:") + QString::number(parentItemId)
+
          , traceLevel3);
 
    if (!model.insertRecord(-1, record)){ // to the end
@@ -171,8 +172,8 @@ bool SuperMemoSQL::deleteNotValidItems (int courseId, int parentItemId, const st
       return false;
 
    for (std::set<int>::iterator i=itemsId.begin(); i!=itemsId.end(); ++i) {
-      if (validItemsId.find(*i) != validItemsId.end()) {
-         if (deleteItem (courseId, parentItemId, *i))
+      if (validItemsId.find(*i) == validItemsId.end()) {
+         if (!deleteItem (courseId, parentItemId, *i))
             return false;
       }
    }
@@ -256,9 +257,8 @@ bool SuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
    }
 
    *maxId = 1;
-   if (!query.first())
-      return true;
+   if (query.first())
+      *maxId = query.value(0).toInt();
 
-   *maxId = query.value(0).toInt();
    return true;
 }

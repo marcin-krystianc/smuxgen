@@ -15,19 +15,17 @@
 #include <QString>
 #include <QStringList>
 
-class CourseTemplate
+struct CourseTemplate
 {
-
-public:
    static CourseTemplate fromFile(const QString &fileName);
    static bool toFile (const QString &fileName, const CourseTemplate &courseTemplate);
-   bool importQA (const QString &fileName); // import from Q&A file - false if not succeeded
-   bool exportQA (const QString &fileName); // export to Q&A file - false if not succeeded
+   static CourseTemplate importQA (const QString &fileName);
+   static bool exportQA (const QString &fileName, const CourseTemplate &courseTemplate);
 
-   CourseOptions m_options;
-   QStringList m_content;
+   CourseOptions options;
+   QStringList content;
+
 private:
-
    static void trace (const QString &text, const int flags = traceLevel1|0);
 };
 

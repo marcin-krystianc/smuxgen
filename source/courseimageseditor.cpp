@@ -65,29 +65,29 @@ void CourseImageEditor::clear()
 /////////////////////////////////////////////////////////////////////////////
 void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
 {
-   trace(QString("Course Browser::WorkWith course:")+courseTemplate.m_options.courseName+" lesson:"+courseTemplate.m_options.subname, traceLevel1);
+   trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.courseName+" lesson:"+courseTemplate.options.subname, traceLevel1);
    clear();
 
-   if (!m_database.open(courseTemplate.m_options.dbPath))
+   if (!m_database.open(courseTemplate.options.dbPath))
       return;
 
    int courseID;
    QString courseFileName, courseFileDirectoryName, mediaDirectoryName;
-   if (!m_database.getCourseDetails (courseTemplate.m_options.courseName, &courseID, &courseFileName))
+   if (!m_database.getCourseDetails (courseTemplate.options.courseName, &courseID, &courseFileName))
       return;
 
    QFileInfo courseFileInfo(courseFileName);
    courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
 
-   QString topicNameA = courseTemplate.m_options.subname;
-   QString topicNameB = courseTemplate.m_options.subname+"*";
+   QString topicNameA = courseTemplate.options.subname;
+   QString topicNameB = courseTemplate.options.subname+"*";
 
    int topicIDA, topicIDB;
 
    if (!m_database.getItemId(topicNameA, courseID, 0, &topicIDA))
       return;
 
-   if (courseTemplate.m_options.bothDirections)
+   if (courseTemplate.options.bothDirections)
    {
       if (!m_database.getItemId(topicNameB, courseID, 0, &topicIDB))
          return;
@@ -95,10 +95,10 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
 
    mediaDirectoryName = courseFileDirectoryName+"media"+QDir::separator();
 
-   for (int i = 0;i<courseTemplate.m_content.count();++i)
+   for (int i = 0;i<courseTemplate.content.count();++i)
    {
       int id1, id2;
-      QString line = (courseTemplate.m_content.at(i)).trimmed();
+      QString line = (courseTemplate.content.at(i)).trimmed();
       if (line.length() == 0) continue;
       QStringList list1 = line.split(":");
 
@@ -127,7 +127,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
       QString q2;
       QString a2;
 
-      if (courseTemplate.m_options.bothDirections)
+      if (courseTemplate.options.bothDirections)
       {
          if (!m_database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
             continue;

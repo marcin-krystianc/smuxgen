@@ -216,8 +216,8 @@ void MainWindow::openCourseTemplateSlot(const QString &fileNamePar)
    m_courseTemplateFileName = fileName;
    trace (QString("Opened: ")+m_courseTemplateFileName, traceLevel1);
 
-   m_optionsPage->setOptions(m_courseTemplate.m_options);
-   m_contentPage->setContent(m_courseTemplate.m_content);
+   m_optionsPage->setOptions(m_courseTemplate.options);
+   m_contentPage->setContent(m_courseTemplate.content);
 
    QSettings settings("Smuxgen", "Smuxgen");
    QStringList files = settings.value("recentFileList").toStringList();
@@ -243,8 +243,8 @@ bool MainWindow::saveCourseTemplateSlot()
 
    m_contentChanged = false;
 
-   m_courseTemplate.m_options = m_optionsPage->getOptions();
-   m_courseTemplate.m_content = m_contentPage->getContent();
+   m_courseTemplate.options = m_optionsPage->getOptions();
+   m_courseTemplate.content = m_contentPage->getContent();
    CourseTemplate::toFile(m_courseTemplateFileName, m_courseTemplate);
    trace (QString("Saved: ")+m_courseTemplateFileName, traceLevel1);
    setTitle();
@@ -263,13 +263,8 @@ void MainWindow::importQASlot()
       return;
 
    setLastDir(strippedDir(fileName));
-   m_courseTemplate.m_content = m_contentPage->getContent();
-   if (!m_courseTemplate.importQA(fileName)) {
-      trace (tr("Error importing Q&A file:")+fileName, traceError);
-      return;
-   }
-   m_contentPage->setContent(m_courseTemplate.m_content);
-   trace (QString::fromUtf8("Imported Q&A:")+fileName, traceLevel1);
+   m_courseTemplate = CourseTemplate::importQA(fileName);
+   m_contentPage->setContent(m_courseTemplate.content);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -284,12 +279,11 @@ void MainWindow::exportQASlot()
 
    setLastDir(strippedDir(fileName));
 
-   m_courseTemplate.m_content = m_contentPage->getContent();
-   if (!m_courseTemplate.exportQA(fileName)) {
+   m_courseTemplate.content = m_contentPage->getContent();
+   if (!CourseTemplate::exportQA(fileName, m_courseTemplate)) {
       trace (tr("Error exporting Q&A file:")+fileName, traceError);
       return;
    }
-   trace (QString::fromUtf8("Exported Q&A:")+fileName, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -322,12 +316,12 @@ bool MainWindow::saveAsCourseTemplateSlot()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::buildCourseSlot(bool rebuild)
 {
-   m_courseTemplate.m_options = m_optionsPage->getOptions();
-   m_courseTemplate.m_content = m_contentPage->getContent();
+   m_courseTemplate.options = m_optionsPage->getOptions();
+   m_courseTemplate.content = m_contentPage->getContent();
    m_courseGenerator.build(m_courseTemplate, rebuild);
    lockInterface();
    setTitle();
-   trace (QString("Started building: ")+m_courseTemplate.m_options.subname, traceLevel1);
+   trace (QString("Started building: ")+m_courseTemplate.options.subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -357,8 +351,8 @@ void MainWindow::courseBrowserVisibleSlot(bool visible)
       m_dockOptionsPage->toggleViewAction()->setEnabled(true);
    }
    else {
-      m_courseTemplate.m_options = m_optionsPage->getOptions();
-      m_courseTemplate.m_content = m_contentPage->getContent();
+      m_courseTemplate.options = m_optionsPage->getOptions();
+      m_courseTemplate.content = m_contentPage->getContent();
       m_imageWidget->workWith(m_courseTemplate);
 
       m_buildCourseAction->setEnabled(false);

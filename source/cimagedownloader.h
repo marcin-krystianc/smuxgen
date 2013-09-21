@@ -31,9 +31,9 @@ public slots:
     //void stop();
 
 private:
-    int ID;
+    int m_id;
     QString m_url;
-    QString EXT;
+    QString m_ext;
 
     QString myFileName();
     void trace (const QString &text, const int & flags = traceLevel1|0);
@@ -59,16 +59,16 @@ public slots:
     void helpThreadFinished(bool success, const QPixmap& pixmap, const QString &url);
 
 private:
-    QString ID;
+    QString m_id;
     QString m_keyWords;
-    QStringList urls;
-    volatile bool newTask;
+    QStringList m_urls;
+    volatile bool m_newTask;
 
-    int progressMax;
-    int progressValue;
+    int m_progressMax;
+    int m_progressValue;
 
-    static const int maxHelpThreads = 8;
-    cImageDownloadHelper *imageDownloadHelper[maxHelpThreads];
+    static const int m_maxHelpThreads = 8;
+    cImageDownloadHelper *m_imageDownloadHelper[m_maxHelpThreads];
     QString myFileName ();
 
     void trace (const QString &text, const int & flags = traceLevel1|0);

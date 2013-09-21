@@ -93,7 +93,6 @@ private:
     QString m_textR;
     cImageList *m_imagelist;
     cImageDownloader *m_imageDownloader[2];
-
 };
 
 /////////////////////////////////////////////////////////////////////////////

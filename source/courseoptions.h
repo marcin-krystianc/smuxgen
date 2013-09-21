@@ -12,33 +12,33 @@
 
 #include <QString>
 #include <QObject>
-#include "cglobaltracer.h"
+#include "globaltracer.h"
 
 struct CourseOptions {
-    CourseOptions();
-    static CourseOptions fromString (const QString &line);
-    static QString toString (const CourseOptions &options);
+   CourseOptions();
+   static CourseOptions fromString (const QString &line);
+   static QString toString (const CourseOptions &options);
 
-    bool bothDirections; // make also alternative course
-    bool voiceQ; // make mp3 files (Questions)
-    bool voiceA; // make mp3 files (Answers)
-    bool graphics; // get Images
+   bool bothDirections; // make also alternative course
+   bool voiceQ; // make mp3 files (Questions)
+   bool voiceA; // make mp3 files (Answers)
+   bool graphics; // get Images
 
-    QString courseName;
-    QString dbPath;
-    QString subname;
-    QString instruction;
+   QString courseName;
+   QString dbPath;
+   QString subname;
+   QString instruction;
 
-    QString voiceNameQ;
-    int voiceGainQ;
-    double voiceTrimQ;
+   QString voiceNameQ;
+   int voiceGainQ;
+   double voiceTrimQ;
 
-    QString voiceNameA;
-    int voiceGainA;
-    double voiceTrimA;
+   QString voiceNameA;
+   int voiceGainA;
+   double voiceTrimA;
 
 private:
-    static void trace (const QString &text, const int & flags = traceLevel1|0);
+   static void trace (const QString &text, const int & flags = traceLevel1|0);
 };
 
 #endif

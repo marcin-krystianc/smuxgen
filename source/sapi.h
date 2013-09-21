@@ -9,8 +9,8 @@
 #include <QStringList>
 
 
-#ifndef CSAPI_H
-#define CSAPI_H
+#ifndef SAPI_H
+#define SAPI_H
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList getVoiceEngines();

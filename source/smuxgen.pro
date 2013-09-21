@@ -12,26 +12,26 @@ SOURCES += main.cpp \
  gui.cpp \
  coursetemplate.cpp \
  coursetemplateoptions.cpp \
- csmuxgenwidgets.cpp \
- cglobaltracer.cpp \
- csupermemosql.cpp \
- ccoursegenerator.cpp \
- cimagedownloader.cpp \
  globalsmuxgentools.cpp \
  courseimageseditor.cpp \
- ccodeeditor.cpp \
- csapi.cpp
+    globaltracer.cpp \
+    coursegenerator.cpp \
+    imagedownloader.cpp \
+    odeeditor.cpp \
+    sapi.cpp \
+    smuxgenwidgets.cpp \
+    supermemosql.cpp
 HEADERS += gui.h \
  coursetemplate.h \
- csmuxgenwidgets.h \
- cglobaltracer.h \
- csupermemosql.h \
- ccoursegenerator.h \
- cimagedownloader.h \
  globalsmuxgentools.h \
  courseimageseditor.h \
- ccodeeditor.h \
- csapi.h \
-    courseoptions.h
+    courseoptions.h \
+    coursegenerator.h \
+    globaltracer.h \
+    imagedownloader.h \
+    sapi.h \
+    smuxgenwidgets.h \
+    supermemosql.h \
+    codeeditor.h
 RESOURCES += gui.qrc
 FORMS += 

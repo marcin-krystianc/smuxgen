@@ -25,24 +25,24 @@ class LineNumberArea;
 
 class CodeEditor : public QPlainTextEdit
 {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
-    CodeEditor(QWidget *parent = 0);
+   CodeEditor(QWidget *parent = 0);
 
-    void lineNumberAreaPaintEvent(QPaintEvent *event);
-    int lineNumberAreaWidth();
+   void lineNumberAreaPaintEvent(QPaintEvent *event);
+   int lineNumberAreaWidth();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
+   void resizeEvent(QResizeEvent *event);
+   void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
-    void updateLineNumberArea(const QRect &, int);
+   void updateLineNumberAreaWidth(int newBlockCount);
+   void updateLineNumberArea(const QRect &, int);
 
 private:
-    QWidget *m_lineNumberArea;
+   QWidget *m_lineNumberArea;
 };
 
 //![codeeditordefinition]
@@ -51,21 +51,21 @@ private:
 class LineNumberArea : public QWidget
 {
 public:
-    LineNumberArea(CodeEditor *editor) : QWidget(editor) {
-        m_codeEditor = editor;
-    }
+   LineNumberArea(CodeEditor *editor) : QWidget(editor) {
+      m_codeEditor = editor;
+   }
 
-    QSize sizeHint() const {
-        return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
-    }
+   QSize sizeHint() const {
+      return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
+   }
 
 protected:
-    void paintEvent(QPaintEvent *event) {
-        m_codeEditor->lineNumberAreaPaintEvent(event);
-    }
+   void paintEvent(QPaintEvent *event) {
+      m_codeEditor->lineNumberAreaPaintEvent(event);
+   }
 
 private:
-    CodeEditor *m_codeEditor;
+   CodeEditor *m_codeEditor;
 };
 
 //![extraarea]

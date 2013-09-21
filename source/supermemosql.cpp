@@ -19,8 +19,8 @@
 #include <QVariant>
 #include <QSqlTableModel>
 
-#include "cglobaltracer.h"
-#include "csupermemosql.h"
+#include "globaltracer.h"
+#include "supermemosql.h"
 
 /////////////////////////////////////////////////////////////////////////////
 bool isValidSuperMemoDatabase (const QSqlDatabase &db)
@@ -68,9 +68,8 @@ bool SuperMemoSQL::getCourses (QStringList *retList)
    }
 
    retList->clear();
-   for (query.first();query.isValid();query.next()) {
+   for (query.first();query.isValid();query.next())
       retList->append(query.value(0).toString());
-   }
 
    return true;
 }

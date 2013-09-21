@@ -27,121 +27,121 @@
 #include <QPlainTextEdit>
 
 #include "courseoptions.h"
-#include "csupermemosql.h"
-#include "cglobaltracer.h"
-#include "cimagedownloader.h"
+#include "supermemosql.h"
+#include "globaltracer.h"
+#include "imagedownloader.h"
 
 /////////////////////////////////////////////////////////////////////////////
 class FindToolbar : public QWidget
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    FindToolbar(QWidget *parent = 0);
-    void setFindFocus();
+   FindToolbar(QWidget *parent = 0);
+   void setFindFocus();
 
 private:
-    QLineEdit *m_lineEdit;
-    QPushButton *m_forwardButton;
-    QPushButton *m_backwardButton;
+   QLineEdit *m_lineEdit;
+   QPushButton *m_forwardButton;
+   QPushButton *m_backwardButton;
 
 signals:
-    void findNext (const QString &text);
-    void findPrev (const QString &text);
+   void findNext (const QString &text);
+   void findPrev (const QString &text);
 
 private slots:
-    void nextSlot();
-    void prevSlot();
+   void nextSlot();
+   void prevSlot();
 };
 
 /////////////////////////////////////////////////////////////////////////////
 class OptionsPage : public QWidget
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    OptionsPage(QWidget *parent = 0);
-    void setOptions(const CourseOptions &options);
-    CourseOptions getOptions ();
+   OptionsPage(QWidget *parent = 0);
+   void setOptions(const CourseOptions &options);
+   CourseOptions getOptions ();
 
-    QComboBox *getVoiceComboA() const;
-    void setVoiceComboA(QComboBox *value);
-
-private:
-    QCheckBox *m_oDoubleCheckBox;
-    QCheckBox *m_oImageCheckBox;
-    QCheckBox *m_oVoiceCheckBoxQ;
-    QCheckBox *m_oVoiceCheckBoxA;
-
-    QLineEdit *m_fileEdit;
-    QComboBox *m_courseCombo;
-    QLineEdit *m_subnameEdit;
-    QLineEdit *m_instructionEdit;
-
-    QComboBox *m_voiceComboQ;
-    QSpinBox *m_voiceGainQ;
-    QDoubleSpinBox *m_voiceTrimBeginQ;
-    QLineEdit *m_voiceTesttextQ;
-    QPushButton *m_voiceTestbuttonQ;
-
-    QComboBox *m_voiceComboA;
-    QSpinBox *m_voiceGainA;
-    QDoubleSpinBox *m_voiceTrimBeginA;
-    QLineEdit *m_voiceTesttextA;
-    QPushButton *m_voiceTestbuttonA;
+   QComboBox *getVoiceComboA() const;
+   void setVoiceComboA(QComboBox *value);
 
 private:
-    SuperMemoSQL m_superDb;
-    void trace (const QString &text, const int & flags = traceLevel1|0);
+   QCheckBox *m_oDoubleCheckBox;
+   QCheckBox *m_oImageCheckBox;
+   QCheckBox *m_oVoiceCheckBoxQ;
+   QCheckBox *m_oVoiceCheckBoxA;
 
-    Phonon::AudioOutput *m_audioOutput;
-    Phonon::MediaObject *m_mediaObject;
+   QLineEdit *m_fileEdit;
+   QComboBox *m_courseCombo;
+   QLineEdit *m_subnameEdit;
+   QLineEdit *m_instructionEdit;
+
+   QComboBox *m_voiceComboQ;
+   QSpinBox *m_voiceGainQ;
+   QDoubleSpinBox *m_voiceTrimBeginQ;
+   QLineEdit *m_voiceTesttextQ;
+   QPushButton *m_voiceTestbuttonQ;
+
+   QComboBox *m_voiceComboA;
+   QSpinBox *m_voiceGainA;
+   QDoubleSpinBox *m_voiceTrimBeginA;
+   QLineEdit *m_voiceTesttextA;
+   QPushButton *m_voiceTestbuttonA;
+
+private:
+   SuperMemoSQL m_superDb;
+   void trace (const QString &text, const int & flags = traceLevel1|0);
+
+   Phonon::AudioOutput *m_audioOutput;
+   Phonon::MediaObject *m_mediaObject;
 
 private slots:
-    void fileButtonTriggered ();
-    void fileEditChanged (const QString &fileName);
-    void voiceCheckBoxChangedQ (int);
-    void voiceCheckBoxChangedA (int);
-    void voiceTestButtonTriggered ();
-    void testFileRemoveSlot();
+   void fileButtonTriggered ();
+   void fileEditChanged (const QString &fileName);
+   void voiceCheckBoxChangedQ (int);
+   void voiceCheckBoxChangedA (int);
+   void voiceTestButtonTriggered ();
+   void testFileRemoveSlot();
 };
 
 /////////////////////////////////////////////////////////////////////////////
 class ConsolePage : public QWidget
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    ConsolePage(QWidget *parent = 0);
+   ConsolePage(QWidget *parent = 0);
 
 public slots:
-    void traceSlot(const QString &txt, const int & flags);
-    void traceLevelSlot ();
+   void traceSlot(const QString &txt, const int & flags);
+   void traceLevelSlot ();
 
 private:
-    QTextEdit *m_consoleText;
-    QMutex m_traceMutex;
-    QCheckBox *m_traceLevel2; // checkbox for tracelevel2
-    QCheckBox *m_traceLevel3; // checkbox for tracelevel3
+   QTextEdit *m_consoleText;
+   QMutex m_traceMutex;
+   QCheckBox *m_traceLevel2; // checkbox for tracelevel2
+   QCheckBox *m_traceLevel3; // checkbox for tracelevel3
 };
 
 /////////////////////////////////////////////////////////////////////////////
 class ContentPage : public QWidget
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    ContentPage(QWidget *parent = 0);
-    void setContent (const QStringList & content);
-    QStringList getContent ();
+   ContentPage(QWidget *parent = 0);
+   void setContent (const QStringList & content);
+   QStringList getContent ();
 signals:
-    void contentChangedSignal ();
+   void contentChangedSignal ();
 
 private:
-    QPlainTextEdit *n_contentTextEdit;
-    FindToolbar *m_findToolbar;
+   QPlainTextEdit *n_contentTextEdit;
+   FindToolbar *m_findToolbar;
 private slots:
-    void findNext(const QString &txt);
-    void findPrev(const QString &txt);
+   void findNext(const QString &txt);
+   void findPrev(const QString &txt);
 
-    void contentChangedSlot();
-    void keyPressEvent ( QKeyEvent * event );
+   void contentChangedSlot();
+   void keyPressEvent ( QKeyEvent * event );
 };
 
 

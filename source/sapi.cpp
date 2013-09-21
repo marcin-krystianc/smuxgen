@@ -1,42 +1,49 @@
-#include "csapi.h"
+//============================================================================
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
+//============================================================================
 
 #include <QProcess>
 
+#include "sapi.h"
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList getVoiceEngines()
 {
-    QProcess myProcess;
-    QStringList arguments;
-    arguments.append("-list");
-    myProcess.start("sapi2wav.exe", arguments );
-    if (!myProcess.waitForStarted())
-        return QStringList();
+   QProcess myProcess;
+   QStringList arguments;
+   arguments.append("-list");
+   myProcess.start("sapi2wav.exe", arguments );
+   if (!myProcess.waitForStarted())
+      return QStringList();
 
-    myProcess.waitForFinished();
-    if (myProcess.exitCode())
-        return QStringList();
+   myProcess.waitForFinished();
+   if (myProcess.exitCode())
+      return QStringList();
 
-    QByteArray result = myProcess.readAllStandardOutput();
+   QByteArray result = myProcess.readAllStandardOutput();
 
-    QStringList retlist = QString::fromLocal8Bit(result.constData(), result.length()).split("\r\n");
+   QStringList retlist = QString::fromLocal8Bit(result.constData(), result.length()).split("\r\n");
 
-    for (int i = 0;i<retlist.count();i++)
-        retlist[i] = retlist[i].right(retlist[i].length()-retlist[i].indexOf(" ")-1);
+   for (int i = 0;i<retlist.count();i++)
+      retlist[i] = retlist[i].right(retlist[i].length()-retlist[i].indexOf(" ")-1);
 
-    return (retlist);
+   return (retlist);
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
 int getVoiceEngineIndex(QString voiceEngine) // if failed then returns -1
 {
-    QStringList voices = getVoiceEngines();
+   QStringList voices = getVoiceEngines();
 
-    for (int i = 0;i<voices.count();++i)
-    {
-        if (voices[i] == voiceEngine)
-            return i;
-    }
-    return -1;
+   for (int i = 0;i<voices.count();++i)
+   {
+      if (voices[i] == voiceEngine)
+         return i;
+   }
+   return -1;
 }

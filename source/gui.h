@@ -11,9 +11,9 @@
 #define GUI_H
 
 #include <QMainWindow>
-#include "csmuxgenwidgets.h"
+#include "smuxgenwidgets.h"
 #include "coursetemplate.h"
-#include "ccoursegenerator.h"
+#include "coursegenerator.h"
 #include "courseimageseditor.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,87 +25,87 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow();
+   MainWindow();
+   ~MainWindow();
 
 private slots:
-    void openCourseTemplateSlot(QString filename = "");
-    bool saveCourseTemplateSlot();
-    void importQASlot();
-    void exportQASlot();
-    bool saveAsCourseTemplateSlot();
-    void buildCourseSlot(bool rebuild=false);
-    void rebuildCourseSlot();
+   void openCourseTemplateSlot(const QString &fileNamePar = "");
+   bool saveCourseTemplateSlot();
+   void importQASlot();
+   void exportQASlot();
+   bool saveAsCourseTemplateSlot();
+   void buildCourseSlot(bool rebuild=false);
+   void rebuildCourseSlot();
 
-    void courseBrowserOpenCloseSlot(); // start/stop picture browser
-    void courseBrowserVisibleSlot(bool visible); // picture browser
+   void courseBrowserOpenCloseSlot(); // start/stop picture browser
+   void courseBrowserVisibleSlot(bool visible); // picture browser
 
-    void buildCourseFinishedSlot(); // generate finished
-    void progressSlot(const QString &);
-    void contentChangedSlot();
+   void buildCourseFinishedSlot(); // generate finished
+   void progressSlot(const QString &);
+   void contentChangedSlot();
 
-    void closeSlot();
-    void unlockInterface();
-    void lockInterface();
-    void about();
+   void closeSlot();
+   void unlockInterface();
+   void lockInterface();
+   void about();
 
-    void openRecentFile();
+   void openRecentFile();
 protected:
-    void closeEvent(QCloseEvent *event);
+   void closeEvent(QCloseEvent *event);
 
 private:
-    static const int MAX_RECENT_FILES = 15;
+   static const int MAX_RECENT_FILES = 15;
 
-    void createMenus();
-    void createActions();
-    void createToolBars();
-    void createStatusBar();
-    void createDockWindows();
-    void updateRecentFileActions();
+   void createMenus();
+   void createActions();
+   void createToolBars();
+   void createStatusBar();
+   void createDockWindows();
+   void updateRecentFileActions();
 
-    QMenu *m_fileMenu;
-    QToolBar *m_toolBar;
-    QMenu *m_recentMenu;
-    QMenu *m_helpMenu;
+   QMenu *m_fileMenu;
+   QToolBar *m_toolBar;
+   QMenu *m_recentMenu;
+   QMenu *m_helpMenu;
 
-    QMenu *m_viewMenu;
+   QMenu *m_viewMenu;
 
-    QAction *m_openCourseTemplateAction;
-    QAction *m_saveCourseTemplateAction;
-    QAction *m_importQAAction;
-    QAction *m_exportQAAction;
-    QAction *m_saveAsCourseTemplateAction;
-    QAction *m_buildCourseAction;
-    QAction *m_rebuildCourseAction;
-    QAction *m_courseBrowserAction;
+   QAction *m_openCourseTemplateAction;
+   QAction *m_saveCourseTemplateAction;
+   QAction *m_importQAAction;
+   QAction *m_exportQAAction;
+   QAction *m_saveAsCourseTemplateAction;
+   QAction *m_buildCourseAction;
+   QAction *m_rebuildCourseAction;
+   QAction *m_courseBrowserAction;
 
-    QAction *m_aboutAction;
-    QAction *m_aboutQtAction;
-    QAction *m_quitAction;
+   QAction *m_aboutAction;
+   QAction *m_aboutQtAction;
+   QAction *m_quitAction;
 
-    OptionsPage *m_optionsPage;
-    ConsolePage *m_consolePage;
-    ContentPage *m_contentPage;
-    CourseImageEditor *m_imageWidget;
+   OptionsPage *m_optionsPage;
+   ConsolePage *m_consolePage;
+   ContentPage *m_contentPage;
+   CourseImageEditor *m_imageWidget;
 
-    QDockWidget *m_dockOptionsPage;
-    QDockWidget *m_dockConsolePage;
-    QDockWidget *m_dockContentPage;
-    QDockWidget *m_dockCourseBrowser;
+   QDockWidget *m_dockOptionsPage;
+   QDockWidget *m_dockConsolePage;
+   QDockWidget *m_dockContentPage;
+   QDockWidget *m_dockCourseBrowser;
 
-    QVector <QAction*> m_recentFileActions;
+   QVector <QAction*> m_recentFileActions;
 private:
-    void trace (const QString& txt, const unsigned int& flags);
-    void setTitle();
-    void stopBuild();
+   void trace (const QString& txt, const unsigned int& flags);
+   void setTitle();
+   void stopBuild();
 
-    CourseGenerator m_courseGenerator;
-    CourseTemplate m_courseTemplate;
-    QString m_courseTemplateFileName;
-    bool m_contentChanged;
+   CourseGenerator m_courseGenerator;
+   CourseTemplate m_courseTemplate;
+   QString m_courseTemplateFileName;
+   bool m_contentChanged;
 };
 
 #endif // GUI_H

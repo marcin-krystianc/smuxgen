@@ -6,26 +6,26 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
-#include "cglobaltracer.h"
+#include "globaltracer.h"
 
 GlobaTracer globalTracer;
 
 /////////////////////////////////////////////////////////////////////////////
 void GlobaTracer::trace(const QString &text, const int& flags)
 {
-    if (m_flags & flags)
-        emit traceSignal (text, m_flags & flags);
+   if (m_flags & flags)
+      emit traceSignal (text, m_flags & flags);
 };
 
 /////////////////////////////////////////////////////////////////////////////
 GlobaTracer::GlobaTracer ()
 {
-    m_flags = traceWarning | traceError | traceLevel1;
+   m_flags = traceWarning | traceError | traceLevel1;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void GlobaTracer::setTraceFlags(const unsigned int& flags)
 {
-    m_flags = flags;
+   m_flags = flags;
 }
 

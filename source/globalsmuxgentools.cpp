@@ -14,249 +14,249 @@
 #include <QSettings>
 
 #include "globalsmuxgentools.h"
-#include "cglobaltracer.h"
+#include "globaltracer.h"
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList parseGoogleHtml (const QString &fileName)
 {
-    QFile inputFile;
-    QStringList retList;
-    QTextStream inputFileStream;
-    QString html;
+   QFile inputFile;
+   QStringList retList;
+   QTextStream inputFileStream;
+   QString html;
 
-    globalTracer.trace(QString("parseGoogleHtml: ")+fileName, traceLevel3);
+   globalTracer.trace(QString("parseGoogleHtml: ")+fileName, traceLevel3);
 
-    inputFile.setFileName(fileName);
-    if (!inputFile.open(QIODevice::ReadOnly)) {
-        globalTracer.trace(QString("Cannot open file: ")+fileName, traceError);
-        return retList;
-    }
+   inputFile.setFileName(fileName);
+   if (!inputFile.open(QIODevice::ReadOnly)) {
+      globalTracer.trace(QString("Cannot open file: ")+fileName, traceError);
+      return retList;
+   }
 
-    inputFileStream.setDevice( &inputFile );
-    inputFileStream.setCodec("UTF-8");
-    html = inputFileStream.readAll();
+   inputFileStream.setDevice( &inputFile );
+   inputFileStream.setCodec("UTF-8");
+   html = inputFileStream.readAll();
 
 
-    QString leftBound ("imgres?imgurl = ");
-    QString rightBound ("&amp");
-    int leftPos = 0;
-    int pos = 0;
+   QString leftBound ("imgres?imgurl = ");
+   QString rightBound ("&amp");
+   int leftPos = 0;
+   int pos = 0;
 
-    while ((leftPos = html.indexOf(leftBound, pos)) != -1)
-    {
-        int rightPos = html.indexOf(rightBound, leftPos);
-        globalTracer.trace(QString("leftPos: ")+leftPos+QString(" rightPos: ")+rightPos, traceLevel3);
-        if (rightPos == -1)
-            break;
+   while ((leftPos = html.indexOf(leftBound, pos)) != -1)
+   {
+      int rightPos = html.indexOf(rightBound, leftPos);
+      globalTracer.trace(QString("leftPos: ")+leftPos+QString(" rightPos: ")+rightPos, traceLevel3);
+      if (rightPos == -1)
+         break;
 
-        pos = rightPos;
-        QString tmp = html.mid(leftPos+leftBound.length(), rightPos-leftPos-leftBound.length());
-        if (tmp.indexOf("%")!= -1)
-            continue;
-        globalTracer.trace(QString("Img url: ")+tmp, traceLevel3);
+      pos = rightPos;
+      QString tmp = html.mid(leftPos+leftBound.length(), rightPos-leftPos-leftBound.length());
+      if (tmp.indexOf("%")!= -1)
+         continue;
+      globalTracer.trace(QString("Img url: ")+tmp, traceLevel3);
 
-        retList.append(tmp);
-    }
-    return retList;
+      retList.append(tmp);
+   }
+   return retList;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void deleteFile (const QString &fileName)
 {
-    QFile fileObject (fileName);
-    globalTracer.trace(QString("deleteFile: ")+fileName, traceLevel3);
-    fileObject.remove();
+   QFile fileObject (fileName);
+   globalTracer.trace(QString("deleteFile: ")+fileName, traceLevel3);
+   fileObject.remove();
 }
 /////////////////////////////////////////////////////////////////////////////
 QString getTranscript (const QString &input) // get text to read
 {
-    QStringList special;
-    special<<"("<<")"<<"["<<"]"<<"{"<<"}";
-    QString ret = removeAllBetween (input, "(", ")");
-    return removeAllSpecialCharacters(ret, special)+" ";
+   QStringList special;
+   special<<"("<<")"<<"["<<"]"<<"{"<<"}";
+   QString ret = removeAllBetween (input, "(", ")");
+   return removeAllSpecialCharacters(ret, special)+" ";
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString getTextToPrint (const QString &input) // get text to show to user
 {
-    QStringList special;
-    special<<"["<<"]"<<"{"<<"}";
-    QString ret = removeAllBetween (input, "{", "}");
-    return (removeAllSpecialCharacters(ret, special)).trimmed();
+   QStringList special;
+   special<<"["<<"]"<<"{"<<"}";
+   QString ret = removeAllBetween (input, "{", "}");
+   return (removeAllSpecialCharacters(ret, special)).trimmed();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
 QString getKeyWord (const QString &input)
 {
-    static QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?;':\"[]\{}|");
-    static QString B = QString::fromUtf8("ACZXSNOLEaczzsnole ");
+   static QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?;':\"[]\{}|");
+   static QString B = QString::fromUtf8("ACZXSNOLEaczzsnole ");
 
-    QString temp = input;
+   QString temp = input;
 
-    for (int i = A.length()-1;i >= 0;--i)
-        temp.replace(A.at(i), B.at(i));
+   for (int i = A.length()-1;i >= 0;--i)
+      temp.replace(A.at(i), B.at(i));
 
-    QStringList tmp = temp.split(" ", QString::SkipEmptyParts);
+   QStringList tmp = temp.split(" ", QString::SkipEmptyParts);
 
-    QStringList retList;
+   QStringList retList;
 
-    // add keywords defined by user ( [keyword] )
-    QStringList tmpList = getAllBetween(input, "[", "]");
-    QStringList special;
-    special<<"("<<")"<<"["<<"]"<<"{"<<"}";
+   // add keywords defined by user ( [keyword] )
+   QStringList tmpList = getAllBetween(input, "[", "]");
+   QStringList special;
+   special<<"("<<")"<<"["<<"]"<<"{"<<"}";
 
-    if (tmpList.count()>0)
-    {
-        for (int i = 0;i<tmpList.count();++i)
-            retList.insert(0, removeAllSpecialCharacters(tmpList.at(i), special));
-    }
-    else
-    {
-        retList.append("");
-        retList.append("");
+   if (tmpList.count()>0)
+   {
+      for (int i = 0;i<tmpList.count();++i)
+         retList.insert(0, removeAllSpecialCharacters(tmpList.at(i), special));
+   }
+   else
+   {
+      retList.append("");
+      retList.append("");
 
-        for (int i = 0;i<tmp.count();++i)
-        {
-            for (int j = 0;j<retList.count();j++)
+      for (int i = 0;i<tmp.count();++i)
+      {
+         for (int j = 0;j<retList.count();j++)
+         {
+            if ((tmp.at(i).length()>(retList.at(j)).length()))
             {
-                if ((tmp.at(i).length()>(retList.at(j)).length()))
-                {
-                    retList.insert(j, tmp[i]);
-                    retList.pop_back();
-                    break;
-                }
+               retList.insert(j, tmp[i]);
+               retList.pop_back();
+               break;
             }
-        }
-    }
+         }
+      }
+   }
 
-    return (retList.join(" "));
+   return (retList.join(" "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString removeAllBetween (const QString &input, const QString &first, const QString &second)
 {
-    QString ret = input;
+   QString ret = input;
 
-    while (1)
-    {
-        int a = ret.indexOf(first, 0);
-        if (a == -1)
-            return ret;
+   while (1)
+   {
+      int a = ret.indexOf(first, 0);
+      if (a == -1)
+         return ret;
 
-        int b = ret.indexOf(second, a);
-        if (b == -1)
-            return ret;
+      int b = ret.indexOf(second, a);
+      if (b == -1)
+         return ret;
 
-        ret.remove(a, b-a+1);
-    }
+      ret.remove(a, b-a+1);
+   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList getAllBetween (const QString &input, const QString &first, const QString &second)
 {
-    QStringList ret;
+   QStringList ret;
 
-    int a = 0;
-    int b = 0;
-    while (1)
-    {
-        a = ret.indexOf(first, 0);
-        if (a == -1)
-            return ret;
+   int a = 0;
+   int b = 0;
+   while (1)
+   {
+      a = ret.indexOf(first, 0);
+      if (a == -1)
+         return ret;
 
-        b = ret.indexOf(second, a);
-        if (b == -1)
-            return ret;
+      b = ret.indexOf(second, a);
+      if (b == -1)
+         return ret;
 
-        ret+= input.mid(a+1, b-a-1);
-    }
+      ret+= input.mid(a+1, b-a-1);
+   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString removeAllSpecialCharacters (const QString &input, const QStringList &list)
 {
-    QString ret = input;
-    for (int i = 0;i<list.count();i++)
-        ret.remove(list.at(i));
+   QString ret = input;
+   for (int i = 0;i<list.count();i++)
+      ret.remove(list.at(i));
 
-    return ret;
+   return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool scalePicture (QString path, int x, int y)
 {
-    QImage img;
+   QImage img;
 
-    if (!img.load(path))
-    {
-        globalTracer.trace(QString("Error:scalePicture load:")+path, traceError);
-        return false;
-    }
+   if (!img.load(path))
+   {
+      globalTracer.trace(QString("Error:scalePicture load:")+path, traceError);
+      return false;
+   }
 
-    if (!img.scaled(x, y).save(path))
-    {
-        globalTracer.trace(QString("Error:scalePicture save:")+path, traceError);
-        return false;
-    }
+   if (!img.scaled(x, y).save(path))
+   {
+      globalTracer.trace(QString("Error:scalePicture save:")+path, traceError);
+      return false;
+   }
 
-    return true;
+   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool checkIsFileOk(const QString &fileName)
 {
-    QFile fileObject (fileName);
-    if (fileObject.size()>0)
-        return true;
+   QFile fileObject (fileName);
+   if (fileObject.size()>0)
+      return true;
 
-    globalTracer.trace(QString("NOT OK: ")+fileName, traceLevel2);
-    return false;
+   globalTracer.trace(QString("NOT OK: ")+fileName, traceLevel2);
+   return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString getFileName (int i)
 {
-    QString name;
-    name.fill('0', 5);
-    name+= QString::number(i);
-    name+= ".xml";
-    name = name.right(9);
-    return QString("item")+name;
+   QString name;
+   name.fill('0', 5);
+   name+= QString::number(i);
+   name+= ".xml";
+   name = name.right(9);
+   return QString("item")+name;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString getMediaFileName (int i)
 {
-    QString name;
-    name.fill('0', 5);
-    name+= QString::number(i);
-    name = name.right(5);
-    return name;
+   QString name;
+   name.fill('0', 5);
+   name+= QString::number(i);
+   name = name.right(5);
+   return name;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString getLastDir ()
 {
-    QSettings settings("Smuxgen", "Smuxgen");
-    return settings.value("recentDir").toString();
+   QSettings settings("Smuxgen", "Smuxgen");
+   return settings.value("recentDir").toString();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void setLastDir (const QString &dir)
 {
-    QSettings settings("Smuxgen", "Smuxgen");
-    settings.setValue("recentDir", dir);
+   QSettings settings("Smuxgen", "Smuxgen");
+   settings.setValue("recentDir", dir);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString strippedFile(const QString &fullFileName)
 {
-    return QFileInfo(fullFileName).fileName();
+   return QFileInfo(fullFileName).fileName();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QString strippedDir (const QString &fullFileName)
 {
-    return QFileInfo(fullFileName).dir().canonicalPath();
+   return QFileInfo(fullFileName).dir().canonicalPath();
 }

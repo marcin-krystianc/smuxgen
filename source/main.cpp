@@ -18,19 +18,19 @@
 /////////////////////////////////////////////////////////////////////////////
 int main (int argc, char* argv[])
 {
-    Q_INIT_RESOURCE(gui);
-    QApplication app(argc, argv);
+   Q_INIT_RESOURCE(gui);
+   QApplication app(argc, argv);
 
-    QDir::setCurrent(QCoreApplication::applicationDirPath());
+   QDir::setCurrent(QCoreApplication::applicationDirPath());
 
-    app.addLibraryPath(("plugins")); // sql will not work without that
+   app.addLibraryPath(("plugins")); // sql will not work without that
 
-    QDir pDir;
-    pDir.mkdir("tmp");
+   QDir pDir;
+   pDir.mkdir("tmp");
 
-    MainWindow mainWin;
-    mainWin.show();
+   MainWindow mainWin;
+   mainWin.show();
 
-    return app.exec();
+   return app.exec();
 }
 

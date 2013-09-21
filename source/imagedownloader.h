@@ -6,80 +6,80 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
-#ifndef CIMAGEDOWNLOADER_H
-#define CIMAGEDOWNLOADER_H
+#ifndef IMAGEDOWNLOADER_H
+#define IMAGEDOWNLOADER_H
 
 #include <QThread>
 #include <QString>
 #include <QPixmap>
 #include <QMutex>
 
-#include "cglobaltracer.h"
+#include "globaltracer.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
 class ImageDownloadHelper : public QThread
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    ImageDownloadHelper(const QString &ext, int id);
-    ~ImageDownloadHelper();
+   ImageDownloadHelper(const QString &ext, int id);
+   ~ImageDownloadHelper();
 
-    void getImage(const QString &url);
+   void getImage(const QString &url);
 
 public slots:
-    //void stop();
+   //void stop();
 
 private:
-    int m_id;
-    QString m_url;
-    QString m_ext;
+   int m_id;
+   QString m_url;
+   QString m_ext;
 
-    QString myFileName();
-    void trace (const QString &text, const int & flags = traceLevel1|0);
+   QString myFileName();
+   void trace (const QString &text, const int & flags = traceLevel1|0);
 
 protected:
-    void run();
+   void run();
 
 signals:
-    void finished (bool success, const QPixmap& pixmap, int id, const QString &url);
+   void finished (bool success, const QPixmap& pixmap, int id, const QString &url);
 };
 
 /////////////////////////////////////////////////////////////////////////////
 class ImageDownloader : public QThread
 {
-    Q_OBJECT
+   Q_OBJECT
 public:
-    ImageDownloader(const QString &id = "");
-    ~ImageDownloader();
+   ImageDownloader(const QString &id = "");
+   ~ImageDownloader();
 
-    void getImages(const QString &keyWords);
+   void getImages(const QString &keyWords);
 
 public slots:
-    void helpThreadFinished(bool success, const QPixmap& pixmap, const QString &url);
+   void helpThreadFinished(bool success, const QPixmap& pixmap, const QString &url);
 
 private:
-    QString m_id;
-    QString m_keyWords;
-    QStringList m_urls;
-    volatile bool m_newTask;
+   QString m_id;
+   QString m_keyWords;
+   QStringList m_urls;
+   volatile bool m_newTask;
 
-    int m_progressMax;
-    int m_progressValue;
+   int m_progressMax;
+   int m_progressValue;
 
-    static const int m_maxHelpThreads = 8;
-    ImageDownloadHelper *m_imageDownloadHelper[m_maxHelpThreads];
-    QString myFileName ();
+   static const int m_maxHelpThreads = 8;
+   ImageDownloadHelper *m_imageDownloadHelper[m_maxHelpThreads];
+   QString myFileName ();
 
-    void trace (const QString &text, const int & flags = traceLevel1|0);
+   void trace (const QString &text, const int & flags = traceLevel1|0);
 
 protected:
-    void run();
+   void run();
 
 signals:
-    void signalImage (const QPixmap& pixmap, const QString &url);
-    void sProgressRange (int min, int max);
-    void sProgressValue (int value);
+   void signalImage (const QPixmap& pixmap, const QString &url);
+   void sProgressRange (int min, int max);
+   void sProgressValue (int value);
 };
 
 

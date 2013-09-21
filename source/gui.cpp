@@ -336,7 +336,7 @@ void MainWindow::generateCourseSlot()
     m_courseGenerator.generate(m_courseTemplate);
     lockInterface();
     setTitle();
-    trace (QString("Started to generate: ")+m_courseTemplate.m_options.m_subname, traceLevel1);
+    trace (QString("Started to generate: ")+m_courseTemplate.m_options.subname, traceLevel1);
 }
 
 /////////////////////////////////////////////////////////////////////////////

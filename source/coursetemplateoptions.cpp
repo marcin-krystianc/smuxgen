@@ -14,8 +14,8 @@
 
 /////////////////////////////////////////////////////////////////////////////
 CourseOptions::CourseOptions() :
-    m_oBothDirections(false), m_oForce(false), m_oVoiceQ(false), m_oVoiceA(false), m_oImage(false),
-    m_voiceGainQ(0), m_voiceTrimQ(0), m_voiceGainA(0), m_voiceTrimA(0)
+    bothDirections(false), force(false), voiceQ(false), voiceA(false), graphics(false),
+    voiceGainQ(0), voiceTrimQ(0), voiceGainA(0), voiceTrimA(0)
 {
 
 }
@@ -31,27 +31,27 @@ CourseOptions CourseOptions::fromString (const QString &line)
         QString first = chunks.at(i++);
 
         if (first == "-Force") {
-            options.m_oForce = true;
+            options.force = true;
             continue;
         }
 
         if (first == "-Double") {
-            options.m_oBothDirections = true;
+            options.bothDirections = true;
             continue;
         }
 
         if (first == "-VoiceQ"){
-            options.m_oVoiceQ = true;
+            options.voiceQ = true;
             continue;
         }
 
         if (first == "-VoiceA"){
-            options.m_oVoiceA = true;
+            options.voiceA = true;
             continue;
         }
 
         if (first == "-Image"){
-            options.m_oImage = true;
+            options.graphics = true;
             continue;
         }
 
@@ -75,51 +75,51 @@ CourseOptions CourseOptions::fromString (const QString &line)
 
 
         if (first == "-course") {
-            options.m_courseName = second.remove("\"");;
+            options.courseName = second.remove("\"");;
             continue;
         }
 
         if (first == "-database") {
-            options.m_dbPath = second.remove("\"");
+            options.dbPath = second.remove("\"");
             continue;
         }
 
         if (first == "-subname") {
-            options.m_subname = second.remove("\"");
+            options.subname = second.remove("\"");
             continue;
         }
 
         if (first == "-instruction") {
-            options.m_instruction = second.remove("\"");
+            options.instruction = second.remove("\"");
             continue;
         }
 
         if (first == "-trimQ") {
-            options.m_voiceTrimQ = second.toDouble();
+            options.voiceTrimQ = second.toDouble();
             continue;
         }
 
         if (first == "-vNameQ") {
-            options.m_voiceNameQ = second.remove("\"");
+            options.voiceNameQ = second.remove("\"");
             continue;
         }
 
         if (first == "-gainQ") {
-            options.m_voiceGainQ = second.toInt();
+            options.voiceGainQ = second.toInt();
             continue;
         }
         if (first == "-trimA") {
-            options.m_voiceTrimA = second.toDouble();
+            options.voiceTrimA = second.toDouble();
             continue;
         }
 
         if (first == "-vNameA") {
-            options.m_voiceNameA = second.remove("\"");
+            options.voiceNameA = second.remove("\"");
             continue;
         }
 
         if (first == "-gainA") {
-            options.m_voiceGainA = second.toInt();
+            options.voiceGainA = second.toInt();
             continue;
         }
 
@@ -134,24 +134,24 @@ QString CourseOptions::toString(const CourseOptions &options)
 {
     QString ret;
 
-    ret+= QString("-course ") +"\""+options.m_courseName +"\" ";
-    ret+= QString("-database ") +"\""+options.m_dbPath +"\" ";
-    ret+= QString("-subname ") +"\""+options.m_subname +"\" ";
-    ret+= QString("-instruction ") +"\""+options.m_instruction +"\" ";
+    ret+= QString("-course ") +"\""+options.courseName +"\" ";
+    ret+= QString("-database ") +"\""+options.dbPath +"\" ";
+    ret+= QString("-subname ") +"\""+options.subname +"\" ";
+    ret+= QString("-instruction ") +"\""+options.instruction +"\" ";
 
-    ret+= QString("-trimQ ") +QString::number(options.m_voiceTrimQ) +" ";
-    ret+= QString("-vNameQ ") +"\""+options.m_voiceNameQ+"\" ";
-    ret+= QString("-gainQ ") +QString::number(options.m_voiceGainQ) +" ";
+    ret+= QString("-trimQ ") +QString::number(options.voiceTrimQ) +" ";
+    ret+= QString("-vNameQ ") +"\""+options.voiceNameQ+"\" ";
+    ret+= QString("-gainQ ") +QString::number(options.voiceGainQ) +" ";
 
-    ret+= QString("-trimA ") +QString::number(options.m_voiceTrimA) +" ";
-    ret+= QString("-vNameA ") +"\""+options.m_voiceNameA+"\" ";
-    ret+= QString("-gainA ") +QString::number(options.m_voiceGainA) +" ";
+    ret+= QString("-trimA ") +QString::number(options.voiceTrimA) +" ";
+    ret+= QString("-vNameA ") +"\""+options.voiceNameA+"\" ";
+    ret+= QString("-gainA ") +QString::number(options.voiceGainA) +" ";
 
-    if (options.m_oForce) ret+= "-Force ";
-    if (options.m_oBothDirections) ret+= "-Double ";
-    if (options.m_oVoiceQ) ret+= "-VoiceQ ";
-    if (options.m_oVoiceA) ret+= "-VoiceA ";
-    if (options.m_oImage) ret+= "-Image ";
+    if (options.force) ret+= "-Force ";
+    if (options.bothDirections) ret+= "-Double ";
+    if (options.voiceQ) ret+= "-VoiceQ ";
+    if (options.voiceA) ret+= "-VoiceA ";
+    if (options.graphics) ret+= "-Image ";
 
     return ret;
 }

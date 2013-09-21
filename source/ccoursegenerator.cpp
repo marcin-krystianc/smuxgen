@@ -66,12 +66,12 @@ void CourseGenerator::run ()
 {
     m_isFailed = true;
 
-    if (!m_db.open(m_courseTemplate.m_options.m_dbPath))
+    if (!m_db.open(m_courseTemplate.m_options.dbPath))
         return;
 
     int courseID;
     QString courseFileName;
-    if (!m_db.getCourseDetails (m_courseTemplate.m_options.m_courseName, &courseID, &courseFileName))
+    if (!m_db.getCourseDetails (m_courseTemplate.m_options.courseName, &courseID, &courseFileName))
         return;
 
     QString courseFileDirectoryName = QFileInfo(courseFileName).dir().path()+QDir::separator();
@@ -86,10 +86,10 @@ void CourseGenerator::run ()
     }
 
     QDomElement rootElement = doc.documentElement();
-    QString topicNameA = m_courseTemplate.m_options.m_subname;
-    QString topicNameB = m_courseTemplate.m_options.m_subname+"*";
-    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.m_options.m_voiceNameA)+1;
-    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.m_options.m_voiceNameQ)+1;
+    QString topicNameA = m_courseTemplate.m_options.subname;
+    QString topicNameB = m_courseTemplate.m_options.subname+"*";
+    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.m_options.voiceNameA)+1;
+    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.m_options.voiceNameQ)+1;
 
     int topicAID, topicBID;
     // A course
@@ -111,7 +111,7 @@ void CourseGenerator::run ()
             continue;
         }
 
-        emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameA+"@"+m_courseTemplate.m_options.m_courseName+":"
+        emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameA+"@"+m_courseTemplate.m_options.courseName+":"
                             +list1.at(0));
 
         if (m_abortProces)
@@ -125,7 +125,7 @@ void CourseGenerator::run ()
 
 
     // B course
-    if (m_courseTemplate.m_options.m_oBothDirections)
+    if (m_courseTemplate.m_options.bothDirections)
     {
         if (!m_db.addItem(topicNameB, courseID, 0, &topicBID))
             return;
@@ -145,7 +145,7 @@ void CourseGenerator::run ()
                 continue;
             }
 
-            emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameB+"@"+m_courseTemplate.m_options.m_courseName+":"
+            emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.m_content.count())+" "+topicNameB+"@"+m_courseTemplate.m_options.courseName+":"
                                 +list1.at(0));
 
             if (m_abortProces)
@@ -220,7 +220,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
                                             , int voiceIndexA, int voiceIndexQ)
 {
     int ID = 0;
-    bool forceMedia = m_courseTemplate.m_options.m_oForce;
+    bool forceMedia = m_courseTemplate.m_options.force;
     const int timeOut = -1; // no timeout
     QProcess myProcess;
 
@@ -230,17 +230,17 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
 
     // create xml course file
-    if ((m_courseTemplate.m_options.m_oForce)||
+    if ((m_courseTemplate.m_options.force)||
             (checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)))
     {
         forceMedia = true;
-        QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.m_options.m_instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
+        QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.m_options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
         writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
     }
 
     // create mp3
     QString mp3Q = bMode ? "a" : "q";
-    if (m_courseTemplate.m_options.m_oVoiceQ&&
+    if (m_courseTemplate.m_options.voiceQ&&
             ((forceMedia)||
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3"))))
     {
@@ -250,8 +250,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(answer):getTranscript(question));
         arguments.append(QString::number(voiceIndexQ));
-        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceTrimQ));
-        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceGainQ));
+        arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimQ));
+        arguments.append(QString::number(m_courseTemplate.m_options.voiceGainQ));
 
         trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
 
@@ -264,7 +264,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     }
 
     QString mp3A = bMode ? "q" : "a";
-    if (m_courseTemplate.m_options.m_oVoiceA&&
+    if (m_courseTemplate.m_options.voiceA&&
             ((forceMedia)||
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A+".mp3"))))
     {
@@ -274,8 +274,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
         question.replace("|", " ");
         arguments.append(bMode ? getTranscript(question):getTranscript(answer));
         arguments.append(QString::number(voiceIndexA));
-        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceTrimA));
-        arguments.append(QString::number(m_courseTemplate.m_options.m_voiceGainA));
+        arguments.append(QString::number(m_courseTemplate.m_options.voiceTrimA));
+        arguments.append(QString::number(m_courseTemplate.m_options.voiceGainA));
 
         trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
 
@@ -288,7 +288,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     }
 
     // create jpg
-    if (m_courseTemplate.m_options.m_oImage&&
+    if (m_courseTemplate.m_options.graphics&&
             ((forceMedia)||
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
              (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg"))))
@@ -475,7 +475,7 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
     tmpElement3.setAttribute("correct", answers);
     tmpElement2.appendChild(tmpElement3);
 
-    if (m_courseTemplate.m_options.m_oImage)
+    if (m_courseTemplate.m_options.graphics)
     { // create table with images
         tmpElement2.appendChild(doc.createElement("br"));
         tmpElement2.appendChild(doc.createElement("br"));
@@ -524,14 +524,14 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
     rootElement.appendChild(tmpElement2);
 
-    if (m_courseTemplate.m_options.m_oVoiceA)
+    if (m_courseTemplate.m_options.voiceA)
     {
         QDomElement tmpElement4 = doc.createElement( bMode ? "question-audio" : "answer-audio" );
         tmpElement4.appendChild(doc.createTextNode("true"));
         rootElement.appendChild(tmpElement4);
     }
 
-    if (m_courseTemplate.m_options.m_oVoiceQ)
+    if (m_courseTemplate.m_options.voiceQ)
     {
         QDomElement tmpElement4 = doc.createElement( bMode ? "answer-audio" : "question-audio");
         tmpElement4.appendChild(doc.createTextNode("true"));

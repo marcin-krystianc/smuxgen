@@ -66,7 +66,6 @@ public:
     void setVoiceComboA(QComboBox *value);
 
 private:
-    QCheckBox *m_oForceCheckBox;
     QCheckBox *m_oDoubleCheckBox;
     QCheckBox *m_oImageCheckBox;
     QCheckBox *m_oVoiceCheckBoxQ;

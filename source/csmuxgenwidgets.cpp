@@ -24,14 +24,12 @@ OptionsPage::OptionsPage(QWidget *parent)
     : QWidget(parent)
 {
     QGroupBox *configGroup = new QGroupBox(tr("Choose options:"));
-    m_oForceCheckBox = new QCheckBox(tr("Regenerate"));
     m_oDoubleCheckBox = new QCheckBox(tr("Alternative"));
     m_oImageCheckBox = new QCheckBox(tr("Images"));
     m_oVoiceCheckBoxQ = new QCheckBox(tr("Lector (Questions)"));
     m_oVoiceCheckBoxA = new QCheckBox(tr("Lector (Answers)"));
     
     QGridLayout *checkLayout = new QGridLayout;
-    checkLayout->addWidget(m_oForceCheckBox , 0 , 0);
     checkLayout->addWidget(m_oDoubleCheckBox , 0 , 1);
     checkLayout->addWidget(m_oImageCheckBox , 1 , 0);
     
@@ -210,11 +208,10 @@ void OptionsPage::voiceCheckBoxChangedA (int state)
 /////////////////////////////////////////////////////////////////////////////
 void OptionsPage::setOptions(const CourseOptions &options)
 {
-    m_oForceCheckBox ->setCheckState(options.force ? Qt::Checked : Qt::Unchecked);
-    m_oDoubleCheckBox ->setCheckState(options.bothDirections ? Qt::Checked : Qt::Unchecked);
-    m_oImageCheckBox ->setCheckState(options.graphics ? Qt::Checked : Qt::Unchecked);
-    m_oVoiceCheckBoxQ ->setCheckState(options.voiceQ ? Qt::Checked : Qt::Unchecked);
-    m_oVoiceCheckBoxA ->setCheckState(options.voiceA ? Qt::Checked : Qt::Unchecked);
+    m_oDoubleCheckBox->setCheckState(options.bothDirections ? Qt::Checked : Qt::Unchecked);
+    m_oImageCheckBox->setCheckState(options.graphics ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxQ->setCheckState(options.voiceQ ? Qt::Checked : Qt::Unchecked);
+    m_oVoiceCheckBoxA->setCheckState(options.voiceA ? Qt::Checked : Qt::Unchecked);
     
     m_fileEdit->setText(options.dbPath);
     m_courseCombo->clear();
@@ -222,12 +219,12 @@ void OptionsPage::setOptions(const CourseOptions &options)
     m_subnameEdit->setText(options.subname);
     m_instructionEdit->setText(options.instruction);
     
-    m_voiceComboQ ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
-    m_voiceGainQ ->setValue(options.voiceGainQ);
+    m_voiceComboQ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
+    m_voiceGainQ->setValue(options.voiceGainQ);
     m_voiceTrimBeginQ->setValue(options.voiceTrimQ);
     
-    m_voiceComboA ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
-    m_voiceGainA ->setValue(options.voiceGainA);
+    m_voiceComboA->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
+    m_voiceGainA->setValue(options.voiceGainA);
     m_voiceTrimBeginA->setValue(options.voiceTrimA);
     
     fileEditChanged(m_fileEdit->text());
@@ -283,26 +280,25 @@ void OptionsPage::voiceTestButtonTriggered ()
 CourseOptions OptionsPage::getOptions()
 {
     CourseOptions options;
-    options.force = m_oForceCheckBox->isChecked();
+
     options.bothDirections = m_oDoubleCheckBox->isChecked();
     options.graphics = m_oImageCheckBox->isChecked();
     options.voiceQ = m_oVoiceCheckBoxQ->isChecked();
     options.voiceA = m_oVoiceCheckBoxA->isChecked();
-    
+
     options.dbPath = m_fileEdit->text();
     options.subname = m_subnameEdit->text();
     options.instruction = m_instructionEdit->text();
-    
     options.courseName = m_courseCombo->currentText();
-    
+
     options.voiceNameQ = m_voiceComboQ->currentText();
     options.voiceGainQ = m_voiceGainQ->value();
     options.voiceTrimQ = m_voiceTrimBeginQ->value();
-    
+
     options.voiceNameA = m_voiceComboA->currentText();
     options.voiceGainA = m_voiceGainA->value();
     options.voiceTrimA = m_voiceTrimBeginA->value();
-    
+
     return options;
 }
 
@@ -320,6 +316,7 @@ void OptionsPage::fileButtonTriggered()
                                                     opt);
     if (fileName.isEmpty())
         return;
+
     m_fileEdit->setText(fileName);
 }
 

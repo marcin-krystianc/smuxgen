@@ -14,7 +14,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 CourseOptions::CourseOptions() :
-    bothDirections(false), force(false), voiceQ(false), voiceA(false), graphics(false),
+    bothDirections(false), voiceQ(false), voiceA(false), graphics(false),
     voiceGainQ(0), voiceTrimQ(0), voiceGainA(0), voiceTrimA(0)
 {
 
@@ -29,11 +29,6 @@ CourseOptions CourseOptions::fromString (const QString &line)
     while (i<chunks.count())
     {
         QString first = chunks.at(i++);
-
-        if (first == "-Force") {
-            options.force = true;
-            continue;
-        }
 
         if (first == "-Double") {
             options.bothDirections = true;
@@ -147,7 +142,6 @@ QString CourseOptions::toString(const CourseOptions &options)
     ret+= QString("-vNameA ") +"\""+options.voiceNameA+"\" ";
     ret+= QString("-gainA ") +QString::number(options.voiceGainA) +" ";
 
-    if (options.force) ret+= "-Force ";
     if (options.bothDirections) ret+= "-Double ";
     if (options.voiceQ) ret+= "-VoiceQ ";
     if (options.voiceA) ret+= "-VoiceA ";

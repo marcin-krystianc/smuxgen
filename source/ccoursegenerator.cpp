@@ -217,10 +217,10 @@ void CourseGenerator::setDelete (QDomNode &topicNode)
 bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, QString answer
                                             , QString topicName, QDomNode &topicNode, int topicID
                                             , QDomDocument &doc, QString courseFileDirectory, bool bMode
-                                            , int voiceIndexA, int voiceIndexQ)
+                                            , int voiceIndexA, int voiceIndexQ, bool forceRegenerate)
 {
     int ID = 0;
-    bool forceMedia = m_courseTemplate.m_options.force;
+    bool forceMedia = forceRegenerate;
     const int timeOut = -1; // no timeout
     QProcess myProcess;
 
@@ -230,8 +230,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, QString question, Q
     QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
 
     // create xml course file
-    if ((m_courseTemplate.m_options.force)||
-            (checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)))
+    if (forceRegenerate ||
+            checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer))
     {
         forceMedia = true;
         QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.m_options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);

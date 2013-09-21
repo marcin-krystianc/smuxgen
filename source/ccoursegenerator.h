@@ -46,7 +46,7 @@ private:
     QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
     void setDelete (QDomNode &topicNode);
     bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
-    bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ);
+    bool generateCourseElement(int courseIDSQL, QString question, QString answer, QString topicName, QDomNode &topicNode, int topicID, QDomDocument &doc, QString courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool forceRegenerate = false);
     int writeDomDoucumentToFile (QDomDocument &document, QString path);
     QDomDocument createCourseItem (int templateId, QString chapter);
     bool checkIfNewAnswers(QString fileName, QString answers);

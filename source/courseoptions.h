@@ -20,7 +20,6 @@ struct CourseOptions {
     static QString toString (const CourseOptions &options);
 
     bool bothDirections; // make also alternative course
-    bool force; // force to create agian all course elements
     bool voiceQ; // make mp3 files (Questions)
     bool voiceA; // make mp3 files (Answers)
     bool graphics; // get Images

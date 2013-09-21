@@ -43,8 +43,7 @@ public:
     void clear();
 
 private:
-    void trace (const QString &text, const int & flags = traceLevel1|0);
-
+    static void trace (const QString &text, const int & flags = traceLevel1|0);
 };
 
 #endif // COURSETEMPLATEOPTIONS_H

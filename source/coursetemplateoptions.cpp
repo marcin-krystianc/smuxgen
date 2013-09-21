@@ -15,51 +15,44 @@
 /////////////////////////////////////////////////////////////////////////////
 CourseTemplateOptions::CourseTemplateOptions()
 {
+    clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool CourseTemplateOptions::fromString(const QString &line)
 {
-    if (line.isEmpty())
-    {
-        trace("cCourseTemplateOptions::fromString - line is empty: ", traceError);
-        return false;
-    }
-
     QStringList chunks = line.split(" ", QString::SkipEmptyParts);
-
     int i = 0;
     while (i<chunks.count())
     {
         QString first = chunks.at(i++);
 
-        if (first == QString::fromUtf8("-Force")) {
+        if (first == "-Force") {
             m_oForce = true;
             continue;
         }
 
-        if (first == QString::fromUtf8("-Double")) {
+        if (first == "-Double") {
             m_oBothDirections = true;
             continue;
         }
 
-        if (first == QString::fromUtf8("-VoiceQ")){
+        if (first == "-VoiceQ"){
             m_oVoiceQ = true;
             continue;
         }
 
-        if (first == QString::fromUtf8("-VoiceA")){
+        if (first == "-VoiceA"){
             m_oVoiceA = true;
             continue;
         }
 
-        if (first == QString::fromUtf8("-Image")){
+        if (first == "-Image"){
             m_oImage = true;
             continue;
         }
 
-        if (i == chunks.count())
-        {
+        if (i == chunks.count()) {
             trace("cCourseTemplateOptions::fromString - Missing value after: "+first, traceError);
             return false;
         }
@@ -68,10 +61,8 @@ bool CourseTemplateOptions::fromString(const QString &line)
         QString second = chunks.at(i++);
 
         // joining chunks in quotes
-        while (second.startsWith("\"")^second.endsWith("\"")) // XOR
-        {
-            if (i >= chunks.count())
-            {
+        while (second.startsWith("\"")^second.endsWith("\"")) {
+            if (i >= chunks.count()) {
                 trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second, traceError);
                 return false; // wrong parameters
             }
@@ -80,51 +71,51 @@ bool CourseTemplateOptions::fromString(const QString &line)
         }
 
 
-        if (first == QString::fromUtf8("-course")) {
+        if (first == "-course") {
             m_courseName = second.remove("\"");;
             continue;
         }
 
-        if (first == QString::fromUtf8("-database")) {
+        if (first == "-database") {
             m_dbPath = second.remove("\"");
             continue;
         }
 
-        if (first == QString::fromUtf8("-subname")) {
+        if (first == "-subname") {
             m_subname = second.remove("\"");
             continue;
         }
 
-        if (first == QString::fromUtf8("-instruction")) {
+        if (first == "-instruction") {
             m_instruction = second.remove("\"");
             continue;
         }
 
-        if (first == QString::fromUtf8("-trimQ")) {
+        if (first == "-trimQ") {
             m_voiceTrimQ = second.toDouble();
             continue;
         }
 
-        if (first == QString::fromUtf8("-vNameQ")) {
+        if (first == "-vNameQ") {
             m_voiceNameQ = second.remove("\"");
             continue;
         }
 
-        if (first == QString::fromUtf8("-gainQ")) {
+        if (first == "-gainQ") {
             m_voiceGainQ = second.toInt();
             continue;
         }
-        if (first == QString::fromUtf8("-trimA")) {
+        if (first == "-trimA") {
             m_voiceTrimA = second.toDouble();
             continue;
         }
 
-        if (first == QString::fromUtf8("-vNameA")) {
+        if (first == "-vNameA") {
             m_voiceNameA = second.remove("\"");
             continue;
         }
 
-        if (first == QString::fromUtf8("-gainA")) {
+        if (first == "-gainA") {
             m_voiceGainA = second.toInt();
             continue;
         }

@@ -43,7 +43,7 @@ int getVoiceEngineIndex(QString voiceEngine) // if failed then returns -1
    for (int i = 0; i<voices.count(); ++i)
    {
       if (voices[i] == voiceEngine)
-         return i;
+         return i + 1;
    }
-   return -1;
+   return 0;
 }

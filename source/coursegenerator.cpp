@@ -93,15 +93,15 @@ void CourseGenerator::run ()
    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
-   int topicAId;
    // A course
+   int topicAId;
    if (!m_db.addItem(topicNameA, courseId, 0, &topicAId))
       return;
 
    QDomElement rootElement = doc.documentElement();
    QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, "pres", topicAId);
 
-   for (int i = 0;i<m_courseTemplate.content.count();++i) {
+   for (int i = 0; i<m_courseTemplate.content.count(); ++i) {
       QString line = (m_courseTemplate.content.at(i)).trimmed();
       if (line.length() == 0) continue;
       QStringList list1 = line.split(":");
@@ -197,7 +197,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, "exercise", ID);
 
    // create xml course file
-   if (foreceRebuild  ||
+   if (foreceRebuild ||
        checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)) {
       forceMedia = true;
       QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
@@ -207,7 +207,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    // create mp3
    QString mp3Q = bMode ? "a" : "q";
    if (m_courseTemplate.options.voiceQ &&
-       (forceMedia  ||
+       (forceMedia ||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
       arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);

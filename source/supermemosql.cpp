@@ -68,7 +68,7 @@ bool SuperMemoSQL::getCourses (QStringList *retList)
    }
 
    retList->clear();
-   for (query.first();query.isValid();query.next())
+   for (query.first(); query.isValid(); query.next())
       retList->append(query.value(0).toString());
 
    return true;

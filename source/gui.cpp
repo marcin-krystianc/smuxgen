@@ -204,7 +204,7 @@ void MainWindow::openCourseTemplateSlot(const QString &fileNamePar)
       fileName = QFileDialog::getOpenFileName(this,
                                               tr("Open file"),
                                               getLastDir(),
-                                              tr("Smuxgen files (*.smuxgen);;All Files (*)"));
+                                              tr("Smuxgen files (*.smuxgen); ; All Files (*)"));
       if (fileName.isEmpty())
          return;
 
@@ -292,7 +292,7 @@ bool MainWindow::saveAsCourseTemplateSlot()
    QString fileName = QFileDialog::getSaveFileName(this,
                                                    tr("Save file"),
                                                    getLastDir(),
-                                                   tr("Smuxgen files (*.smuxgen);;All Files (*)"));
+                                                   tr("Smuxgen files (*.smuxgen); ; All Files (*)"));
    if (fileName.isEmpty())
       return false;
 

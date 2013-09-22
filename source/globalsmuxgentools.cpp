@@ -89,12 +89,12 @@ QString getTextToPrint (const QString &input) // get text to show to user
 
 QString getKeyWord (const QString &input)
 {
-   static QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?;':\"[]\{}|");
+   static QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?; ':\"[]\{}|");
    static QString B = QString::fromUtf8("ACZXSNOLEaczzsnole ");
 
    QString temp = input;
 
-   for (int i = A.length()-1;i >= 0;--i)
+   for (int i = A.length()-1; i >= 0; --i)
       temp.replace(A.at(i), B.at(i));
 
    QStringList tmp = temp.split(" ", QString::SkipEmptyParts);
@@ -108,7 +108,7 @@ QString getKeyWord (const QString &input)
 
    if (tmpList.count()>0)
    {
-      for (int i = 0;i<tmpList.count();++i)
+      for (int i = 0; i<tmpList.count(); ++i)
          retList.insert(0, removeAllSpecialCharacters(tmpList.at(i), special));
    }
    else
@@ -116,9 +116,9 @@ QString getKeyWord (const QString &input)
       retList.append("");
       retList.append("");
 
-      for (int i = 0;i<tmp.count();++i)
+      for (int i = 0; i<tmp.count(); ++i)
       {
-         for (int j = 0;j<retList.count();j++)
+         for (int j = 0; j<retList.count(); j++)
          {
             if ((tmp.at(i).length()>(retList.at(j)).length()))
             {
@@ -177,7 +177,7 @@ QStringList getAllBetween (const QString &input, const QString &first, const QSt
 QString removeAllSpecialCharacters (const QString &input, const QStringList &list)
 {
    QString ret = input;
-   for (int i = 0;i<list.count();i++)
+   for (int i = 0; i<list.count(); i++)
       ret.remove(list.at(i));
 
    return ret;

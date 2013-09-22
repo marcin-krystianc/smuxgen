@@ -47,7 +47,7 @@ public slots:
    void setIconSizeSlot (int size);
 
 private:
-   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
+   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen"); }
    void trace (const QString &text, const int & flags = traceLevel1|0);
 
    int m_maxCount;
@@ -108,7 +108,7 @@ private:
    QPixmap m_pixmap;
 
    QString m_filePath;
-   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
+   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen"); }
    void trace (const QString &text, const int & flags = traceLevel1|0);
    void setPixmap (const QPixmap &m_pixmap);
 

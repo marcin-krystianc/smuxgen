@@ -311,7 +311,7 @@ void OptionsPage::fileButtonTriggered()
    QString fileName = QFileDialog::getOpenFileName(this,
                                                    tr("Open database file"),
                                                    "",
-                                                   tr("SuperMemo UX database (*.dat);;All Files (*)"),
+                                                   tr("SuperMemo UX database (*.dat); ; All Files (*)"),
                                                    &selectedFilter,
                                                    opt);
    if (fileName.isEmpty())
@@ -340,7 +340,7 @@ void OptionsPage::fileEditChanged(const QString &fileName)
    QStringList courseList;
    m_superDb.getCourses(&courseList);
 
-   for (int i = 0;i<courseList.count();++i)
+   for (int i = 0; i<courseList.count(); ++i)
       m_courseCombo->insertItem(0, courseList.at(i));
 
    int pos = m_courseCombo->findText(oldText);

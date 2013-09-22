@@ -29,7 +29,7 @@ CourseTemplate CourseTemplate::fromFile(const QString &fileName)
 
    courseTemplate.options = CourseOptions::fromString (inputFileStream.readLine());
 
-   for(;;) {
+   for(; ; ) {
       QString line = (inputFileStream.readLine()).trimmed();
       if (line.isNull())
          break; //end of file
@@ -76,7 +76,7 @@ CourseTemplate CourseTemplate::importQA(const QString &fileName)
    bool q(false);
    bool a(false);
    QString entry;
-   for(;;) {
+   for(; ; ) {
       QString line = (inputFileStream.readLine()).trimmed();
       if (line.isNull())
          break; //end of file

@@ -14,24 +14,24 @@ SOURCES += main.cpp \
  coursetemplateoptions.cpp \
  globalsmuxgentools.cpp \
  courseimageseditor.cpp \
-    globaltracer.cpp \
-    coursegenerator.cpp \
-    imagedownloader.cpp \
-    odeeditor.cpp \
-    sapi.cpp \
-    smuxgenwidgets.cpp \
-    supermemosql.cpp
+ globaltracer.cpp \
+ coursegenerator.cpp \
+ imagedownloader.cpp \
+ odeeditor.cpp \
+ sapi.cpp \
+ smuxgenwidgets.cpp \
+ supermemosql.cpp
 HEADERS += gui.h \
  coursetemplate.h \
  globalsmuxgentools.h \
  courseimageseditor.h \
-    courseoptions.h \
-    coursegenerator.h \
-    globaltracer.h \
-    imagedownloader.h \
-    sapi.h \
-    smuxgenwidgets.h \
-    supermemosql.h \
-    codeeditor.h
+ courseoptions.h \
+ coursegenerator.h \
+ globaltracer.h \
+ imagedownloader.h \
+ sapi.h \
+ smuxgenwidgets.h \
+ supermemosql.h \
+ codeeditor.h
 RESOURCES += gui.qrc
 FORMS += 

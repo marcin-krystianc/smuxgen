@@ -49,10 +49,10 @@ CourseImageEditor::CourseImageEditor(QWidget *parent)
    setLayout(l0);
 
    connect(m_readyCourseElementList , SIGNAL(elementSelectedImgSignal(const QStringList&)),
-            this , SLOT(elementSelectedImgSlot (const QStringList&)));
+           this , SLOT(elementSelectedImgSlot (const QStringList&)));
 
    connect(m_readyCourseElementList , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
-            m_mp3TargetWidget , SLOT(elementSelectedMp3Slot(const QStringList&)));
+           m_mp3TargetWidget , SLOT(elementSelectedMp3Slot(const QStringList&)));
 
 }
 
@@ -95,7 +95,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
 
    QString mediaDir = courseDocumentDir + "\\media";
 
-   for (int i = 0;i<courseTemplate.content.count();++i)
+   for (int i = 0; i<courseTemplate.content.count(); ++i)
    {
       int id1, id2;
       QString line = (courseTemplate.content.at(i)).trimmed();
@@ -204,7 +204,7 @@ void ImageList::addPiece(const QPixmap &pixmap, const QString &hint)
 
    if (!hint.isNull())
    {
-      for (int i = 0;i<count();i++)
+      for (int i = 0; i<count(); i++)
       {
          if(item(i)->data(Qt::UserRole+1).toString() == hint)
          {
@@ -669,7 +669,7 @@ void Mp3Widget::openFile()
    QString fileName = QFileDialog::getOpenFileName(this,
                                                    tr("Open mp3 file"),
                                                    getLastDir(),
-                                                   tr("MP3 files (*.mp3);;All Files (*)"),
+                                                   tr("MP3 files (*.mp3); ; All Files (*)"),
                                                    &selectedFilter,
                                                    opt);
    if (fileName.isEmpty())

@@ -98,7 +98,7 @@ void ImageDownloadHelper::trace (const QString &text, const int & flags)
 ImageDownloader::ImageDownloader(const QString &id)
 {
    m_id = id;
-   for (int i = 0;i<ImageDownloader::m_maxHelpThreads;++i)
+   for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i)
    {
       m_imageDownloadHelper[i] = new ImageDownloadHelper(m_id+QString::number(i), i);
       connect(m_imageDownloadHelper[i], SIGNAL(finished(bool, const QPixmap& , int, const QString &)) , this , SLOT(helpThreadFinished(bool, const QPixmap& , const QString &)));
@@ -110,7 +110,7 @@ ImageDownloader::ImageDownloader(const QString &id)
 ImageDownloader::~ImageDownloader()
 {
    /*
- for (int i = 0;i<cImageDownloader::maxHelpThreads;++i)
+ for (int i = 0; i<cImageDownloader::maxHelpThreads; ++i)
  delete imageDownloadHelper[i];
  */
 
@@ -150,7 +150,7 @@ void ImageDownloader::run ()
 
    while (1)
    {
-      for (int i = 0;i<ImageDownloader::m_maxHelpThreads;++i)
+      for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i)
          if (!m_imageDownloadHelper[i]->isRunning())
             m_imageDownloadHelper[i]->terminate();
 
@@ -179,7 +179,7 @@ void ImageDownloader::run ()
 
       while (!m_newTask)
       {
-         for (int i = 0;i<ImageDownloader::m_maxHelpThreads;++i)
+         for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i)
          {
             if (!m_imageDownloadHelper[i]->isRunning()
                 && (!m_urls.isEmpty()))

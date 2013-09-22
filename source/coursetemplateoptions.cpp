@@ -70,7 +70,7 @@ CourseOptions CourseOptions::fromString (const QString &line)
 
 
       if (first == "-course") {
-         options.courseName = second.remove("\"");;
+         options.courseName = second.remove("\""); ;
          continue;
       }
 

@@ -17,16 +17,14 @@ GlobaTracer::GlobaTracer () :
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void GlobaTracer::trace(const QString &text, const int& flags)
+void GlobaTracer::trace(const QString &text, const int flags)
 {
    if (m_flags & flags)
       emit traceSignal (text, m_flags & flags);
-};
-
-
+}
 
 /////////////////////////////////////////////////////////////////////////////
-void GlobaTracer::setTraceFlags(const unsigned int& flags)
+void GlobaTracer::setTraceFlags(const unsigned int flags)
 {
    m_flags = flags;
 }

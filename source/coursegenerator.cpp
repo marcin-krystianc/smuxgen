@@ -62,17 +62,12 @@ void CourseGenerator::build (const CourseTemplate &courseTemplate, bool rebuild)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CourseGenerator::run ()
+bool CourseGenerator::buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, int voiceIndexA, int voiceIndexQ)
 {
-   m_isFailed = true;
-
-   if (!m_db.open(m_courseTemplate.options.dbPath))
-      return;
-
    int courseId;
    QString courseMasterDir;
-   if (!m_db.getCourseDetails (m_courseTemplate.options.courseName, &courseId, &courseMasterDir))
-      return;
+   if (!m_db.getCourseDetails (courseName, &courseId, &courseMasterDir))
+      return false;
 
    QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
    QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
@@ -81,80 +76,65 @@ void CourseGenerator::run ()
    QDir(courseDocumentDir).mkdir("media");
 
    // get root document
-   QFile docFile(courseDocumentPath);
-   QDomDocument doc("mydocument");
-   if (!doc.setContent(&docFile)) {
-      trace(QString("Cannot open file: ") + courseDocumentPath, traceError);
-      return;
+   QDomDocument courseDoc("");
+   if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
+      return false;
+
+   int topicId;
+   if (!m_db.addItem(topicName, courseId, 0, &topicId))
+      return true;
+
+   QDomElement rootElement = courseDoc.documentElement();
+   QDomNode topicNode = getNode (rootElement, topicName, courseDoc, "pres", topicId);
+
+   for (size_t i = 0; i < questions.size(); ++i) {
+
+      if (m_abortProces)
+         return false;
+
+      emit progressSignal(QString::number(i+1)+"/"+QString::number(questions.size())+" "+topicName+"@"+courseName+":"
+                          + questions[i]);
+
+      generateCourseElement(courseId, questions[i], answers[i]
+                            , topicName, topicNode, topicId, courseDoc, courseDocumentDir
+                            , false, voiceIndexA, voiceIndexQ, m_rebuild);
    }
 
-   QString topicNameA = m_courseTemplate.options.subname;
-   QString topicNameB = m_courseTemplate.options.subname+"*";
-   int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
-   int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
+   DomDoucumentToFile(courseDoc, courseDocumentPath);
+   return true;
+}
 
-   // A course
-   int topicAId;
-   if (!m_db.addItem(topicNameA, courseId, 0, &topicAId))
+/////////////////////////////////////////////////////////////////////////////
+void CourseGenerator::run ()
+{
+   m_isFailed = true;
+
+   if (!m_db.open(m_courseTemplate.options.dbPath))
       return;
 
-   QDomElement rootElement = doc.documentElement();
-   QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, "pres", topicAId);
+   std::vector<QString> questions;
+   std::vector<QString> answers;
 
-   for (int i = 0; i<m_courseTemplate.content.count(); ++i) {
-      QString line = (m_courseTemplate.content.at(i)).trimmed();
-      if (line.length() == 0) continue;
+   for (int i = 0; i < m_courseTemplate.content.count(); ++i) {
+      QString line = m_courseTemplate.content.at(i);
       QStringList list1 = line.split(":");
-
-      if (list1.count() < 2) {
+      if (list1.count() != 2) {
          trace(QString("cCourseGenerator::generate Input error: ")+line, traceWarning);
          continue;
       }
-
-      emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.content.count())+" "+topicNameA+"@"+m_courseTemplate.options.courseName+":"
-                          +list1.at(0));
-
-      if (m_abortProces)
-         return;
-
-      generateCourseElement(courseId, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAId, doc, courseDocumentDir, false, voiceIndexA, voiceIndexQ, m_rebuild);
+      questions.push_back(list1[0].trimmed());
+      answers.push_back(list1[1].trimmed());
    }
 
+   int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
+   int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
-   doDelete (courseId, topicAId, topicNodeA, courseDocumentDir);
+   buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname, questions, answers, voiceIndexA, voiceIndexQ);
 
-
-   // B course
    if (m_courseTemplate.options.bothDirections) {
-      int topicBId;
-      if (!m_db.addItem(topicNameB, courseId, 0, &topicBId))
-         return;
-      QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, "pres", topicBId);
-
-      for (int i = 0; i<m_courseTemplate.content.count(); ++i) {
-         QString line = (m_courseTemplate.content.at(i)).trimmed();
-         if (line.length() == 0) continue;
-         QStringList list1 = line.split(":");
-
-         if (list1.count()<2) {
-            trace(QString("cCourseGenerator::generate Input error: ")+line, traceWarning);
-            continue;
-         }
-
-         emit progressSignal(QString::number(i+1)+"/"+QString::number(m_courseTemplate.content.count())+" "+topicNameB+"@"+m_courseTemplate.options.courseName+":"
-                             +list1.at(0));
-
-         if (m_abortProces)
-            return;
-
-         generateCourseElement(courseId, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBId, doc, courseDocumentDir, true, voiceIndexA, voiceIndexQ, m_rebuild);
-      }
-
-      doDelete (courseId, topicBId, topicNodeB, courseDocumentDir);
+      buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname+"*", answers, questions, voiceIndexQ, voiceIndexA);
    }
 
-
-   writeDomDoucumentToFile(doc, courseDocumentPath);
    m_isFailed = false;
 }
 
@@ -201,7 +181,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
        checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)) {
       forceMedia = true;
       QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
-      writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
+      DomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
    }
 
    // create mp3
@@ -339,7 +319,7 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::writeDomDoucumentToFile (const QDomDocument &document, const QString &path)
+bool CourseGenerator::DomDoucumentToFile (const QDomDocument &document, const QString &path)
 {
    QFile file(path);
    if(!file.open(QIODevice::WriteOnly|QIODevice::Text))
@@ -348,6 +328,18 @@ bool CourseGenerator::writeDomDoucumentToFile (const QDomDocument &document, con
    QTextStream ts(&file);
    ts.setCodec("UTF-8");
    ts << document.toString();
+
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool CourseGenerator::DomDoucumentFromFile(const QString &path, QDomDocument *document)
+{
+   QFile docFile(path);
+   if (!document->setContent(&docFile)) {
+      trace(QString("Cannot open file: ") + path, traceError);
+      return false;
+   }
 
    return true;
 }

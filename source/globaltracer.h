@@ -26,8 +26,8 @@ class GlobaTracer : public QObject
    Q_OBJECT
 public:
    GlobaTracer ();
-   void trace (const QString &txt, const int& m_flags);
-   void setTraceFlags(const unsigned int& m_flags);
+   void trace (const QString &txt, const int m_flags);
+   void setTraceFlags(const unsigned int m_flags);
 
 private:
    unsigned int m_flags;

@@ -95,7 +95,7 @@ bool SuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString
    *id = v1.toInt();
 
    QVariant v2 = query.value(1);
-   *path = QFileInfo(v2.toString()).path()+QString("\\override\\course.xml");
+   *path = QFileInfo(v2.toString()).path();
 
    trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(*id), traceLevel2);
    trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);

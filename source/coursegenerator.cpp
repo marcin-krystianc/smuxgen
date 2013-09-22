@@ -70,33 +70,37 @@ void CourseGenerator::run ()
       return;
 
    int courseId;
-   QString courseFileName;
-   if (!m_db.getCourseDetails (m_courseTemplate.options.courseName, &courseId, &courseFileName))
+   QString courseMasterDir;
+   if (!m_db.getCourseDetails (m_courseTemplate.options.courseName, &courseId, &courseMasterDir))
       return;
 
-   QString courseFileDirectoryName = QFileInfo(courseFileName).dir().path()+QDir::separator();
-   QDir(courseFileDirectoryName).mkdir("media");
+   QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
+   QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
+
+   // create media dir if doesn't exist
+   QDir(courseDocumentDir).mkdir("media");
 
    // get root document
-   QFile docFile(courseFileName);
+   QFile docFile(courseDocumentPath);
    QDomDocument doc("mydocument");
    if (!doc.setContent(&docFile)) {
-      trace(QString("Cannot open file: ")+courseFileName, traceError);
+      trace(QString("Cannot open file: ") + courseDocumentPath, traceError);
       return;
    }
 
-   QDomElement rootElement = doc.documentElement();
+
    QString topicNameA = m_courseTemplate.options.subname;
    QString topicNameB = m_courseTemplate.options.subname+"*";
    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
-   int topicAID, topicBID;
+   int topicAId, topicBID;
    // A course
-   if (!m_db.addItem(topicNameA, courseId, 0, &topicAID))
+   if (!m_db.addItem(topicNameA, courseId, 0, &topicAId))
       return;
 
-   QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, "pres", topicAID);
+   QDomElement rootElement = doc.documentElement();
+   QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, "pres", topicAId);
 
    for (int i = 0;i<m_courseTemplate.content.count();++i) {
       QString line = (m_courseTemplate.content.at(i)).trimmed();
@@ -114,11 +118,11 @@ void CourseGenerator::run ()
       if (m_abortProces)
          return;
 
-      generateCourseElement(courseId, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAID, doc, courseFileDirectoryName, false, voiceIndexA, voiceIndexQ, m_rebuild);
+      generateCourseElement(courseId, list1.at(0), list1.at(1), topicNameA, topicNodeA, topicAId, doc, courseDocumentDir, false, voiceIndexA, voiceIndexQ, m_rebuild);
    }
 
 
-   doDelete (courseId, topicAID, topicNodeA, courseFileDirectoryName);
+   doDelete (courseId, topicAId, topicNodeA, courseDocumentDir);
 
 
    // B course
@@ -143,14 +147,14 @@ void CourseGenerator::run ()
          if (m_abortProces)
             return;
 
-         generateCourseElement(courseId, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseFileDirectoryName, true, voiceIndexA, voiceIndexQ, m_rebuild);
+         generateCourseElement(courseId, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseDocumentDir, true, voiceIndexA, voiceIndexQ, m_rebuild);
       }
 
-      doDelete (courseId, topicBID, topicNodeB, courseFileDirectoryName);
+      doDelete (courseId, topicBID, topicNodeB, courseDocumentDir);
    }
 
 
-   writeDomDoucumentToFile(doc, courseFileName);
+   writeDomDoucumentToFile(doc, courseDocumentPath);
    m_isFailed = false;
 }
 

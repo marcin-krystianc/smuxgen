@@ -72,12 +72,12 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
       return;
 
    int courseID;
-   QString courseFileName, courseFileDirectoryName, mediaDirectoryName;
-   if (!m_database.getCourseDetails (courseTemplate.options.courseName, &courseID, &courseFileName))
+   QString courseMasterDir;
+   if (!m_database.getCourseDetails (courseTemplate.options.courseName, &courseID, &courseMasterDir))
       return;
 
-   QFileInfo courseFileInfo(courseFileName);
-   courseFileDirectoryName = QDir::toNativeSeparators(courseFileInfo.dir().path())+QDir::separator();
+   QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
+   QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
 
    QString topicNameA = courseTemplate.options.subname;
    QString topicNameB = courseTemplate.options.subname+"*";
@@ -93,7 +93,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
          return;
    }
 
-   mediaDirectoryName = courseFileDirectoryName+"media"+QDir::separator();
+   QString mediaDir = courseDocumentDir + "\\media";
 
    for (int i = 0;i<courseTemplate.content.count();++i)
    {
@@ -111,10 +111,10 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
       if (!m_database.getItemId(getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
          continue;
 
-      QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
-      QString f1n = mediaDirectoryName+getMediaFileName(id1)+"n.jpg";
-      QString f1a = mediaDirectoryName+getMediaFileName(id1)+"a.mp3";
-      QString f1q = mediaDirectoryName+getMediaFileName(id1)+"q.mp3";
+      QString f1m = mediaDir+getMediaFileName(id1)+"m.jpg";
+      QString f1n = mediaDir+getMediaFileName(id1)+"n.jpg";
+      QString f1a = mediaDir+getMediaFileName(id1)+"a.mp3";
+      QString f1q = mediaDir+getMediaFileName(id1)+"q.mp3";
       QString k1 = getKeyWord(list1.at(0));
       QString q1 = getTextToPrint(list1.at(0));
       QString a1 = getTextToPrint(list1.at(1));
@@ -132,10 +132,10 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
          if (!m_database.getItemId(getTextToPrint(list1.at(1)), courseID, topicIDB, &id2))
             continue;
 
-         f2m = mediaDirectoryName+getMediaFileName(id2)+"m.jpg";
-         f2n = mediaDirectoryName+getMediaFileName(id2)+"n.jpg";
-         f2a = mediaDirectoryName+getMediaFileName(id2)+"a.mp3";
-         f2q = mediaDirectoryName+getMediaFileName(id2)+"q.mp3";
+         f2m = mediaDir+getMediaFileName(id2)+"m.jpg";
+         f2n = mediaDir+getMediaFileName(id2)+"n.jpg";
+         f2a = mediaDir+getMediaFileName(id2)+"a.mp3";
+         f2q = mediaDir+getMediaFileName(id2)+"q.mp3";
          k2 = getKeyWord(list1.at(1));
          q2 = getTextToPrint(list1.at(1));
          a2 = getTextToPrint(list1.at(0));

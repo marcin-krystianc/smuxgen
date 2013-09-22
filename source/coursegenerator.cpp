@@ -273,8 +273,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    if (m_courseTemplate.options.graphics&&
        ((forceMedia)||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg"))))
-   {
+        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg")))) {
       deleteFile(TMPDIR+"HTML");
       QStringList arguments;
 
@@ -291,8 +290,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
       QStringList fileUrls = parseGoogleHtml(TMPDIR+"HTML");
 
       int i = 0; // download 2 images
-      while ((fileUrls.count())>0&&(i<2))
-      {
+      while ((fileUrls.count())>0&&(i<2)) {
          QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
          //QString filrExt = ;
          deleteFile(fileName);
@@ -320,8 +318,6 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
       }
    }
 
-
-
    return true;
 }
 
@@ -336,13 +332,10 @@ bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &doc
           + QString(" ParetntId:")+QString::number(paretntIDSQL)
           , traceLevel2);
 
-   while(!n.isNull())
-   {
+   while(!n.isNull()) {
       QDomElement e = n.toElement(); // try to convert the node to an element.
-      if(!e.isNull())
-      {
-         if (e.attribute("delete", "none") == "true")
-         {
+      if(!e.isNull()) {
+         if (e.attribute("delete", "none") == "true") {
             trace(QString("doDelete: id:")+e.attribute("id", "0")+QString(" name:")+e.attribute("name", ""), traceLevel2);
             int ID = e.attribute("id", "0").toInt();
             deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"a.mp3");
@@ -438,7 +431,6 @@ bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &
 /////////////////////////////////////////////////////////////////////////////
 QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode)
 {
-
    QDomDocument doc = createCourseItem(templateId, chapter);
    QDomElement rootElement = doc.documentElement();
 
@@ -456,8 +448,8 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
    tmpElement3.setAttribute("correct", answers);
    tmpElement2.appendChild(tmpElement3);
 
-   if (m_courseTemplate.options.graphics)
-   { // create table with images
+   if (m_courseTemplate.options.graphics) {
+      // create table with images
       tmpElement2.appendChild(doc.createElement("br"));
       tmpElement2.appendChild(doc.createElement("br"));
 
@@ -505,15 +497,13 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
    rootElement.appendChild(tmpElement2);
 
-   if (m_courseTemplate.options.voiceA)
-   {
+   if (m_courseTemplate.options.voiceA) {
       QDomElement tmpElement4 = doc.createElement( bMode ? "question-audio" : "answer-audio" );
       tmpElement4.appendChild(doc.createTextNode("true"));
       rootElement.appendChild(tmpElement4);
    }
 
-   if (m_courseTemplate.options.voiceQ)
-   {
+   if (m_courseTemplate.options.voiceQ) {
       QDomElement tmpElement4 = doc.createElement( bMode ? "answer-audio" : "question-audio");
       tmpElement4.appendChild(doc.createTextNode("true"));
       rootElement.appendChild(tmpElement4);

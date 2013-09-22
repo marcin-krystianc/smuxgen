@@ -34,7 +34,6 @@ private:
 
 signals:
    void traceSignal (const QString &txt, const int &);
-
 };
 
 extern GlobaTracer globalTracer;

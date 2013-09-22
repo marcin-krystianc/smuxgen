@@ -130,12 +130,14 @@ public:
    ContentPage(QWidget *parent = 0);
    void setContent (const QStringList & content);
    QStringList getContent ();
+
 signals:
    void contentChangedSignal ();
 
 private:
    QPlainTextEdit *n_contentTextEdit;
    FindToolbar *m_findToolbar;
+
 private slots:
    void findNext(const QString &txt);
    void findPrev(const QString &txt);

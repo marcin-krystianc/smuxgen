@@ -53,6 +53,7 @@ private slots:
    void about();
 
    void openRecentFile();
+
 protected:
    void closeEvent(QCloseEvent *event);
 
@@ -97,6 +98,7 @@ private:
    QDockWidget *m_dockCourseBrowser;
 
    QVector <QAction*> m_recentFileActions;
+
 private:
    void trace (const QString& txt, const unsigned int& flags);
    void setTitle();

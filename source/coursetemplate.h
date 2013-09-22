@@ -11,7 +11,6 @@
 
 #include "courseoptions.h"
 
-#include <QObject>
 #include <QString>
 #include <QStringList>
 

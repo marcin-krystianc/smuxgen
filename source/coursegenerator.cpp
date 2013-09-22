@@ -88,13 +88,12 @@ void CourseGenerator::run ()
       return;
    }
 
-
    QString topicNameA = m_courseTemplate.options.subname;
    QString topicNameB = m_courseTemplate.options.subname+"*";
    int voiceIndexA = getVoiceEngineIndex(m_courseTemplate.options.voiceNameA)+1;
    int voiceIndexQ = getVoiceEngineIndex(m_courseTemplate.options.voiceNameQ)+1;
 
-   int topicAId, topicBID;
+   int topicAId;
    // A course
    if (!m_db.addItem(topicNameA, courseId, 0, &topicAId))
       return;
@@ -127,9 +126,10 @@ void CourseGenerator::run ()
 
    // B course
    if (m_courseTemplate.options.bothDirections) {
-      if (!m_db.addItem(topicNameB, courseId, 0, &topicBID))
+      int topicBId;
+      if (!m_db.addItem(topicNameB, courseId, 0, &topicBId))
          return;
-      QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, "pres", topicBID);
+      QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, "pres", topicBId);
 
       for (int i = 0; i<m_courseTemplate.content.count(); ++i) {
          QString line = (m_courseTemplate.content.at(i)).trimmed();
@@ -147,10 +147,10 @@ void CourseGenerator::run ()
          if (m_abortProces)
             return;
 
-         generateCourseElement(courseId, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBID, doc, courseDocumentDir, true, voiceIndexA, voiceIndexQ, m_rebuild);
+         generateCourseElement(courseId, list1.at(1), list1.at(0), topicNameB, topicNodeB, topicBId, doc, courseDocumentDir, true, voiceIndexA, voiceIndexQ, m_rebuild);
       }
 
-      doDelete (courseId, topicBID, topicNodeB, courseDocumentDir);
+      doDelete (courseId, topicBId, topicNodeB, courseDocumentDir);
    }
 
 

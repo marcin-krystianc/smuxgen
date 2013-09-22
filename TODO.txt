@@ -1,0 +1,1 @@
+- use exceptions to handle exceptional situations

@@ -37,13 +37,13 @@ signals:
    void progressSignal (const QString&);
 
 private:
-   QDomNode getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &courseFileDirectory, const QString &type, int nodeID);
-   void setDelete (QDomNode &topicNode);
+   static bool writeDomDoucumentToFile (const QDomDocument &document, const QString &path);
+
+   QDomNode getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &type, int nodeID);
    bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
    bool generateCourseElement(int courseIDSQL, const QString &question, const QString &answer, const QString &topicName
                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
-   bool writeDomDoucumentToFile (const QDomDocument &document, const QString &path);
-   QDomDocument createCourseItem (int templateId, const QString &chapter);
+
    bool checkIfNewAnswers(const QString &fileName, const QString &answers);
    QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
    static void trace (const QString &text, int flags = traceLevel1);

@@ -96,8 +96,7 @@ void CourseGenerator::run ()
    if (!m_db.addItem(topicNameA, courseId, 0, &topicAID))
       return;
 
-   QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, courseFileDirectoryName, "pres", topicAID);
-   setDelete (topicNodeA);
+   QDomNode topicNodeA = getNode (rootElement, topicNameA, doc, "pres", topicAID);
 
    for (int i = 0;i<m_courseTemplate.content.count();++i) {
       QString line = (m_courseTemplate.content.at(i)).trimmed();
@@ -126,9 +125,7 @@ void CourseGenerator::run ()
    if (m_courseTemplate.options.bothDirections) {
       if (!m_db.addItem(topicNameB, courseId, 0, &topicBID))
          return;
-      QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, courseFileDirectoryName, "pres", topicBID);
-
-      setDelete (topicNodeB);
+      QDomNode topicNodeB = getNode (rootElement, topicNameB, doc, "pres", topicBID);
 
       for (int i = 0; i<m_courseTemplate.content.count(); ++i) {
          QString line = (m_courseTemplate.content.at(i)).trimmed();
@@ -158,7 +155,7 @@ void CourseGenerator::run ()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomNode CourseGenerator::getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &courseFileDirectory, const QString &type, int nodeID)
+QDomNode CourseGenerator::getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &type, int nodeID)
 {
    for (QDomNode node = rootElement.firstChild(); !node.isNull(); node = node.nextSibling()) {
       QDomElement e = node.toElement(); // try to convert the node to an element.
@@ -169,31 +166,14 @@ QDomNode CourseGenerator::getNode (QDomNode &rootElement, const QString &nodeNam
          return node; // topic Found
    }
 
-   QDomElement tmpElement = doc.createElement("element");
-   tmpElement.setAttribute("name", nodeName);
-   tmpElement.setAttribute("type", type);
-   tmpElement.setAttribute("id", QString::number(nodeID));
-
-   QDomNode node = rootElement.appendChild(tmpElement);
-   QDomDocument docItem = createCourseItem(1, nodeName);
-   writeDomDoucumentToFile(docItem, courseFileDirectory+getFileName(nodeID));
-
    trace(QString("getNode createNewNode Name: ")+nodeName+QString(" ID:")+QString::number(nodeID), traceLevel2);
 
-   return node;
-}
+   QDomElement newElement = doc.createElement("element");
+   newElement.setAttribute("name", nodeName);
+   newElement.setAttribute("type", type);
+   newElement.setAttribute("id", QString::number(nodeID));
 
-/////////////////////////////////////////////////////////////////////////////
-void CourseGenerator::setDelete (QDomNode &topicNode)
-{
-   QDomNode n = topicNode.firstChild();
-   while(!n.isNull()) {
-      QDomElement e = n.toElement(); // try to convert the node to an element.
-      if(!e.isNull()) {
-         e.setAttribute("delete", "true");
-      }
-      n = n.nextSibling();
-   }
+   return rootElement.appendChild(newElement);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -210,7 +190,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    if (!m_db.addItem(getTextToPrint(question), courseIDSQL, topicID, &ID))
       return false;
 
-   QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, courseFileDirectory, "exercise", ID);
+   QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, "exercise", ID);
 
    // create xml course file
    if (foreceRebuild ||
@@ -222,8 +202,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
 
    // create mp3
    QString mp3Q = bMode ? "a" : "q";
-   if (m_courseTemplate.options.voiceQ&&
-       ((forceMedia)||
+   if (m_courseTemplate.options.voiceQ &&
+       (forceMedia ||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
       arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
@@ -369,31 +349,7 @@ bool CourseGenerator::writeDomDoucumentToFile (const QDomDocument &document, con
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument CourseGenerator::createCourseItem (int templateId, const QString &chapter)
-{
-   QDomDocument doc;
-   QDomElement rootElement = doc.createElement("item");
-   rootElement.setAttribute("xmlns", "http://www.supermemo.net/2006/smux");
-   doc.appendChild(rootElement);
-
-   QDomElement tmpElement0 = (doc.createElement("chapter-title"));
-   tmpElement0.appendChild(doc.createTextNode(chapter));
-   rootElement.appendChild(tmpElement0);
-
-   QDomElement tmpElement1 = (doc.createElement("modified"));
-   QDate x = QDate::currentDate();
-   tmpElement1.appendChild(doc.createTextNode(x.toString("yyyy-MM-dd")));
-   rootElement.appendChild(tmpElement1);
-
-   QDomElement tmpElement2 = doc.createElement("template-id");
-   tmpElement2.appendChild(doc.createTextNode(QString::number(templateId)));
-   rootElement.appendChild(tmpElement2);
-
-   return doc;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &answers)
+bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &answer)
 {
    QDomDocument doc("");
    QFile docFile(fileName);
@@ -413,40 +369,57 @@ bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &
       return true;
 
    QDomElement e = n1.toElement(); // try to convert the node to an element.
-   if(!e.isNull()) {
-      QString oAnswer = e.attribute("correct", "");
-      if (oAnswer == answers)
-         return false;
+   if(e.isNull())
+      return true;
 
-      trace(QString("New answers: ")+oAnswer+":"+answers, traceLevel1);
-   }
+   QString oldAnswer = e.attribute("correct", "");
+   if (oldAnswer == answer)
+      return false;
+
+   trace(QString("New answers: ")+oldAnswer+":"+answer, traceLevel1);
    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode)
 {
-   QDomDocument doc = createCourseItem(templateId, chapter);
-   QDomElement rootElement = doc.documentElement();
+   QDomDocument doc;
+   QDomElement rootElement = doc.createElement("item");
+   rootElement.setAttribute("xmlns", "http://www.supermemo.net/2006/smux");
+   doc.appendChild(rootElement);
 
-   QDomElement tmpElement0 = doc.createElement("lesson-title");
-   tmpElement0.appendChild(doc.createTextNode(QString::number(ID, 10)));
+   QDomElement tmpElement0 = (doc.createElement("chapter-title"));
+   tmpElement0.appendChild(doc.createTextNode(chapter));
    rootElement.appendChild(tmpElement0);
 
-   QDomElement tmpElement1 = doc.createElement("question-title");
-   tmpElement1.appendChild(doc.createTextNode(title));
+   QDomElement tmpElement1 = (doc.createElement("modified"));
+   QDate x = QDate::currentDate();
+   tmpElement1.appendChild(doc.createTextNode(x.toString("yyyy-MM-dd")));
    rootElement.appendChild(tmpElement1);
 
-   QDomElement tmpElement2 = doc.createElement("question");
-   tmpElement2.appendChild(doc.createTextNode(question+" - "));
-   QDomElement tmpElement3 = doc.createElement("spellpad");
-   tmpElement3.setAttribute("correct", answers);
-   tmpElement2.appendChild(tmpElement3);
+   QDomElement tmpElement2 = doc.createElement("template-id");
+   tmpElement2.appendChild(doc.createTextNode(QString::number(templateId)));
+   rootElement.appendChild(tmpElement2);
+
+   QDomElement tmpElement3 = doc.createElement("lesson-title");
+   tmpElement3.appendChild(doc.createTextNode(QString::number(ID, 10)));
+   rootElement.appendChild(tmpElement3);
+
+   QDomElement tmpElement4 = doc.createElement("question-title");
+   tmpElement4.appendChild(doc.createTextNode(title));
+   rootElement.appendChild(tmpElement4);
+
+   QDomElement tmpElement5 = doc.createElement("question");
+   tmpElement5.appendChild(doc.createTextNode(question+" - "));
+
+   QDomElement tmpElement6 = doc.createElement("spellpad");
+   tmpElement6.setAttribute("correct", answers);
+   tmpElement6.appendChild(tmpElement6);
 
    if (m_courseTemplate.options.graphics) {
       // create table with images
-      tmpElement2.appendChild(doc.createElement("br"));
-      tmpElement2.appendChild(doc.createElement("br"));
+      tmpElement6.appendChild(doc.createElement("br"));
+      tmpElement6.appendChild(doc.createElement("br"));
 
       QDomElement table = doc.createElement("table");
       table.setAttribute("width", "100%");
@@ -485,23 +458,23 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
       tr.appendChild(td);
       table.appendChild(tr);
-      tmpElement2.appendChild(table);
+      tmpElement6.appendChild(table);
 
    }
 
 
-   rootElement.appendChild(tmpElement2);
+   rootElement.appendChild(tmpElement6);
 
    if (m_courseTemplate.options.voiceA) {
-      QDomElement tmpElement4 = doc.createElement(bMode ? "question-audio" : "answer-audio");
-      tmpElement4.appendChild(doc.createTextNode("true"));
-      rootElement.appendChild(tmpElement4);
+      QDomElement tmpElement7 = doc.createElement(bMode ? "question-audio" : "answer-audio");
+      tmpElement7.appendChild(doc.createTextNode("true"));
+      rootElement.appendChild(tmpElement7);
    }
 
    if (m_courseTemplate.options.voiceQ) {
-      QDomElement tmpElement4 = doc.createElement(bMode ? "answer-audio" : "question-audio");
-      tmpElement4.appendChild(doc.createTextNode("true"));
-      rootElement.appendChild(tmpElement4);
+      QDomElement tmpElement8 = doc.createElement(bMode ? "answer-audio" : "question-audio");
+      tmpElement8.appendChild(doc.createTextNode("true"));
+      rootElement.appendChild(tmpElement8);
    }
    return doc;
 }

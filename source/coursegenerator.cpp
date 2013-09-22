@@ -193,7 +193,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    QDomNode questionNode = getNode (topicNode, getTextToPrint(question), doc, "exercise", ID);
 
    // create xml course file
-   if (foreceRebuild ||
+   if (foreceRebuild  ||
        checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)) {
       forceMedia = true;
       QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
@@ -203,7 +203,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    // create mp3
    QString mp3Q = bMode ? "a" : "q";
    if (m_courseTemplate.options.voiceQ &&
-       (forceMedia ||
+       (forceMedia  ||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
       arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
@@ -223,8 +223,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    }
 
    QString mp3A = bMode ? "q" : "a";
-   if (m_courseTemplate.options.voiceA&&
-       ((forceMedia)||
+   if (m_courseTemplate.options.voiceA &&
+       ((forceMedia) ||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
       arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A);
@@ -244,9 +244,9 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    }
 
    // create jpg
-   if (m_courseTemplate.options.graphics&&
-       ((forceMedia)||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg"))||
+   if (m_courseTemplate.options.graphics &&
+       ((forceMedia) ||
+        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg")) ||
         (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg")))) {
       deleteFile(TMPDIR+"HTML");
       QStringList arguments;
@@ -264,7 +264,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
       QStringList fileUrls = parseGoogleHtml(TMPDIR+"HTML");
 
       int i = 0; // download 2 images
-      while ((fileUrls.count())>0&&(i<2)) {
+      while ((fileUrls.count())>0 && (i<2)) {
          QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
          //QString filrExt = ;
          deleteFile(fileName);

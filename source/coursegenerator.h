@@ -41,8 +41,8 @@ signals:
 private:
    static bool DomDoucumentToFile (const QDomDocument &document, const QString &path);
    static bool DomDoucumentFromFile (const QString &path, QDomDocument *document);
-   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, int voiceIndexA, int voiceIndexQ, bool withImages);
-   static QDomDocument createCourseItemDoc (QString chapter, QString title, QString question, QString answers, int ID, bool bMode = false, bool withGraphic = false);
+   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, int voiceIndexA, int voiceIndexQ, bool graphics);
+   static QDomDocument createCourseItemDoc (QString chapterTitle, QString instruction, QString question, QString answers, int id, bool voiceA, bool voiceQ, bool graphics);
 
    QDomNode getNode (QDomDocument &doc, QDomNode &rootElement, const QString &nodeName, const QString &type, int nodeID);
    bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);

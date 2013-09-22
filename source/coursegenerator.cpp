@@ -105,7 +105,7 @@ bool CourseGenerator::buildTopic(const QString &courseName, const QString &topic
       getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "pres", itemId);
 
       generateCourseElement2(topicName, m_courseTemplate.options.instruction, questions[i], answers[i], courseDocumentDir
-                            , itemId, voiceIndexA, voiceIndexQ, false);
+                            , itemId, voiceIndexA, voiceIndexQ, m_courseTemplate.options.graphics);
 
 /*
       generateCourseElement(courseId, questions[i], answers[i]
@@ -192,11 +192,11 @@ bool CourseGenerator::generateCourseElement2
       int id,
       int voiceIndexA,
       int voiceIndexQ,
-      bool withImages
+      bool graphics
       )
 {
-   QDomDocument docItem = createCourseItemDoc (chapterName, instruction
-                                           , getTextToPrint(question), getTextToPrint(answer), id);
+   QDomDocument docItem =  createCourseItemDoc (chapterName, instruction, getTextToPrint(question), getTextToPrint(answer)
+                                                , id, voiceIndexA != -1, voiceIndexQ != -1, graphics);
    DomDoucumentToFile(docItem, courseFileDirectory+"\\"+getFileName(id));
    return true;
 }
@@ -415,43 +415,111 @@ bool CourseGenerator::checkIfNewAnswers(const QString &filePath, const QString &
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QDomDocument CourseGenerator::createCourseItemDoc (QString chapter, QString title, QString question, QString answer, int ID, bool bMode, bool withGraphic)
+QDomDocument CourseGenerator::createCourseItemDoc
+(
+      QString chapterTitle,
+      QString instruction,
+      QString question,
+      QString answer,
+      int id,
+      bool voiceA,
+      bool voiceQ,
+      bool graphics
+      )
 {
-
-   QString graphics = !withGraphic ? "" :
-                                     "<br/><br/><table width=_100%_ cellspacing=_0_ cellpadding=_0_ border=_0_>"
-                                     "<tr><td align=_center_>"
-                                     "<gfx space=_1_ width=_320_ scale-base=_900_ height=_320_ file=_m_ auto-play=_false_/>"
-                                     "</td><td align=_center_>"
-                                     "<gfx space=_1_ width=_320_ scale-base=_900_ height=_320_ file=_n_ auto-play=_false_/>"
-                                     "</td></tr></table>";
-
-   QString audioQuestion = "<question-audio>true</question-audio>";
-   QString audioAnswer = "<answer-audio>true</answer-audio>";
-
-
-   QString item =
-         "<item xmlns=_http://www.supermemo.net/2006/smux_>"
-         "<chapter-title>%1</chapter-title>"
-         "<modified>%2</modified>"
-         "<template-id>1</template-id>"
-         "<lesson-title>%3</lesson-title>"
-         "<question-title>%4</question-title>"
-         "<question>%5<spellpad correct=%6/>"
-         "%7"
-         "</question>"
-         "%8"
-         "%9"
-         "</item>";
-
-
-   item = item.arg(chapter, QDate::currentDate().toString(), QString::number(ID, 10),  title
-         , question, answer, graphics, audioQuestion, audioAnswer);
-   item.replace('_', '\"');
-
    QDomDocument doc;
-   if (!doc.setContent(item))
-      return doc;
+   QDomElement rootElement = doc.createElement("item");
+   rootElement.setAttribute("xmlns", "http://www.supermemo.net/2006/smux");
+   doc.appendChild(rootElement);
+
+   QDomElement tmpElement0 = doc.createElement("chapter-title");
+   tmpElement0.appendChild(doc.createTextNode(chapterTitle));
+   rootElement.appendChild(tmpElement0);
+
+   QDomElement tmpElement1 = doc.createElement("modified");
+   QDate x = QDate::currentDate();
+   tmpElement1.appendChild(doc.createTextNode(x.toString("yyyy-MM-dd")));
+   rootElement.appendChild(tmpElement1);
+
+   QDomElement tmpElement2 = doc.createElement("template-id");
+   tmpElement2.appendChild(doc.createTextNode(QString::number(1)));
+   rootElement.appendChild(tmpElement2);
+
+   QDomElement tmpElement3 = doc.createElement("lesson-title");
+   tmpElement3.appendChild(doc.createTextNode(QString::number(id)));
+   rootElement.appendChild(tmpElement3);
+
+   QDomElement tmpElement4 = doc.createElement("question-title");
+   tmpElement4.appendChild(doc.createTextNode(instruction));
+   rootElement.appendChild(tmpElement4);
+
+   QDomElement tmpElement5 = doc.createElement("question");
+   tmpElement5.appendChild(doc.createTextNode(question+" - "));
+
+   QDomElement tmpElement6 = doc.createElement("spellpad");
+   tmpElement6.setAttribute("correct", answer);
+   tmpElement5.appendChild(tmpElement6);
+
+   if (graphics) {
+      // create table with images
+      tmpElement5.appendChild(doc.createElement("br"));
+      tmpElement5.appendChild(doc.createElement("br"));
+
+      QDomElement table = doc.createElement("table");
+      table.setAttribute("width", "100%");
+      table.setAttribute("border", "0");
+      table.setAttribute("cellpadding", "0");
+      table.setAttribute("cellspacing", "0");
+
+      QDomElement tr = doc.createElement("tr");
+
+      QDomElement td = doc.createElement("td");
+      td.setAttribute("align", "center");
+
+      QDomElement gfx = doc.createElement("gfx");
+      gfx.setAttribute("file", "m");
+      gfx.setAttribute("space", "1");
+      gfx.setAttribute("width" , QString::number(IMG_WIDTH));
+      gfx.setAttribute("height" , QString::number(IMG_HEIGHT));
+      gfx.setAttribute("scale-base" , QString::number(900));
+      gfx.setAttribute("auto-play" , "false");
+
+      td.appendChild(gfx);
+
+      tr.appendChild(td);
+
+      td = doc.createElement("td");
+      td.setAttribute("align", "center");
+
+      gfx = doc.createElement("gfx");
+      gfx.setAttribute("file", "n");
+      gfx.setAttribute("space", "1");
+      gfx.setAttribute("width" , QString::number(IMG_WIDTH));
+      gfx.setAttribute("height" , QString::number(IMG_HEIGHT));
+      gfx.setAttribute("scale-base" , QString::number(900));
+      gfx.setAttribute("auto-play" , "false");
+      td.appendChild(gfx);
+
+      tr.appendChild(td);
+      table.appendChild(tr);
+      tmpElement5.appendChild(table);
+   }
+
+
+   rootElement.appendChild(tmpElement5);
+
+   if (voiceQ) {
+      QDomElement tmpElement8 = doc.createElement("question-audio");
+      tmpElement8.appendChild(doc.createTextNode("true"));
+      rootElement.appendChild(tmpElement8);
+   }
+
+   if (voiceA) {
+      QDomElement tmpElement7 = doc.createElement("answer-audio");
+      tmpElement7.appendChild(doc.createTextNode("true"));
+      rootElement.appendChild(tmpElement7);
+   }
+
    return doc;
 }
 

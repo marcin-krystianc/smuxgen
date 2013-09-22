@@ -160,7 +160,6 @@ bool CourseGenerator::buildTopic
    if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
       return false;
 
-   std::set<int> topicElementsIds;
 
    int topicId;
    if (!m_db.addItem(topicName, courseId, 0, &topicId))
@@ -168,8 +167,11 @@ bool CourseGenerator::buildTopic
 
    QDomElement rootElement = courseDoc.documentElement();
    QDomNode topicNode = getNode (courseDoc, rootElement, topicName, "pres", topicId);
-   // topicNode.clear();
+   while (topicNode.hasChildNodes()) {
+      topicNode.removeChild(topicNode.lastChild());
+   }
 
+   std::set<int> topicElementsIds;
    for (size_t i = 0; i < questions.size(); ++i) {
 
       if (m_abortProces)
@@ -219,6 +221,7 @@ bool CourseGenerator::buildTopic
       }
    }
 
+   doDelete(courseId, topicId, courseDocumentDir, topicElementsIds);
    DomDoucumentToFile(courseDoc, courseDocumentPath);
    return true;
 }
@@ -271,7 +274,13 @@ bool CourseGenerator::generateCourseElement2
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::doDelete (int courseId, int parentId, const QString &courseFileDirectory, const std::set<int> &validIds)
+bool CourseGenerator::doDelete
+(
+      int courseId,
+      int parentId,
+      const QString &courseFileDirectory,
+      const std::set<int> &validIds
+      )
 {
    std::set<int> alIds;
    if (!m_db.getItems(courseId, parentId, &alIds))
@@ -286,6 +295,7 @@ bool CourseGenerator::doDelete (int courseId, int parentId, const QString &cours
 
    QString mediaDir = courseFileDirectory + "\\media\\";
    for (std::set<int>::iterator i=invalidIds.begin(); i!=invalidIds.end(); ++i) {
+      trace(QString("Deleteing: ") + QString::number(*i), traceLevel2);
       deleteFile(courseFileDirectory+"\\"+getFileName(*i));
       deleteFile(mediaDir+getMediaFileName(*i)+"a.mp3");
       deleteFile(mediaDir+getMediaFileName(*i)+"q.mp3");

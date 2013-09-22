@@ -37,25 +37,28 @@ signals:
    void progressSignal (const QString&);
 
 private:
-   volatile bool m_abortProces;
-   SuperMemoSQL m_db;
-   CourseTemplate m_courseTemplate;
-   bool m_isFailed;
-   bool m_rebuild;
-
-   void trace (const QString &text, int flags = traceLevel1);
-   QDomNode getNode (QDomNode &rootElement, QString nodeName, QDomDocument &doc, QString courseFileDirectory, QString type, int retID);
+   QDomNode getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &courseFileDirectory, const QString &type, int nodeID);
    void setDelete (QDomNode &topicNode);
    bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
    bool generateCourseElement(int courseIDSQL, const QString &question, const QString &answer, const QString &topicName
                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
-   int writeDomDoucumentToFile (QDomDocument &document, QString path);
-   QDomDocument createCourseItem (int templateId, QString chapter);
+   bool writeDomDoucumentToFile (const QDomDocument &document, const QString &path);
+   QDomDocument createCourseItem (int templateId, const QString &chapter);
    bool checkIfNewAnswers(const QString &fileName, const QString &answers);
    QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
+   static void trace (const QString &text, int flags = traceLevel1);
+
+   CourseTemplate m_courseTemplate;
+   SuperMemoSQL m_db;
+   volatile bool m_abortProces;
+   bool m_isFailed;
+   bool m_rebuild;
 
 protected:
    void run();
+
+private:
+
 };
 
 #endif // CCOURSEGENERATOR_H

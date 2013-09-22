@@ -16,7 +16,7 @@ QStringList getVoiceEngines()
    QProcess myProcess;
    QStringList arguments;
    arguments.append("-list");
-   myProcess.start("sapi2wav.exe", arguments );
+   myProcess.start("sapi2wav.exe", arguments);
    if (!myProcess.waitForStarted())
       return QStringList();
 

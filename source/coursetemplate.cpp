@@ -70,7 +70,7 @@ CourseTemplate CourseTemplate::importQA(const QString &fileName)
    }
 
    QTextStream inputFileStream;
-   inputFileStream.setDevice( &file );
+   inputFileStream.setDevice(&file);
    inputFileStream.setCodec("UTF-8");
 
    bool q(false);
@@ -123,7 +123,7 @@ bool CourseTemplate::exportQA (const QString &fileName, const CourseTemplate &co
    }
 
    QTextStream outputFileStream;
-   outputFileStream.setDevice( &file );
+   outputFileStream.setDevice(&file);
    outputFileStream.setCodec("UTF-8");
 
    for (int i = 0; i<courseTemplate.content.count(); ++i) {

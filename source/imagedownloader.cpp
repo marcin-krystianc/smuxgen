@@ -61,7 +61,7 @@ void ImageDownloadHelper::run()
 
    trace(QString("getImage.bat ")+arguments.join(" "), traceLevel3);
 
-   myProcess.start("getImage.bat", arguments );
+   myProcess.start("getImage.bat", arguments);
    if (!myProcess.waitForStarted())
       trace(QString("Error.waitForStarted() :getImage.bat ")+arguments.join(" "), traceError);
    myProcess.waitForFinished(timeOut);
@@ -162,7 +162,7 @@ void ImageDownloader::run ()
       arguments.append(getKeyWord(m_keyWords));
       arguments.append(gFileName);
 
-      myProcess.start("getGoogleHtml.bat", arguments );
+      myProcess.start("getGoogleHtml.bat", arguments);
       if (!myProcess.waitForStarted())
          trace(QString("Error.waitForStarted :getGoogleHtml.bat ")+arguments.join(" "), traceError);
       myProcess.waitForFinished(timeOut);

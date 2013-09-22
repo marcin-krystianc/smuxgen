@@ -32,7 +32,7 @@ QStringList parseGoogleHtml (const QString &fileName)
       return retList;
    }
 
-   inputFileStream.setDevice( &inputFile );
+   inputFileStream.setDevice(&inputFile);
    inputFileStream.setCodec("UTF-8");
    html = inputFileStream.readAll();
 
@@ -101,7 +101,7 @@ QString getKeyWord (const QString &input)
 
    QStringList retList;
 
-   // add keywords defined by user ( [keyword] )
+   // add keywords defined by user ([keyword])
    QStringList tmpList = getAllBetween(input, "[", "]");
    QStringList special;
    special<<"("<<")"<<"["<<"]"<<"{"<<"}";

@@ -156,14 +156,14 @@ void MainWindow::createToolBars()
 void MainWindow::createDockWindows()
 {
    m_dockOptionsPage = new QDockWidget(tr("Options"), this);
-   m_dockOptionsPage->setAllowedAreas( Qt::LeftDockWidgetArea );
+   m_dockOptionsPage->setAllowedAreas(Qt::LeftDockWidgetArea);
    addDockWidget(Qt::LeftDockWidgetArea, m_dockOptionsPage);
    m_optionsPage = new OptionsPage(m_dockOptionsPage);
    m_dockOptionsPage->setWidget(m_optionsPage);
    m_viewMenu->addAction(m_dockOptionsPage->toggleViewAction());
 
    m_dockContentPage = new QDockWidget(tr("Word list"), this);
-   m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea );
+   m_dockContentPage->setAllowedAreas(Qt::RightDockWidgetArea);
    addDockWidget(Qt::RightDockWidgetArea, m_dockContentPage);
    m_contentPage = new ContentPage(m_dockContentPage);
    m_dockContentPage->setWidget(m_contentPage);
@@ -184,9 +184,9 @@ void MainWindow::createDockWindows()
    m_dockCourseBrowser->setWidget(m_imageWidget);
    m_dockCourseBrowser->hide();
 
-   connect( m_dockCourseBrowser , SIGNAL(visibilityChanged(bool )), this, SLOT(courseBrowserVisibleSlot(bool)));
+   connect(m_dockCourseBrowser , SIGNAL(visibilityChanged(bool)), this, SLOT(courseBrowserVisibleSlot(bool)));
    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), m_consolePage , SLOT(traceSlot(const QString&, const int&)));
-   connect( m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
+   connect(m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 }
 
 /////////////////////////////////////////////////////////////////////////////

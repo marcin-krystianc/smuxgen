@@ -34,7 +34,7 @@ int CodeEditor::lineNumberAreaWidth()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CodeEditor::updateLineNumberAreaWidth(int )
+void CodeEditor::updateLineNumberAreaWidth(int)
 {
    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }

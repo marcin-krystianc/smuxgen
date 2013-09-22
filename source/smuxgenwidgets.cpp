@@ -147,12 +147,12 @@ OptionsPage::OptionsPage(QWidget *parent)
    m_mediaObject = new Phonon::MediaObject (this);
 
    connect(fileChooseButton, SIGNAL(clicked()) , this , SLOT(fileButtonTriggered()));
-   connect(m_fileEdit , SIGNAL(textChanged(const QString & )) , this , SLOT(fileEditChanged(const QString &)));
+   connect(m_fileEdit , SIGNAL(textChanged(const QString &)) , this , SLOT(fileEditChanged(const QString &)));
    connect(m_voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
    connect(m_voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
 
-   connect(m_oVoiceCheckBoxQ , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedQ(int)));
-   connect(m_oVoiceCheckBoxA , SIGNAL(stateChanged (int )) , this , SLOT(voiceCheckBoxChangedA(int)));
+   connect(m_oVoiceCheckBoxQ , SIGNAL(stateChanged (int)) , this , SLOT(voiceCheckBoxChangedQ(int)));
+   connect(m_oVoiceCheckBoxA , SIGNAL(stateChanged (int)) , this , SLOT(voiceCheckBoxChangedA(int)));
 
    connect(m_mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
 
@@ -258,7 +258,7 @@ void OptionsPage::voiceTestButtonTriggered ()
    trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
    QProcess myProcess;
 
-   myProcess.start("createMp3.bat", arguments );
+   myProcess.start("createMp3.bat", arguments);
    if (!myProcess.waitForStarted())
    {
       trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
@@ -326,12 +326,12 @@ void OptionsPage::fileEditChanged(const QString &fileName)
    if (!m_superDb.open(fileName))
    {
       QPalette palette = m_fileEdit->palette();
-      palette.setColor(QPalette::Text, Qt::red ); // fg
-      m_fileEdit->setPalette( palette );
+      palette.setColor(QPalette::Text, Qt::red); // fg
+      m_fileEdit->setPalette(palette);
       return;
    }
 
-   m_fileEdit->setPalette( m_subnameEdit->palette() ); // fileEdit to default colour
+   m_fileEdit->setPalette(m_subnameEdit->palette()); // fileEdit to default colour
 
    QString oldText = m_courseCombo->currentText();
 
@@ -392,8 +392,8 @@ ConsolePage::ConsolePage(QWidget *parent)
 
    m_consoleText->setReadOnly(true);
 
-   connect(m_traceLevel2 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
-   connect(m_traceLevel3 , SIGNAL(stateChanged (int )) , this , SLOT(traceLevelSlot()));
+   connect(m_traceLevel2 , SIGNAL(stateChanged (int)) , this , SLOT(traceLevelSlot()));
+   connect(m_traceLevel3 , SIGNAL(stateChanged (int)) , this , SLOT(traceLevelSlot()));
 }
 /////////////////////////////////////////////////////////////////////////////
 void ConsolePage::traceLevelSlot ()
@@ -438,14 +438,14 @@ ContentPage::ContentPage(QWidget *parent)
    m_findToolbar->layout()->setMargin(0);
    //contentTextEdit->setAcceptRichText(false);
    QVBoxLayout *mainLayout = new QVBoxLayout;
-   mainLayout->addWidget( m_findToolbar);
+   mainLayout->addWidget(m_findToolbar);
    mainLayout->addWidget(n_contentTextEdit);
    setLayout(mainLayout);
 
    connect (n_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
 
-   connect (m_findToolbar , SIGNAL(findNext(const QString& )) , this, SLOT(findNext(const QString& )));
-   connect (m_findToolbar , SIGNAL(findPrev(const QString& )) , this, SLOT(findPrev(const QString& )));
+   connect (m_findToolbar , SIGNAL(findNext(const QString&)) , this, SLOT(findNext(const QString&)));
+   connect (m_findToolbar , SIGNAL(findPrev(const QString&)) , this, SLOT(findPrev(const QString&)));
 
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -470,7 +470,7 @@ void ContentPage::contentChangedSlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::keyPressEvent ( QKeyEvent * event )
+void ContentPage::keyPressEvent (QKeyEvent * event)
 {
    if ((event->modifiers()&Qt::ControlModifier) &&
        (event->key() == Qt::Key_F))
@@ -483,13 +483,13 @@ void ContentPage::keyPressEvent ( QKeyEvent * event )
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::findNext(const QString &txt )
+void ContentPage::findNext(const QString &txt)
 {
    n_contentTextEdit->find(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::findPrev(const QString &txt )
+void ContentPage::findPrev(const QString &txt)
 {
    n_contentTextEdit->find(txt, QTextDocument::FindBackward);
 }

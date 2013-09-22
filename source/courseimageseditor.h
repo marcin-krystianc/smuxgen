@@ -44,7 +44,7 @@ public:
 
 public slots:
    void addPieceSlot (const QPixmap &, const QString &hint = "");
-   void setIconSizeSlot (int size );
+   void setIconSizeSlot (int size);
 
 private:
    QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
@@ -131,7 +131,7 @@ private:
    ImageButtonWidget *imageButtonWidget[2][2];
 
 protected:
-   void resizeEvent ( QResizeEvent * event ) ;
+   void resizeEvent (QResizeEvent * event) ;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ private:
    QListWidget *m_listWidget;
 
 private slots:
-   void itemActivatedSlot ( QListWidgetItem * item );
+   void itemActivatedSlot (QListWidgetItem * item);
 };
 
 /////////////////////////////////////////////////////////////////////////////

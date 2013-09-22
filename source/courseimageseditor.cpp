@@ -40,7 +40,7 @@ CourseImageEditor::CourseImageEditor(QWidget *parent)
 
    splitter->setChildrenCollapsible(false);
    splitter->addWidget(tmpWidget);
-   splitter->addWidget(m_imageTargetWidget );
+   splitter->addWidget(m_imageTargetWidget);
    splitter->addWidget(m_imageSearch);
    splitter->setHandleWidth(10);
    QHBoxLayout *l0 = new QHBoxLayout;
@@ -48,10 +48,10 @@ CourseImageEditor::CourseImageEditor(QWidget *parent)
 
    setLayout(l0);
 
-   connect( m_readyCourseElementList , SIGNAL(elementSelectedImgSignal(const QStringList&)),
+   connect(m_readyCourseElementList , SIGNAL(elementSelectedImgSignal(const QStringList&)),
             this , SLOT(elementSelectedImgSlot (const QStringList&)));
 
-   connect( m_readyCourseElementList , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
+   connect(m_readyCourseElementList , SIGNAL(elementSelectedMP3Signal(const QStringList&)),
             m_mp3TargetWidget , SLOT(elementSelectedMp3Slot(const QStringList&)));
 
 }
@@ -102,13 +102,13 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
       if (line.length() == 0) continue;
       QStringList list1 = line.split(":");
 
-      if (list1.count()< 2 )
+      if (list1.count()< 2)
       {
          trace(QString("cCourseImageEditor::workWith Input error: ")+line, traceWarning);
          continue;
       }
 
-      if (!m_database.getItemId( getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
+      if (!m_database.getItemId(getTextToPrint(list1.at(0)), courseID, topicIDA, &id1))
          continue;
 
       QString f1m = mediaDirectoryName+getMediaFileName(id1)+"m.jpg";
@@ -173,7 +173,7 @@ void CourseImageEditor::elementSelectedImgSlot (const QStringList &imgData)
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-ImageList::ImageList(QWidget *parent, int maxCount )
+ImageList::ImageList(QWidget *parent, int maxCount)
    : QListWidget (parent)
 {
    setViewMode(QListView::IconMode);
@@ -314,8 +314,8 @@ ImageSearch::ImageSearch(QWidget *parent)
    m_timerL->setSingleShot(true);
    m_timerR->setSingleShot(true);
 
-   connect(m_leftEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedL(const QString&)));
-   connect(m_rightEdit , SIGNAL(textChanged(const QString& )) , this , SLOT(newKeywordsChangedR(const QString&)));
+   connect(m_leftEdit , SIGNAL(textChanged(const QString&)) , this , SLOT(newKeywordsChangedL(const QString&)));
+   connect(m_rightEdit , SIGNAL(textChanged(const QString&)) , this , SLOT(newKeywordsChangedR(const QString&)));
    connect(m_timerL , SIGNAL(timeout()) , this, SLOT(newKeywordsL()));
    connect(m_timerR , SIGNAL(timeout()) , this, SLOT(newKeywordsR()));
 
@@ -568,7 +568,7 @@ ReadyCourseElementList::ReadyCourseElementList(QWidget *parent)
 
    setMinimumWidth(200);
 
-   connect(m_listWidget , SIGNAL(currentItemChanged( QListWidgetItem*, QListWidgetItem*)) , this, SLOT(itemActivatedSlot( QListWidgetItem*)));
+   connect(m_listWidget , SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)) , this, SLOT(itemActivatedSlot(QListWidgetItem*)));
 
 }
 
@@ -587,7 +587,7 @@ void ReadyCourseElementList::clear ()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ReadyCourseElementList::itemActivatedSlot ( QListWidgetItem * item )
+void ReadyCourseElementList::itemActivatedSlot (QListWidgetItem * item)
 {
    if (!item)
       return;

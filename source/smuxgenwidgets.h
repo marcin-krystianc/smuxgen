@@ -143,7 +143,7 @@ private slots:
    void findPrev(const QString &txt);
 
    void contentChangedSlot();
-   void keyPressEvent ( QKeyEvent * event );
+   void keyPressEvent (QKeyEvent * event);
 };
 
 

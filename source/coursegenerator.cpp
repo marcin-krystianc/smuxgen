@@ -191,13 +191,44 @@ bool CourseGenerator::generateCourseElement2
       const QString &courseFileDirectory,
       int id,
       int voiceIndexA,
+      int voiceGainA,
+      double voiceTrimA,
       int voiceIndexQ,
+      int voiceGainQ,
+      double voiceTrimQ,
       bool graphics
       )
 {
    QDomDocument docItem =  createCourseItemDoc (chapterName, instruction, getTextToPrint(question), getTextToPrint(answer)
                                                 , id, voiceIndexA != -1, voiceIndexQ != -1, graphics);
    DomDoucumentToFile(docItem, courseFileDirectory+"\\"+getFileName(id));
+
+   QString mediaDir = courseFileDirectory+"\\media";
+
+   if (voiceIndexQ != -1) {
+      QString filePath = mediaDir+"\\"+getMediaFileName(ID)+"q.mp3";
+      generateMp3(filePath, getTranscript(QString(question).replace("|", " ")), voiceIndexQ, voiceGainQ, voiceTrimQ);
+   }
+
+   if (voiceIndexA != -1) {
+      QString filePath = mediaDir+"\\"+getMediaFileName(ID)+"a.mp3";
+      generateMp3(filePath, getTranscript(QString(answer).replace("|", " ")), voiceIndexA, voiceGainA, voiceTrimA);
+   }
+
+   arguments.append(!bMode ? getTranscript(QString(answer).replace("|", " ")):getTranscript(QString(question).replace("|", " ")));
+   arguments.append(QString::number(voiceIndexA));
+   arguments.append(QString::number(m_courseTemplate.options.voiceTrimA));
+   arguments.append(QString::number(m_courseTemplate.options.voiceGainA));
+
+   trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
+
+   myProcess.start("createMp3.bat", arguments);
+   if (!myProcess.waitForStarted())
+      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
+   myProcess.waitForFinished(timeOut);
+   if (myProcess.exitCode())
+      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
+
    return true;
 }
 
@@ -521,6 +552,33 @@ QDomDocument CourseGenerator::createCourseItemDoc
    }
 
    return doc;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+static void CourseGenerator::generateMp3
+(
+      const QString &filePath,
+      const QString &mp3Text,
+      int voiceEngineIndex,
+      int voiceGain,
+      double voiceTrim
+      )
+{
+   QStringList arguments;
+   arguments.append(filePath);
+   arguments.append(mp3Text);
+   arguments.append(QString::number(voiceEngineIndex));
+   arguments.append(QString::number(voiceTrim));
+   arguments.append(QString::number(voiceGain));
+
+   trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
+
+   myProcess.start("createMp3.bat", arguments);
+   if (!myProcess.waitForStarted())
+      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
+   myProcess.waitForFinished(timeOut);
+   if (myProcess.exitCode())
+      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
 }
 
 /////////////////////////////////////////////////////////////////////////////

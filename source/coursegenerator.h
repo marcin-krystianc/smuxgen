@@ -41,8 +41,12 @@ signals:
 private:
    static bool DomDoucumentToFile (const QDomDocument &document, const QString &path);
    static bool DomDoucumentFromFile (const QString &path, QDomDocument *document);
-   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, int voiceIndexA, int voiceIndexQ, bool graphics);
+   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, int voiceIndexA, int voiceGainA, double voiceTrimA, int voiceIndexQ, int voiceGainQ, double voiceTrimQ, bool graphics);
    static QDomDocument createCourseItemDoc (QString chapterTitle, QString instruction, QString question, QString answers, int id, bool voiceA, bool voiceQ, bool graphics);
+   static bool generateMp3(const QString &filePath, const QString &mp3Text);
+   static bool generateGraphics(const QString &filePath, const QString &mp3Text);
+
+   static void trace (const QString &text, int flags = traceLevel1);
 
    QDomNode getNode (QDomDocument &doc, QDomNode &rootElement, const QString &nodeName, const QString &type, int nodeID);
    bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
@@ -51,7 +55,6 @@ private:
    bool buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, int voiceIndexA, int voiceIndexQ);
 
    bool checkIfNewAnswers(const QString &filePath, const QString &answers);
-   static void trace (const QString &text, int flags = traceLevel1);
 
    CourseTemplate m_courseTemplate;
    SuperMemoSQL m_db;

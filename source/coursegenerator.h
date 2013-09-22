@@ -48,7 +48,7 @@ private:
                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
    bool buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, int voiceIndexA, int voiceIndexQ);
 
-   bool checkIfNewAnswers(const QString &fileName, const QString &answers);
+   bool checkIfNewAnswers(const QString &filePath, const QString &answers);
    QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
    static void trace (const QString &text, int flags = traceLevel1);
 

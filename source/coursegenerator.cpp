@@ -178,19 +178,19 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
 
    // create xml course file
    if (foreceRebuild ||
-       checkIfNewAnswers(courseFileDirectory+getFileName(ID), answer)) {
+       checkIfNewAnswers(courseFileDirectory+"\\"+getFileName(ID), answer)) {
       forceMedia = true;
       QDomDocument docItem = createCourseItem(1, topicName, m_courseTemplate.options.instruction, getTextToPrint(question), getTextToPrint(answer), ID, bMode);
-      DomDoucumentToFile(docItem, courseFileDirectory+getFileName(ID));
+      DomDoucumentToFile(docItem, courseFileDirectory+"\\"+getFileName(ID));
    }
 
    // create mp3
    QString mp3Q = bMode ? "a" : "q";
    if (m_courseTemplate.options.voiceQ &&
        (forceMedia ||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3")))) {
+        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+mp3Q+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
-      arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
+      arguments.append(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+mp3Q);
       arguments.append(bMode ? getTranscript(QString(answer).replace("|", " ")):getTranscript(QString(question).replace("|", " ")));
       arguments.append(QString::number(voiceIndexQ));
       arguments.append(QString::number(m_courseTemplate.options.voiceTrimQ));
@@ -209,9 +209,9 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    QString mp3A = bMode ? "q" : "a";
    if (m_courseTemplate.options.voiceA &&
        ((forceMedia) ||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A+".mp3")))) {
+        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+mp3A+".mp3")))) {
       QStringList arguments; // filename, text, trim, gain
-      arguments.append(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+mp3A);
+      arguments.append(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+mp3A);
       arguments.append(!bMode ? getTranscript(QString(answer).replace("|", " ")):getTranscript(QString(question).replace("|", " ")));
       arguments.append(QString::number(voiceIndexA));
       arguments.append(QString::number(m_courseTemplate.options.voiceTrimA));
@@ -230,8 +230,8 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
    // create jpg
    if (m_courseTemplate.options.graphics &&
        ((forceMedia) ||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg")) ||
-        (!checkIsFileOk(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg")))) {
+        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+"m.jpg")) ||
+        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+"n.jpg")))) {
       deleteFile(TMPDIR+"HTML");
       QStringList arguments;
 
@@ -249,7 +249,7 @@ bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &ques
 
       int i = 0; // download 2 images
       while ((fileUrls.count())>0 && (i<2)) {
-         QString fileName = courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
+         QString fileName = courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
          //QString filrExt = ;
          deleteFile(fileName);
          arguments.clear();
@@ -345,13 +345,12 @@ bool CourseGenerator::DomDoucumentFromFile(const QString &path, QDomDocument *do
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::checkIfNewAnswers(const QString &fileName, const QString &answer)
+bool CourseGenerator::checkIfNewAnswers(const QString &filePath, const QString &answer)
 {
    QDomDocument doc("");
-   QFile docFile(fileName);
+   QFile docFile(filePath);
    if (!doc.setContent(&docFile)) {
-      docFile.close();
-      trace(QString("cCourseGenerator::checkIfNewAnswers error:")+fileName, traceError);
+      trace(QString("cCourseGenerator::checkIfNewAnswers file not exist:")+filePath, traceLevel1);
       return true;
    }
 
@@ -410,12 +409,12 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
    QDomElement tmpElement6 = doc.createElement("spellpad");
    tmpElement6.setAttribute("correct", answers);
-   tmpElement6.appendChild(tmpElement6);
+   tmpElement5.appendChild(tmpElement6);
 
    if (m_courseTemplate.options.graphics) {
       // create table with images
-      tmpElement6.appendChild(doc.createElement("br"));
-      tmpElement6.appendChild(doc.createElement("br"));
+      tmpElement5.appendChild(doc.createElement("br"));
+      tmpElement5.appendChild(doc.createElement("br"));
 
       QDomElement table = doc.createElement("table");
       table.setAttribute("width", "100%");
@@ -454,12 +453,11 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
 
       tr.appendChild(td);
       table.appendChild(tr);
-      tmpElement6.appendChild(table);
-
+      tmpElement5.appendChild(table);
    }
 
 
-   rootElement.appendChild(tmpElement6);
+   rootElement.appendChild(tmpElement5);
 
    if (m_courseTemplate.options.voiceA) {
       QDomElement tmpElement7 = doc.createElement(bMode ? "question-audio" : "answer-audio");
@@ -472,6 +470,7 @@ QDomDocument CourseGenerator::createCourseItem (int templateId, QString chapter,
       tmpElement8.appendChild(doc.createTextNode("true"));
       rootElement.appendChild(tmpElement8);
    }
+
    return doc;
 }
 

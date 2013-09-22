@@ -41,15 +41,16 @@ signals:
 private:
    static bool DomDoucumentToFile (const QDomDocument &document, const QString &path);
    static bool DomDoucumentFromFile (const QString &path, QDomDocument *document);
+   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, int voiceIndexA, int voiceIndexQ, bool withImages);
+   static QDomDocument createCourseItemDoc (QString chapter, QString title, QString question, QString answers, int ID, bool bMode = false, bool withGraphic = false);
 
-   QDomNode getNode (QDomNode &rootElement, const QString &nodeName, QDomDocument &doc, const QString &type, int nodeID);
+   QDomNode getNode (QDomDocument &doc, QDomNode &rootElement, const QString &nodeName, const QString &type, int nodeID);
    bool doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory);
    bool generateCourseElement(int courseIDSQL, const QString &question, const QString &answer, const QString &topicName
                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
    bool buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, int voiceIndexA, int voiceIndexQ);
 
    bool checkIfNewAnswers(const QString &filePath, const QString &answers);
-   QDomDocument createCourseItem (int templateId, QString chapter, QString title, QString question, QString answers, int ID, bool bMode);
    static void trace (const QString &text, int flags = traceLevel1);
 
    CourseTemplate m_courseTemplate;

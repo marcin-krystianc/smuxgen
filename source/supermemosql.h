@@ -25,7 +25,6 @@ public:
    bool getItems (int courseId, int parentItemId, std::set<int> *itemsId);
    bool getItemId (const QString &itemName, int courseId, int parentItemId, int *retID);
    bool addItem (const QString &itemName, int courseId, int parentItemId, int *itemId);
-   bool deleteNotValidItems (int courseId, int parentItemId, const std::set<int> &validItemsId);
    bool deleteItem (int courseId, int parentItemId, int itemId);
 
 private:

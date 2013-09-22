@@ -61,98 +61,6 @@ void CourseGenerator::build (const CourseTemplate &courseTemplate, bool rebuild)
    start();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::buildTopic
-(
-      const QString &courseName,
-      const QString &topicName,
-      const std::vector<QString> &questions,
-      const std::vector<QString> &answers,
-      const QString &voiceNameA,
-      int voiceGainA,
-      double voiceTrimA,
-      const QString &voiceNameQ,
-      int voiceGainQ,
-      double voiceTrimQ
-      )
-{
-   int courseId;
-   QString courseMasterDir;
-   if (!m_db.getCourseDetails (courseName, &courseId, &courseMasterDir))
-      return false;
-
-   QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
-   QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
-
-   // create media dir if doesn't exist
-   QDir(courseDocumentDir).mkdir("media");
-
-   // get root document
-   QDomDocument courseDoc("");
-   if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
-      return false;
-
-   std::set<int> topicElementsIds;
-
-   int topicId;
-   if (!m_db.addItem(topicName, courseId, 0, &topicId))
-      return true;
-
-   QDomElement rootElement = courseDoc.documentElement();
-   QDomNode topicNode = getNode (courseDoc, rootElement, topicName, "pres", topicId);
-   // topicNode.clear();
-
-   for (size_t i = 0; i < questions.size(); ++i) {
-
-      if (m_abortProces)
-         return false;
-
-      emit progressSignal(QString::number(i+1)+"/"+QString::number(questions.size())+" "+topicName+"@"+courseName+":"
-                          + questions[i]);
-
-      int itemId;
-      if (!m_db.addItem(getTextToPrint(questions[i]), courseId, topicId, &itemId))
-         return false;
-
-      getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "pres", itemId);
-
-      QString mediaDir = courseDocumentDir+"\\media\\";
-      bool generateCourseElement = m_rebuild;
-
-      if (checkIfNewAnswers(courseDocumentDir+"\\"+getFileName(itemId), answers[i]))
-         generateCourseElement = true;
-
-      if (m_courseTemplate.options.graphics) {
-         if (!checkIsFileOk(mediaDir+getMediaFileName(itemId)+"m.jpg") ||
-             !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"n.jpg")) {
-            generateCourseElement = true;
-         }
-      }
-
-      if (voiceNameQ != 0 &&
-          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"q.mp3")) {
-         generateCourseElement = true;
-      }
-
-      if (voiceNameA != 0 &&
-          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"a.mp3")) {
-         generateCourseElement = true;
-      }
-
-      if (generateCourseElement) {
-         generateCourseElement2(topicName, m_courseTemplate.options.instruction
-                                , questions[i], answers[i]
-                                , courseDocumentDir
-                                , itemId
-                                , voiceNameA, voiceGainA, voiceTrimA
-                                , voiceNameQ, voiceGainQ, voiceTrimQ
-                                , m_courseTemplate.options.graphics);
-      }
-   }
-
-   DomDoucumentToFile(courseDoc, courseDocumentPath);
-   return true;
-}
 
 /////////////////////////////////////////////////////////////////////////////
 void CourseGenerator::run ()
@@ -219,6 +127,102 @@ QDomNode CourseGenerator::getNode
 
    return rootElement.appendChild(newElement);
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+bool CourseGenerator::buildTopic
+(
+      const QString &courseName,
+      const QString &topicName,
+      const std::vector<QString> &questions,
+      const std::vector<QString> &answers,
+      const QString &voiceNameA,
+      int voiceGainA,
+      double voiceTrimA,
+      const QString &voiceNameQ,
+      int voiceGainQ,
+      double voiceTrimQ
+      )
+{
+   int courseId;
+   QString courseMasterDir;
+   if (!m_db.getCourseDetails (courseName, &courseId, &courseMasterDir))
+      return false;
+
+   QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
+   QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
+
+   // create media dir if doesn't exist
+   QDir(courseDocumentDir).mkdir("media");
+
+   // get root document
+   QDomDocument courseDoc("");
+   if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
+      return false;
+
+   std::set<int> topicElementsIds;
+
+   int topicId;
+   if (!m_db.addItem(topicName, courseId, 0, &topicId))
+      return true;
+
+   QDomElement rootElement = courseDoc.documentElement();
+   QDomNode topicNode = getNode (courseDoc, rootElement, topicName, "pres", topicId);
+   // topicNode.clear();
+
+   for (size_t i = 0; i < questions.size(); ++i) {
+
+      if (m_abortProces)
+         return false;
+
+      emit progressSignal(QString::number(i+1)+"/"+QString::number(questions.size())+" "+topicName+"@"+courseName+":"
+                          + questions[i]);
+
+      int itemId;
+      if (!m_db.addItem(getTextToPrint(questions[i]), courseId, topicId, &itemId))
+         return false;
+      topicElementsIds.insert(itemId);
+
+      getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "pres", itemId);
+
+      QString mediaDir = courseDocumentDir+"\\media\\";
+      bool generateCourseElement = m_rebuild;
+
+      if (checkIfNewAnswers(courseDocumentDir+"\\"+getFileName(itemId), answers[i]))
+         generateCourseElement = true;
+
+      if (m_courseTemplate.options.graphics) {
+         if (!checkIsFileOk(mediaDir+getMediaFileName(itemId)+"m.jpg") ||
+             !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"n.jpg")) {
+            generateCourseElement = true;
+         }
+      }
+
+      if (voiceNameQ != 0 &&
+          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"q.mp3")) {
+         generateCourseElement = true;
+      }
+
+      if (voiceNameA != 0 &&
+          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"a.mp3")) {
+         generateCourseElement = true;
+      }
+
+      if (generateCourseElement) {
+         generateCourseElement2(topicName, m_courseTemplate.options.instruction
+                                , questions[i], answers[i]
+                                , courseDocumentDir
+                                , itemId
+                                , voiceNameA, voiceGainA, voiceTrimA
+                                , voiceNameQ, voiceGainQ, voiceTrimQ
+                                , m_courseTemplate.options.graphics);
+      }
+   }
+
+   DomDoucumentToFile(courseDoc, courseDocumentPath);
+   return true;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 bool CourseGenerator::generateCourseElement2
 (
@@ -244,7 +248,7 @@ bool CourseGenerator::generateCourseElement2
                                                 , id, voiceIndexA != 0, voiceIndexQ != 0, graphics);
    DomDoucumentToFile(docItem, courseFileDirectory+"\\"+getFileName(id));
 
-   QString mediaDir = courseFileDirectory+"\\media\\";
+   QString mediaDir = courseFileDirectory + "\\media\\";
 
    if (voiceIndexQ != 0) {
       QString filePath = mediaDir + getMediaFileName(id)+"q";
@@ -267,40 +271,28 @@ bool CourseGenerator::generateCourseElement2
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::doDelete (int courseIDSQL, int paretntIDSQL, QDomNode &docElement, QString courseFileDirectory)
+bool CourseGenerator::doDelete (int courseId, int parentId, const QString &courseFileDirectory, const std::set<int> &validIds)
 {
-   QDomNode n = docElement.firstChild();
-   std::set<int> validIds;
+   std::set<int> alIds;
+   if (!m_db.getItems(courseId, parentId, &alIds))
+      return false;
 
-   trace (QString("doDelete: id:")
-          + QString(" CourseId:")+QString::number(courseIDSQL)
-          + QString(" ParetntId:")+QString::number(paretntIDSQL)
-          , traceLevel2);
-
-   while(!n.isNull()) {
-      QDomElement e = n.toElement(); // try to convert the node to an element.
-      if(!e.isNull()) {
-         if (e.attribute("delete", "none") == "true") {
-            trace(QString("doDelete: id:")+e.attribute("id", "0")+QString(" name:")+e.attribute("name", ""), traceLevel2);
-            int ID = e.attribute("id", "0").toInt();
-            deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"a.mp3");
-            deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"q.mp3");
-            deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"m.jpg");
-            deleteFile(courseFileDirectory+"media"+QDir::separator()+getMediaFileName(ID)+"n.jpg");
-
-            QDomNode tmp = n;
-            n = n.nextSibling();
-            docElement.removeChild(tmp);
-            continue;
-         }
-         validIds.insert(e.attribute("id", "0").toInt());
-         trace(QString("validID:")+e.attribute("id", "0"), traceLevel2);
+   std::set<int> invalidIds;
+   for (std::set<int>::iterator i=alIds.begin(); i!=alIds.end(); ++i) {
+      if (validIds.find(*i) == validIds.end()) {
+         invalidIds.insert(*i);
       }
-      n = n.nextSibling();
    }
 
-   if (!m_db.deleteNotValidItems(courseIDSQL, paretntIDSQL, validIds))
-      return false;
+   QString mediaDir = courseFileDirectory + "\\media\\";
+   for (std::set<int>::iterator i=invalidIds.begin(); i!=invalidIds.end(); ++i) {
+      deleteFile(courseFileDirectory+"\\"+getFileName(*i));
+      deleteFile(mediaDir+getMediaFileName(*i)+"a.mp3");
+      deleteFile(mediaDir+getMediaFileName(*i)+"q.mp3");
+      deleteFile(mediaDir+getMediaFileName(*i)+"m.jpg");
+      deleteFile(mediaDir+getMediaFileName(*i)+"n.jpg");
+      m_db.deleteItem(courseId, parentId, *i);
+   }
 
    return true;
 }

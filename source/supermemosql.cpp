@@ -164,23 +164,6 @@ bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parent
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::deleteNotValidItems (int courseId, int parentItemId, const std::set<int> &validItemsId)
-{
-   std::set<int> itemsId;
-   if (!getItems(courseId, parentItemId, &itemsId))
-      return false;
-
-   for (std::set<int>::iterator i=itemsId.begin(); i!=itemsId.end(); ++i) {
-      if (validItemsId.find(*i) == validItemsId.end()) {
-         if (!deleteItem (courseId, parentItemId, *i))
-            return false;
-      }
-   }
-
-   return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
 bool SuperMemoSQL::getItems (int courseId, int parentItemId, std::set<int> *itemsId)
 {
    QSqlQuery query (m_database);

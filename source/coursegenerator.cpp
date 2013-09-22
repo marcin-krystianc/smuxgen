@@ -116,20 +116,38 @@ bool CourseGenerator::buildTopic
 
       getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "pres", itemId);
 
-      generateCourseElement2(topicName, m_courseTemplate.options.instruction
-                             , questions[i], answers[i]
-                             , courseDocumentDir
-                             , itemId
-                             , voiceNameA, voiceGainA, voiceTrimA
-                             , voiceNameQ, voiceGainQ, voiceTrimQ
-                             , m_courseTemplate.options.graphics);
+      QString mediaDir = courseDocumentDir+"\\media\\";
+      bool generateCourseElement = m_rebuild;
 
-/*
-      generateCourseElement(courseId, questions[i], answers[i]
-                            , topicName, topicNode, topicId, courseDoc, courseDocumentDir
-                            , false, voiceIndexA, voiceIndexQ, m_rebuild);
-                            */
+      if (checkIfNewAnswers(courseDocumentDir+"\\"+getFileName(itemId), answers[i]))
+         generateCourseElement = true;
 
+      if (m_courseTemplate.options.graphics) {
+         if (!checkIsFileOk(mediaDir+getMediaFileName(itemId)+"m.jpg") ||
+             !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"n.jpg")) {
+            generateCourseElement = true;
+         }
+      }
+
+      if (voiceNameQ != 0 &&
+          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"q.mp3")) {
+         generateCourseElement = true;
+      }
+
+      if (voiceNameA != 0 &&
+          !checkIsFileOk(mediaDir+getMediaFileName(itemId)+"a.mp3")) {
+         generateCourseElement = true;
+      }
+
+      if (generateCourseElement) {
+         generateCourseElement2(topicName, m_courseTemplate.options.instruction
+                                , questions[i], answers[i]
+                                , courseDocumentDir
+                                , itemId
+                                , voiceNameA, voiceGainA, voiceTrimA
+                                , voiceNameQ, voiceGainQ, voiceTrimQ
+                                , m_courseTemplate.options.graphics);
+      }
    }
 
    DomDoucumentToFile(courseDoc, courseDocumentPath);
@@ -226,89 +244,23 @@ bool CourseGenerator::generateCourseElement2
                                                 , id, voiceIndexA != 0, voiceIndexQ != 0, graphics);
    DomDoucumentToFile(docItem, courseFileDirectory+"\\"+getFileName(id));
 
-   QString mediaDir = courseFileDirectory+"\\media";
+   QString mediaDir = courseFileDirectory+"\\media\\";
 
    if (voiceIndexQ != 0) {
-      QString filePath = mediaDir+"\\"+getMediaFileName(id)+"q.mp3";
+      QString filePath = mediaDir + getMediaFileName(id)+"q";
       generateMp3(filePath, getTranscript(QString(question).replace("|", " ")), voiceIndexQ, voiceGainQ, voiceTrimQ);
    }
 
    if (voiceIndexA != 0) {
-      QString filePath = mediaDir+"\\"+getMediaFileName(id)+"a.mp3";
+      QString filePath = mediaDir + getMediaFileName(id)+"a";
       generateMp3(filePath, getTranscript(QString(answer).replace("|", " ")), voiceIndexA, voiceGainA, voiceTrimA);
    }
 
    if (graphics) {
       QStringList filePaths;
-      filePaths.append(mediaDir+"\\"+getMediaFileName(id)+"m.jpg");
-      filePaths.append(mediaDir+"\\"+getMediaFileName(id)+"n.jpg");
+      filePaths.append(mediaDir + getMediaFileName(id)+"m.jpg");
+      filePaths.append(mediaDir + getMediaFileName(id)+"n.jpg");
       generateGraphics(filePaths, question);
-   }
-
-   return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::generateCourseElement(int courseIDSQL, const QString &question, const QString &answer
-                                            , const QString &topicName, QDomNode &topicNode, int topicID
-                                            , QDomDocument &doc, const QString &courseFileDirectory, bool bMode
-                                            , int voiceIndexA, int voiceIndexQ, bool foreceRebuild)
-{
-   int ID = 0;
-   bool forceMedia = foreceRebuild;
-   const int timeOut = -1; // no timeout
-   QProcess myProcess;
-
-   if (!m_db.addItem(getTextToPrint(question), courseIDSQL, topicID, &ID))
-      return false;
-
-   // create jpg
-   if (m_courseTemplate.options.graphics &&
-       ((forceMedia) ||
-        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+"m.jpg")) ||
-        (!checkIsFileOk(courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+"n.jpg")))) {
-      deleteFile(TMPDIR+"HTML");
-      QStringList arguments;
-
-      arguments.append(getKeyWord(question));
-      arguments.append(TMPDIR+"HTML");
-
-      myProcess.start("getGoogleHtml.bat", arguments);
-      if (!myProcess.waitForStarted())
-         trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
-      myProcess.waitForFinished(timeOut);
-      if (myProcess.exitCode())
-         trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
-
-      QStringList fileUrls = parseGoogleHtml(TMPDIR+"HTML");
-
-      int i = 0; // download 2 images
-      while ((fileUrls.count())>0 && (i<2)) {
-         QString fileName = courseFileDirectory+"\\media"+QDir::separator()+getMediaFileName(ID)+('m'+i)+".jpg";
-         //QString filrExt = ;
-         deleteFile(fileName);
-         arguments.clear();
-         arguments.append(fileUrls.first()+QString(" "));
-         arguments.append(fileName+" ");
-
-         trace(QString("getImage.bat ")+arguments.join(" "), traceLevel1);
-
-         myProcess.start("getImage.bat", arguments);
-         if (!myProcess.waitForStarted())
-            trace(QString("Error:getImage.bat ")+arguments.join(" "), traceError);
-         myProcess.waitForFinished(timeOut);
-         if (myProcess.exitCode())
-            trace(QString("Error:getImage.bat ")+arguments.join(" "), traceError);
-
-         if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
-            trace(QString("Error:scalePicture ")+fileName, traceError);
-            deleteFile(fileName);
-         }
-
-         if (checkIsFileOk(fileName))
-            i++;
-         fileUrls.removeFirst();
-      }
    }
 
    return true;
@@ -593,6 +545,8 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
          i++;
       fileUrls.removeFirst();
    }
+
+   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////

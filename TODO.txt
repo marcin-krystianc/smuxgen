@@ -1,2 +1,3 @@
 - use exceptions to handle exceptional situations
 - killing thread
+- graphic generation

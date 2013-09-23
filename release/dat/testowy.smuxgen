@@ -1,0 +1,20 @@
+-course "testowy" -database "C:/Documents and Settings/Ja/Dane aplikacji/SuperMemo World/SuperMemo UX/testowy/Repetitions.dat" -subname "Lektion 1" -instruction "Translate" -trimQ 9.7 -vNameQ "" -gainQ 15 -trimA 9.7 -vNameA "Microsoft Sam" -gainA 15 -Force -Double -VoiceA 
+bez wyobraźni:einfallslos
+poważny:ernst
+leniwy, zepsuty:faul
+pilny, pilnie:fleißig
+uprzejmy, przyjazny:freundlich
+wesoły,radosny:froh
+pospolity,podły, niegodziwy:gemein
+szczęśliwy:glücklich
+inteligentny:intelligent
+mądry:klug
+zabawny, dziwaczny:komisch
+kreatywny:kreativ
+nudny:langweilig
+luźny,pulchny:locker
+śmieszny, wesoły:lustig
+Was ist das ?([Schule], N.):Das ist die Schule.
+Was ist das ?([Antwort], N.):Das ist die Antwort.
+Was ist das ?([Kollege], N.):Das ist der Kollege.
+Was ist das ?([Student], N.):Das ist der Student.

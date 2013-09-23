@@ -516,8 +516,10 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
    if (!myProcess.waitForStarted())
       trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
    myProcess.waitForFinished(noTimeout);
-   if (myProcess.exitCode())
+   if (myProcess.exitCode()) {
       trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
+      return false;
+   }
 
    QStringList fileUrls = parseGoogleHtml(TMPDIR+"\\HTML");
 

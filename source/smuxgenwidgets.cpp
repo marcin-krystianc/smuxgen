@@ -95,11 +95,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    QLabel *voiceTrimBeginLabelA = new QLabel(tr("Trim [s]"));
 
    QGridLayout *voiceLayoutQ = new QGridLayout;
-   /*
- QFrame *frameQ = new QFrame;
- frameQ->setFrameStyle(QFrame::HLine);
- voiceLayoutQ->addWidget(frameQ , 0 , 0 , 1 , 0);
- */
+
    voiceLayoutQ->addWidget(m_oVoiceCheckBoxQ , 1 , 0 , 1 , 0);
    voiceLayoutQ->addWidget(voiceIndexLabelQ , 2 , 0);
    voiceLayoutQ->addWidget(m_voiceComboQ , 2 , 1);
@@ -111,11 +107,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    voiceLayoutQ->addWidget(m_voiceTesttextQ , 6 , 0 , 1 , 0);
 
    QGridLayout *voiceLayoutA = new QGridLayout;
-   /*
- QFrame *frameA = new QFrame;
- frameA->setFrameStyle(QFrame::HLine);
- voiceLayoutA->addWidget(frameA , 0 , 0 , 1 , 0);
- */
+
    voiceLayoutA->addWidget(m_oVoiceCheckBoxA , 1 , 0 , 1 , 0);
    voiceLayoutA->addWidget(voiceIndexLabelA , 2 , 0);
    voiceLayoutA->addWidget(m_voiceComboA , 2 , 1);

@@ -91,12 +91,10 @@ void MainWindow::createActions()
    connect(m_saveCourseTemplateAction, SIGNAL(triggered()), this, SLOT(saveCourseTemplateSlot()));
 
    m_importQAAction = new QAction(QIcon(":/images/redo.png"), tr("&Import Q&A"), this);
-   m_importQAAction->setShortcuts(QKeySequence::UnknownKey);
    m_importQAAction->setStatusTip(tr("Import from Q&A"));
    connect(m_importQAAction, SIGNAL(triggered()), this, SLOT(importQASlot()));
 
    m_exportQAAction = new QAction(QIcon(":/images/undo.png"), tr("&Export to Q&A"), this);
-   m_exportQAAction->setShortcuts(QKeySequence::UnknownKey);
    m_exportQAAction->setStatusTip(tr("Export to Q&A"));
    connect(m_exportQAAction, SIGNAL(triggered()), this, SLOT(exportQASlot()));
 
@@ -106,15 +104,24 @@ void MainWindow::createActions()
    connect(m_saveAsCourseTemplateAction, SIGNAL(triggered()), this, SLOT(saveAsCourseTemplateSlot()));
 
    m_buildCourseAction = new QAction(this);
-   m_buildCourseAction->setShortcuts(QKeySequence::UnknownKey);
+   m_buildCourseAction->setIcon(QIcon(":/images/generate.png"));
+   m_buildCourseAction->setStatusTip(tr("Build course"));
+   m_buildCourseAction->setText(tr("Build"));
    connect(m_buildCourseAction, SIGNAL(triggered()), this, SLOT(buildCourseSlot()));
 
    m_rebuildCourseAction = new QAction(this);
-   m_rebuildCourseAction->setShortcuts(QKeySequence::UnknownKey);
+   m_rebuildCourseAction->setIcon(QIcon(":/images/generate.png"));
+   m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
+   m_rebuildCourseAction->setText(tr("Reuild"));
    connect(m_rebuildCourseAction, SIGNAL(triggered()), this, SLOT(rebuildCourseSlot()));
 
+   m_stopBuildAction = new QAction(this);
+   m_stopBuildAction->setIcon(QIcon(":/images/stop.png"));
+   m_stopBuildAction->setStatusTip(tr("Stop"));
+   m_stopBuildAction->setText(tr("Stop "));
+   connect(m_stopBuildAction, SIGNAL(triggered()), this, SLOT(stopBuildSlot()));
+
    m_courseBrowserAction = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
-   m_courseBrowserAction->setShortcuts(QKeySequence::UnknownKey);
    m_courseBrowserAction->setStatusTip(tr("Course browser"));
    connect(m_courseBrowserAction, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
 
@@ -148,6 +155,7 @@ void MainWindow::createToolBars()
    m_toolBar->addAction(m_saveCourseTemplateAction);
    m_toolBar->addSeparator();
    m_toolBar->addAction(m_buildCourseAction);
+   m_toolBar->addAction(m_stopBuildAction);
    m_toolBar->addAction(m_rebuildCourseAction);
    m_toolBar->addAction(m_courseBrowserAction);
 }
@@ -386,24 +394,13 @@ void MainWindow::unlockInterface()
 {
    m_courseBrowserAction->setEnabled(true);
 
-   m_buildCourseAction->setIcon(QIcon(":/images/generate.png"));
-   m_buildCourseAction->setStatusTip(tr("Build course"));
-   m_buildCourseAction->setStatusTip(tr("Build course"));
-   m_buildCourseAction->setText(tr("Build"));
 
-   m_rebuildCourseAction->setIcon(QIcon(":/images/generate.png"));
-   m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
-   m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
-   m_rebuildCourseAction->setText(tr("Reuild"));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::lockInterface()
 {
    m_courseBrowserAction->setEnabled(false);
-   m_buildCourseAction->setIcon(QIcon(":/images/stop.png"));
-   m_buildCourseAction->setStatusTip(tr("Stop"));
-   m_buildCourseAction->setText(tr("Stop "));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -444,7 +441,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
    if (m_courseGenerator.isRunning()) {
       event->ignore();
-      return stopBuild();
+      return stopBuildSlot();
    }
 
    if (m_contentChanged) {
@@ -467,7 +464,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::stopBuild()
+void MainWindow::stopBuildSlot()
 {
    trace (QString("Stopping "), traceLevel1);
    m_courseGenerator.stop();

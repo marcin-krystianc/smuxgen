@@ -39,6 +39,7 @@ private slots:
    bool saveAsCourseTemplateSlot();
    void buildCourseSlot(bool rebuild=false);
    void rebuildCourseSlot();
+   void stopBuildSlot();
 
    void courseBrowserOpenCloseSlot(); // start/stop picture browser
    void courseBrowserVisibleSlot(bool visible); // picture browser
@@ -81,6 +82,7 @@ private:
    QAction *m_saveAsCourseTemplateAction;
    QAction *m_buildCourseAction;
    QAction *m_rebuildCourseAction;
+   QAction *m_stopBuildAction;
    QAction *m_courseBrowserAction;
 
    QAction *m_aboutAction;
@@ -102,7 +104,7 @@ private:
 private:
    void trace (const QString& txt, const unsigned int& flags);
    void setTitle();
-   void stopBuild();
+
 
    CourseGenerator m_courseGenerator;
    CourseTemplate m_courseTemplate;

@@ -1,16 +1,17 @@
 <RCC>
- <qresource prefix = "/">
- <file>images/warning.png</file>
- <file>images/smuxgen.png</file>
- <file>images/stop.png</file>
- <file>images/generate.png</file>
- <file>images/save.png</file>
- <file>images/open.png</file>
- <file>images/imgedit.png</file>
- <file>images/monkey_off.png</file>
- <file>images/redo.png</file>
- <file>images/undo.png</file>
- <file>images/prev.png</file>
- <file>images/next.png</file>
- </qresource>
+    <qresource prefix="/">
+        <file>images/warning.png</file>
+        <file>images/smuxgen.png</file>
+        <file>images/stop.png</file>
+        <file>images/generate.png</file>
+        <file>images/save.png</file>
+        <file>images/open.png</file>
+        <file>images/imgedit.png</file>
+        <file>images/monkey_off.png</file>
+        <file>images/redo.png</file>
+        <file>images/undo.png</file>
+        <file>images/prev.png</file>
+        <file>images/next.png</file>
+        <file>images/rebuild.png</file>
+    </qresource>
 </RCC>

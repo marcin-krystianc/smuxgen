@@ -42,18 +42,17 @@ private slots:
    void stopBuildSlot();
 
    void courseBrowserOpenCloseSlot(); // start/stop picture browser
-   void courseBrowserVisibleSlot(bool visible); // picture browser
 
    void buildCourseFinishedSlot(); // generate finished
    void progressSlot(const QString &);
    void contentChangedSlot();
 
    void closeSlot();
-   void unlockInterface();
-   void lockInterface();
    void about();
 
    void openRecentFile();
+
+   void updateUserInterface();
 
 protected:
    void closeEvent(QCloseEvent *event);

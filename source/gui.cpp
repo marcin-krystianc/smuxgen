@@ -16,17 +16,17 @@
 #include "globalsmuxgentools.h"
 
 /////////////////////////////////////////////////////////////////////////////
-MainWindow::MainWindow()
+MainWindow::MainWindow() :
+   m_contentChanged (false)
 {
    createActions();
    createMenus();
    createToolBars();
    createStatusBar();
    createDockWindows();
+   updateUserInterface();
 
-   m_contentChanged = false;
    setTitle();
-   unlockInterface();
    resize(800, 600);
    setWindowIcon(QIcon(":/images/smuxgen.png"));
 
@@ -110,7 +110,7 @@ void MainWindow::createActions()
    connect(m_buildCourseAction, SIGNAL(triggered()), this, SLOT(buildCourseSlot()));
 
    m_rebuildCourseAction = new QAction(this);
-   m_rebuildCourseAction->setIcon(QIcon(":/images/generate.png"));
+   m_rebuildCourseAction->setIcon(QIcon(":/images/rebuild.png"));
    m_rebuildCourseAction->setStatusTip(tr("Reuild course"));
    m_rebuildCourseAction->setText(tr("Reuild"));
    connect(m_rebuildCourseAction, SIGNAL(triggered()), this, SLOT(rebuildCourseSlot()));
@@ -154,8 +154,8 @@ void MainWindow::createToolBars()
    m_toolBar->addAction(m_openCourseTemplateAction);
    m_toolBar->addAction(m_saveCourseTemplateAction);
    m_toolBar->addSeparator();
-   m_toolBar->addAction(m_buildCourseAction);
    m_toolBar->addAction(m_stopBuildAction);
+   m_toolBar->addAction(m_buildCourseAction);
    m_toolBar->addAction(m_rebuildCourseAction);
    m_toolBar->addAction(m_courseBrowserAction);
 }
@@ -192,7 +192,7 @@ void MainWindow::createDockWindows()
    m_dockCourseBrowser->setWidget(m_imageWidget);
    m_dockCourseBrowser->hide();
 
-   connect(m_dockCourseBrowser , SIGNAL(visibilityChanged(bool)), this, SLOT(courseBrowserVisibleSlot(bool)));
+   connect(m_dockCourseBrowser , SIGNAL(visibilityChanged(bool)), this, SLOT(updateUserInterface()));
    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), m_consolePage , SLOT(traceSlot(const QString&, const int&)));
    connect(m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 }
@@ -327,7 +327,7 @@ void MainWindow::buildCourseSlot(bool rebuild)
    m_courseTemplate.options = m_optionsPage->getOptions();
    m_courseTemplate.content = m_contentPage->getContent();
    m_courseGenerator.build(m_courseTemplate, rebuild);
-   lockInterface();
+   updateUserInterface();
    setTitle();
    trace (QString("Started building: ")+m_courseTemplate.options.subname, traceLevel1);
 }
@@ -348,28 +348,37 @@ void MainWindow::courseBrowserOpenCloseSlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::courseBrowserVisibleSlot(bool visible)
+void MainWindow::updateUserInterface()
 {
-   if (!visible) {
-      m_buildCourseAction->setEnabled(true);
-      m_rebuildCourseAction->setEnabled(true);
-      m_dockContentPage->show();
-      m_dockOptionsPage->show();
-      m_dockContentPage->toggleViewAction()->setEnabled(true);
-      m_dockOptionsPage->toggleViewAction()->setEnabled(true);
-   }
-   else {
-      m_courseTemplate.options = m_optionsPage->getOptions();
-      m_courseTemplate.content = m_contentPage->getContent();
-      m_imageWidget->workWith(m_courseTemplate);
-
+   if (m_dockCourseBrowser->isVisible()) {
       m_buildCourseAction->setEnabled(false);
       m_rebuildCourseAction->setEnabled(false);
       m_dockContentPage->hide();
       m_dockOptionsPage->hide();
       m_dockContentPage->toggleViewAction()->setEnabled(false);
       m_dockOptionsPage->toggleViewAction()->setEnabled(false);
+
+      m_courseTemplate.options = m_optionsPage->getOptions();
+      m_courseTemplate.content = m_contentPage->getContent();
+      m_imageWidget->workWith(m_courseTemplate);
+      return;
    }
+
+   bool generating = m_courseGenerator.isRunning();
+
+   m_dockContentPage->toggleViewAction()->setEnabled(true);
+   m_dockOptionsPage->toggleViewAction()->setEnabled(true);
+   m_dockContentPage->show();
+   m_dockOptionsPage->show();
+
+   m_openCourseTemplateAction->setEnabled(!generating);
+   m_saveCourseTemplateAction->setEnabled(!generating);
+   m_saveAsCourseTemplateAction->setEnabled(!generating);
+   m_courseBrowserAction->setEnabled(!generating);
+
+   m_buildCourseAction->setVisible(!generating);
+   m_rebuildCourseAction->setVisible(!generating);
+   m_stopBuildAction->setVisible(generating);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -390,20 +399,6 @@ void MainWindow::setTitle()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::unlockInterface()
-{
-   m_courseBrowserAction->setEnabled(true);
-
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void MainWindow::lockInterface()
-{
-   m_courseBrowserAction->setEnabled(false);
-}
-
-/////////////////////////////////////////////////////////////////////////////
 void MainWindow::buildCourseFinishedSlot()
 {
    if (m_courseGenerator.isFailed())
@@ -411,9 +406,8 @@ void MainWindow::buildCourseFinishedSlot()
    else
       trace (QString("Build succeeded"), traceLevel1);
 
-   unlockInterface();
+   updateUserInterface();
    statusBar()->showMessage("");
-
    setTitle();
 }
 

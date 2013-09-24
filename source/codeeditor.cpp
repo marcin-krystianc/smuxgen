@@ -94,25 +94,20 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 /////////////////////////////////////////////////////////////////////////////
 void CodeEditor::wheelEvent(QWheelEvent *event)
 {
-   if (!(event->modifiers()&Qt::ControlModifier))
-   {
+   if (!(event->modifiers()&Qt::ControlModifier)) {
       QPlainTextEdit::wheelEvent(event);
       return;
    }
 
    QFont f = font();
-   if (event->delta()>0)
-   {
-      if (f.pointSize() <24)
-      {
+   if (event->delta() > 0) {
+      if (f.pointSize() < 24) {
          f.setPointSize(f.pointSize()+1);
          setFont(f);
       }
    }
-   else
-   {
-      if (f.pointSize() >8)
-      {
+   else {
+      if (f.pointSize() >8) {
          f.setPointSize(f.pointSize()-1);
          setFont(f);
       }

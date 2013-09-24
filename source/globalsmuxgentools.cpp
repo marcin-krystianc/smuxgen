@@ -42,8 +42,7 @@ QStringList parseGoogleHtml (const QString &fileName)
    int leftPos = 0;
    int pos = 0;
 
-   while ((leftPos = html.indexOf(leftBound, pos)) != -1)
-   {
+   while ((leftPos = html.indexOf(leftBound, pos)) != -1) {
       int rightPos = html.indexOf(rightBound, leftPos);
       globalTracer.trace(QString("leftPos: ")+leftPos+QString(" rightPos: ")+rightPos, traceLevel3);
       if (rightPos == -1)
@@ -106,22 +105,18 @@ QString getKeyWord (const QString &input)
    QStringList special;
    special<<"("<<")"<<"["<<"]"<<"{"<<"}";
 
-   if (tmpList.count()>0)
-   {
+   if (tmpList.count()>0) {
       for (int i = 0; i<tmpList.count(); ++i)
          retList.insert(0, removeAllSpecialCharacters(tmpList.at(i), special));
    }
-   else
-   {
+
+   else {
       retList.append("");
       retList.append("");
 
-      for (int i = 0; i<tmp.count(); ++i)
-      {
-         for (int j = 0; j<retList.count(); j++)
-         {
-            if ((tmp.at(i).length()>(retList.at(j)).length()))
-            {
+      for (int i = 0; i<tmp.count(); ++i) {
+         for (int j = 0; j<retList.count(); j++) {
+            if ((tmp.at(i).length()>(retList.at(j)).length())) {
                retList.insert(j, tmp[i]);
                retList.pop_back();
                break;
@@ -138,8 +133,7 @@ QString removeAllBetween (const QString &input, const QString &first, const QStr
 {
    QString ret = input;
 
-   while (1)
-   {
+   for (;;) {
       int a = ret.indexOf(first, 0);
       if (a == -1)
          return ret;
@@ -157,15 +151,12 @@ QStringList getAllBetween (const QString &input, const QString &first, const QSt
 {
    QStringList ret;
 
-   int a = 0;
-   int b = 0;
-   while (1)
-   {
-      a = ret.indexOf(first, 0);
+   for (;;) {
+      int a = ret.indexOf(first, 0);
       if (a == -1)
          return ret;
 
-      b = ret.indexOf(second, a);
+      int b = ret.indexOf(second, a);
       if (b == -1)
          return ret;
 
@@ -188,14 +179,12 @@ bool scalePicture (QString path, int x, int y)
 {
    QImage img;
 
-   if (!img.load(path))
-   {
+   if (!img.load(path))  {
       globalTracer.trace(QString("Error:scalePicture load:")+path, traceError);
       return false;
    }
 
-   if (!img.scaled(x, y).save(path))
-   {
+   if (!img.scaled(x, y).save(path)) {
       globalTracer.trace(QString("Error:scalePicture save:")+path, traceError);
       return false;
    }
@@ -207,7 +196,7 @@ bool scalePicture (QString path, int x, int y)
 bool checkIsFileOk(const QString &fileName)
 {
    QFile fileObject (fileName);
-   if (fileObject.size()>0)
+   if (fileObject.size() > 0)
       return true;
 
    globalTracer.trace(QString("NOT OK: ")+fileName, traceLevel2);

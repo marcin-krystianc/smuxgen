@@ -16,6 +16,6 @@
 QStringList getVoiceEngines();
 
 /////////////////////////////////////////////////////////////////////////////
-int getVoiceEngineIndex(QString voiceEngine); // if failed then returns -1
+int getVoiceEngineIndex(QString voiceEngine);
 
 #endif // CSAPI_H

@@ -68,19 +68,16 @@ void ImageDownloadHelper::run()
    if (myProcess.exitCode())
       trace(QString("Error.exitCode() :getImage.bat ")+arguments.join(" "), traceError);
 
-   if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT))
-   {
+   if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
       trace(QString("Error:scalePicture ")+fileName, traceError);
       deleteFile(fileName);
    }
 
-   if (checkIsFileOk(fileName))
-   {
+   if (checkIsFileOk(fileName)) {
       QPixmap pixmap(fileName);
       emit finished (true, pixmap, m_id, m_url);
    }
-   else
-   {
+   else {
       QPixmap pixmap;
       emit finished (false, pixmap, m_id, m_url);
    };
@@ -103,17 +100,11 @@ ImageDownloader::ImageDownloader(const QString &id)
       m_imageDownloadHelper[i] = new ImageDownloadHelper(m_id+QString::number(i), i);
       connect(m_imageDownloadHelper[i], SIGNAL(finished(bool, const QPixmap& , int, const QString &)) , this , SLOT(helpThreadFinished(bool, const QPixmap& , const QString &)));
    }
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
 ImageDownloader::~ImageDownloader()
 {
-   /*
- for (int i = 0; i<cImageDownloader::maxHelpThreads; ++i)
- delete imageDownloadHelper[i];
- */
-
    deleteFile(myFileName());
 }
 
@@ -122,7 +113,6 @@ QString ImageDownloader::myFileName ()
 {
    return TMPDIR+"HTML"+m_id;
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 void ImageDownloader::trace (const QString &text, const int & flags)
@@ -141,24 +131,23 @@ void ImageDownloader::getImages(const QString &keyWords)
 /////////////////////////////////////////////////////////////////////////////
 void ImageDownloader::run ()
 {
-
    trace(QString("cImageDownloader::run id:")+m_id+QString::fromUtf8(" keywords:")+m_keyWords, traceLevel3);
 
    QProcess myProcess;
    const int timeOut = -1; // no timeout
    QString gFileName = myFileName();
 
-   while (1)
-   {
-      for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i)
+   for (;;) {
+
+      for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i) {
          if (!m_imageDownloadHelper[i]->isRunning())
             m_imageDownloadHelper[i]->terminate();
+      }
 
       m_newTask = false;
-      QStringList arguments;
-
       deleteFile(gFileName);
 
+      QStringList arguments;
       arguments.append(getKeyWord(m_keyWords));
       arguments.append(gFileName);
 
@@ -177,13 +166,10 @@ void ImageDownloader::run ()
       m_progressValue = 0;
       emit sProgressRange(m_progressValue, m_progressMax);
 
-      while (!m_newTask)
-      {
-         for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i)
-         {
+      while (!m_newTask) {
+         for (int i = 0; i<ImageDownloader::m_maxHelpThreads; ++i) {
             if (!m_imageDownloadHelper[i]->isRunning()
-                && (!m_urls.isEmpty()))
-            {
+                && (!m_urls.isEmpty())) {
                m_imageDownloadHelper[i]->getImage(m_urls.takeFirst());
             }
          }

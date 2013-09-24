@@ -17,10 +17,10 @@ SOURCES += main.cpp \
  globaltracer.cpp \
  coursegenerator.cpp \
  imagedownloader.cpp \
- odeeditor.cpp \
  sapi.cpp \
  smuxgenwidgets.cpp \
- supermemosql.cpp
+ supermemosql.cpp \
+    codeeditor.cpp
 HEADERS += gui.h \
  coursetemplate.h \
  globalsmuxgentools.h \

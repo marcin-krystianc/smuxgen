@@ -32,18 +32,16 @@ QStringList getVoiceEngines()
       retlist[i] = retlist[i].right(retlist[i].length()-retlist[i].indexOf(" ")-1);
 
    return (retlist);
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int getVoiceEngineIndex(QString voiceEngine) // if failed then returns -1
+int getVoiceEngineIndex(QString voiceEngine) // if failed then returns 0
 {
    QStringList voices = getVoiceEngines();
-
-   for (int i = 0; i<voices.count(); ++i)
-   {
+   for (int i = 0; i<voices.count(); ++i) {
       if (voices[i] == voiceEngine)
          return i + 1;
    }
+
    return 0;
 }

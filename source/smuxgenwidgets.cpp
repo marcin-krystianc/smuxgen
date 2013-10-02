@@ -33,19 +33,14 @@ OptionsPage::OptionsPage(QWidget *parent)
    checkLayout->addWidget(m_oDoubleCheckBox , 0 , 1);
    checkLayout->addWidget(m_oImageCheckBox , 1 , 0);
 
-   QLabel *fileLabel = new QLabel(tr("Database file:"));
-   m_fileEdit = new QLineEdit;
-   QPushButton *fileChooseButton = new QPushButton(tr("Choose"));
-   m_fileEdit->setReadOnly(true);
-
-   QGridLayout *fileLayout = new QGridLayout;
-   fileLayout->addWidget(fileLabel, 0, 0);
-   fileLayout->addWidget(fileChooseButton, 0, 1);
-   fileLayout->addWidget(m_fileEdit, 1, 0, 1, 0);
+   QLabel *userLabel = new QLabel(tr("User:"));
+   m_userCombo = new QComboBox;
+   QHBoxLayout *userLayout = new QHBoxLayout;
+   userLayout->addWidget(userLabel);
+   userLayout->addWidget(m_userCombo);
 
    QLabel *courseLabel = new QLabel(tr("Course:"));
    m_courseCombo = new QComboBox;
-
    QHBoxLayout *courseLayout = new QHBoxLayout;
    courseLayout->addWidget(courseLabel);
    courseLayout->addWidget(m_courseCombo);
@@ -119,8 +114,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    voiceLayoutA->addWidget(m_voiceTesttextA , 6 , 0 , 1 , 0);
 
    QVBoxLayout *configLayout = new QVBoxLayout;
-   configLayout->addLayout(fileLayout);
-   configLayout->addSpacing(10);
+   configLayout->addLayout(userLayout);
    configLayout->addLayout(courseLayout);
    configLayout->addLayout(subnameLayout);
    configLayout->addLayout(instructionLayout);
@@ -138,8 +132,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    m_audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
    m_mediaObject = new Phonon::MediaObject (this);
 
-   connect(fileChooseButton, SIGNAL(clicked()) , this , SLOT(fileButtonTriggered()));
-   connect(m_fileEdit , SIGNAL(textChanged(const QString &)) , this , SLOT(fileEditChanged(const QString &)));
+   connect(m_userCombo , SIGNAL(editTextChanged(const QString &)) , this , SLOT(userChanged(const QString &)));
    connect(m_voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
    connect(m_voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
 
@@ -205,7 +198,6 @@ void OptionsPage::setOptions(const CourseOptions &options)
    m_oVoiceCheckBoxQ->setCheckState(options.voiceQ ? Qt::Checked : Qt::Unchecked);
    m_oVoiceCheckBoxA->setCheckState(options.voiceA ? Qt::Checked : Qt::Unchecked);
 
-   m_fileEdit->setText(options.dbPath);
    m_courseCombo->clear();
    m_courseCombo->insertItem(0, options.courseName);
    m_subnameEdit->setText(options.subname);
@@ -219,7 +211,7 @@ void OptionsPage::setOptions(const CourseOptions &options)
    m_voiceGainA->setValue(options.voiceGainA);
    m_voiceTrimBeginA->setValue(options.voiceTrimA);
 
-   fileEditChanged(m_fileEdit->text());
+   userChanged(options.user);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -278,7 +270,7 @@ CourseOptions OptionsPage::getOptions()
    options.voiceQ = m_oVoiceCheckBoxQ->isChecked();
    options.voiceA = m_oVoiceCheckBoxA->isChecked();
 
-   options.dbPath = m_fileEdit->text();
+   options.user = "";
    options.subname = m_subnameEdit->text();
    options.instruction = m_instructionEdit->text();
    options.courseName = m_courseCombo->currentText();
@@ -295,35 +287,16 @@ CourseOptions OptionsPage::getOptions()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void OptionsPage::fileButtonTriggered()
+void OptionsPage::userChanged(const QString &userName)
 {
-   QFileDialog::Options opt = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
-
-   QString selectedFilter = "";
-   QString fileName = QFileDialog::getOpenFileName(this,
-                                                   tr("Open database file"),
-                                                   "",
-                                                   tr("SuperMemo UX database (*.dat); ; All Files (*)"),
-                                                   &selectedFilter,
-                                                   opt);
-   if (fileName.isEmpty())
-      return;
-
-   m_fileEdit->setText(fileName);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void OptionsPage::fileEditChanged(const QString &fileName)
-{
-   if (!m_superDb.open(fileName))
-   {
-      QPalette palette = m_fileEdit->palette();
+   if (!m_superDb.openUser(userName)) {
+      QPalette palette = m_userCombo->palette();
       palette.setColor(QPalette::Text, Qt::red); // fg
-      m_fileEdit->setPalette(palette);
+      m_userCombo->setPalette(palette);
       return;
    }
 
-   m_fileEdit->setPalette(m_subnameEdit->palette()); // fileEdit to default colour
+   m_userCombo->setPalette(m_subnameEdit->palette()); // fileEdit to default colour
 
    QString oldText = m_courseCombo->currentText();
 
@@ -337,8 +310,7 @@ void OptionsPage::fileEditChanged(const QString &fileName)
 
    int pos = m_courseCombo->findText(oldText);
 
-   if (pos == -1) // text not found
-   {
+   if (pos == -1) { // text not found
       m_courseCombo->insertItem(0, QIcon(":/images/warning.png"), oldText);
       m_courseCombo->setCurrentIndex(0);
    }

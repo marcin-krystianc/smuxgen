@@ -68,7 +68,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
    trace(QString("Course Browser::WorkWith course:")+courseTemplate.options.courseName+" lesson:"+courseTemplate.options.subname, traceLevel1);
    clear();
 
-   if (!m_database.open(courseTemplate.options.dbPath))
+   if (!m_database.openUser(courseTemplate.options.user))
       return;
 
    int courseID;

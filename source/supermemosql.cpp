@@ -18,6 +18,7 @@
 #include <QSqlQuery>
 #include <QVariant>
 #include <QSqlTableModel>
+#include <QDesktopServices>
 
 #include "globaltracer.h"
 #include "supermemosql.h"
@@ -35,7 +36,26 @@ bool isValidSuperMemoDatabase (const QSqlDatabase &db)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::open(const QString &fileName)
+bool SuperMemoSQL::getAvailableDbList (QStringList *retList)
+{
+   QByteArray appdata = qgetenv ("APPDATA");
+   QString superMemoData = QString(appdata) + "\\SuperMemo World\\SuperMemo UX";
+   QDir superMemoDir = (superMemoData);
+   superMemoDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+   *retList = superMemoDir.entryList();
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool SuperMemoSQL::openUser (const QString &userName)
+{
+   QByteArray appdata = qgetenv ("APPDATA");
+   QString dbFilePath = QString(appdata) + "\\SuperMemo World\\SuperMemo UX\\" + userName + "\\Repetitions.dat";
+   return openFile (dbFilePath);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool SuperMemoSQL::openFile (const QString &fileName)
 {
    m_database = QSqlDatabase::addDatabase("QSQLITE");
    m_database.setDatabaseName(fileName);

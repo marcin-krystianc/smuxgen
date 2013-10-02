@@ -61,13 +61,12 @@ void CourseGenerator::build (const CourseTemplate &courseTemplate, bool rebuild)
    start();
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
 void CourseGenerator::run ()
 {
    m_isFailed = true;
 
-   if (!m_db.open(m_courseTemplate.options.dbPath))
+   if (!m_db.openUser(m_courseTemplate.options.user))
       return;
 
    std::vector<QString> questions;

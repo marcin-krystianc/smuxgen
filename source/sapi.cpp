@@ -40,7 +40,7 @@ int getVoiceEngineIndex(QString voiceEngine) // if failed then returns 0
    QStringList voices = getVoiceEngines();
    for (int i = 0; i<voices.count(); ++i) {
       if (voices[i] == voiceEngine)
-         return i + 1;
+         return i;
    }
 
    return 0;

@@ -71,7 +71,7 @@ private:
    QCheckBox *m_oVoiceCheckBoxQ;
    QCheckBox *m_oVoiceCheckBoxA;
 
-   QLineEdit *m_fileEdit;
+   QComboBox *m_userCombo;
    QComboBox *m_courseCombo;
    QLineEdit *m_subnameEdit;
    QLineEdit *m_instructionEdit;
@@ -96,8 +96,7 @@ private:
    Phonon::MediaObject *m_mediaObject;
 
 private slots:
-   void fileButtonTriggered ();
-   void fileEditChanged (const QString &fileName);
+   void userChanged (const QString &userName);
    void voiceCheckBoxChangedQ (int);
    void voiceCheckBoxChangedA (int);
    void voiceTestButtonTriggered ();

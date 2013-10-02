@@ -24,8 +24,9 @@ struct CourseOptions {
    bool voiceA; // make mp3 files (Answers)
    bool graphics; // get Images
 
+   QString user;
    QString courseName;
-   QString dbPath;
+
    QString subname;
    QString instruction;
 

@@ -104,7 +104,6 @@ private:
    void trace (const QString& txt, const unsigned int& flags);
    void setTitle();
 
-
    CourseGenerator m_courseGenerator;
    CourseTemplate m_courseTemplate;
    QString m_courseTemplateFileName;

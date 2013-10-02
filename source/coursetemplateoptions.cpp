@@ -74,8 +74,8 @@ CourseOptions CourseOptions::fromString (const QString &line)
          continue;
       }
 
-      if (first == "-database") {
-         options.dbPath = second.remove("\"");
+      if (first == "-user") {
+         options.user = second.remove("\"");
          continue;
       }
 
@@ -130,7 +130,7 @@ QString CourseOptions::toString(const CourseOptions &options)
    QString ret;
 
    ret+= QString("-course ") +"\""+options.courseName +"\" ";
-   ret+= QString("-database ") +"\""+options.dbPath +"\" ";
+   ret+= QString("-user ") +"\""+options.user +"\" ";
    ret+= QString("-subname ") +"\""+options.subname +"\" ";
    ret+= QString("-instruction ") +"\""+options.instruction +"\" ";
 

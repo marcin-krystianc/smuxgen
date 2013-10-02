@@ -35,6 +35,12 @@ OptionsPage::OptionsPage(QWidget *parent)
 
    QLabel *userLabel = new QLabel(tr("User:"));
    m_userCombo = new QComboBox;
+   QStringList usersDbList;
+   SuperMemoSQL::getAvailableDbList(&usersDbList);
+   for (int i = 0; i<usersDbList.count(); ++i)
+      m_userCombo->insertItem(0, usersDbList.at(i));
+   m_userCombo->insertItem(0, "");
+
    QHBoxLayout *userLayout = new QHBoxLayout;
    userLayout->addWidget(userLabel);
    userLayout->addWidget(m_userCombo);
@@ -132,7 +138,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    m_audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
    m_mediaObject = new Phonon::MediaObject (this);
 
-   connect(m_userCombo , SIGNAL(editTextChanged(const QString &)) , this , SLOT(userChanged(const QString &)));
+   connect(m_userCombo , SIGNAL(currentIndexChanged(const QString &)) , this , SLOT(userChanged(const QString &)));
    connect(m_voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
    connect(m_voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
 
@@ -211,7 +217,8 @@ void OptionsPage::setOptions(const CourseOptions &options)
    m_voiceGainA->setValue(options.voiceGainA);
    m_voiceTrimBeginA->setValue(options.voiceTrimA);
 
-   userChanged(options.user);
+   int i = m_courseCombo->findText(options.user);
+   m_courseCombo->setCurrentIndex( i > 0 ? i : 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////

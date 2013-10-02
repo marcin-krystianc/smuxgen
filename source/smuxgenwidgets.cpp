@@ -217,8 +217,8 @@ void OptionsPage::setOptions(const CourseOptions &options)
    m_voiceGainA->setValue(options.voiceGainA);
    m_voiceTrimBeginA->setValue(options.voiceTrimA);
 
-   int i = m_courseCombo->findText(options.user);
-   m_courseCombo->setCurrentIndex( i > 0 ? i : 0);
+   int i = m_userCombo->findText(options.user);
+   m_userCombo->setCurrentIndex( i > 0 ? i : 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ CourseOptions OptionsPage::getOptions()
    options.voiceQ = m_oVoiceCheckBoxQ->isChecked();
    options.voiceA = m_oVoiceCheckBoxA->isChecked();
 
-   options.user = "";
+   options.user = m_userCombo->currentText();
    options.subname = m_subnameEdit->text();
    options.instruction = m_instructionEdit->text();
    options.courseName = m_courseCombo->currentText();

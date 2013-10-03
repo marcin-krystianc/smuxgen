@@ -29,9 +29,9 @@ OptionsPage::OptionsPage(QWidget *parent)
    m_oVoiceCheckBoxQ = new QCheckBox(tr("Lector (Questions)"));
    m_oVoiceCheckBoxA = new QCheckBox(tr("Lector (Answers)"));
 
-   QGridLayout *checkLayout = new QGridLayout;
-   checkLayout->addWidget(m_oDoubleCheckBox , 0 , 1);
-   checkLayout->addWidget(m_oImageCheckBox , 1 , 0);
+   QVBoxLayout *checkLayout = new QVBoxLayout;
+   checkLayout->addWidget(m_oDoubleCheckBox);
+   checkLayout->addWidget(m_oImageCheckBox);
 
    QLabel *userLabel = new QLabel(tr("User:"));
    m_userCombo = new QComboBox;
@@ -130,7 +130,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    configLayout->addLayout(instructionLayout);
    configLayout->addSpacing(10);
    configLayout->addLayout(checkLayout);
-   configLayout->addSpacing(20);
+   configLayout->addSpacing(10);
    configLayout->addLayout(voiceLayoutQ);
    configLayout->addSpacing(20);
    configLayout->addLayout(voiceLayoutA);

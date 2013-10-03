@@ -1,4 +1,7 @@
 - use exceptions to handle exceptional situations
 - killing thread
-- combobox for DB selection
+- hints for options
+- options layout
+- external tools into "tools" subdir
+
 

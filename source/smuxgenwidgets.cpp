@@ -67,6 +67,8 @@ OptionsPage::OptionsPage(QWidget *parent)
 
    m_voiceComboQ = new QComboBox;
    m_voiceComboQ->insertItems(0, getVoiceEngines());
+   m_voiceComboQ->insertItem(0, "");
+
    m_voiceGainQ = new QSpinBox;
    m_voiceTrimBeginQ = new QDoubleSpinBox;
    m_voiceTrimBeginQ->setSingleStep(0.1);
@@ -74,6 +76,8 @@ OptionsPage::OptionsPage(QWidget *parent)
 
    m_voiceComboA = new QComboBox;
    m_voiceComboA->insertItems(0, getVoiceEngines());
+   m_voiceComboA->insertItem(0, "");
+
    m_voiceGainA = new QSpinBox;
    m_voiceTrimBeginA = new QDoubleSpinBox;
    m_voiceTrimBeginA->setSingleStep(0.1);
@@ -201,24 +205,23 @@ void OptionsPage::setOptions(const CourseOptions &options)
 {
    m_oDoubleCheckBox->setCheckState(options.bothDirections ? Qt::Checked : Qt::Unchecked);
    m_oImageCheckBox->setCheckState(options.graphics ? Qt::Checked : Qt::Unchecked);
-   m_oVoiceCheckBoxQ->setCheckState(options.voiceQ ? Qt::Checked : Qt::Unchecked);
-   m_oVoiceCheckBoxA->setCheckState(options.voiceA ? Qt::Checked : Qt::Unchecked);
+   m_oVoiceCheckBoxQ->setCheckState(!options.voiceNameQ.isEmpty() ? Qt::Checked : Qt::Unchecked);
+   m_oVoiceCheckBoxA->setCheckState(!options.voiceNameA.isEmpty() ? Qt::Checked : Qt::Unchecked);
 
    m_courseCombo->clear();
    m_courseCombo->insertItem(0, options.courseName);
    m_subnameEdit->setText(options.subname);
    m_instructionEdit->setText(options.instruction);
 
-   m_voiceComboQ->setCurrentIndex(getVoiceEngineIndex(options.voiceNameQ));
+   m_voiceComboQ->setCurrentIndex(m_voiceComboQ->findText(options.voiceNameQ));
    m_voiceGainQ->setValue(options.voiceGainQ);
    m_voiceTrimBeginQ->setValue(options.voiceTrimQ);
 
-   m_voiceComboA->setCurrentIndex(getVoiceEngineIndex(options.voiceNameA));
+   m_voiceComboA->setCurrentIndex(m_voiceComboQ->findText(options.voiceNameA));
    m_voiceGainA->setValue(options.voiceGainA);
    m_voiceTrimBeginA->setValue(options.voiceTrimA);
 
-   int i = m_userCombo->findText(options.user);
-   m_userCombo->setCurrentIndex( i > 0 ? i : 0);
+   m_userCombo->setCurrentIndex(m_userCombo->findText(options.user));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -231,7 +234,7 @@ void OptionsPage::voiceTestButtonTriggered ()
    {
       arguments.append("test");
       arguments.append(m_voiceTesttextQ->text());
-      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)+1));
+      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)));
       arguments.append(QString::number(options.voiceTrimQ));
       arguments.append(QString::number(options.voiceGainQ));
    }
@@ -239,7 +242,7 @@ void OptionsPage::voiceTestButtonTriggered ()
    {
       arguments.append("test");
       arguments.append(m_voiceTesttextA->text());
-      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)+1));
+      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)));
       arguments.append(QString::number(options.voiceTrimA));
       arguments.append(QString::number(options.voiceGainA));
    }
@@ -274,19 +277,17 @@ CourseOptions OptionsPage::getOptions()
 
    options.bothDirections = m_oDoubleCheckBox->isChecked();
    options.graphics = m_oImageCheckBox->isChecked();
-   options.voiceQ = m_oVoiceCheckBoxQ->isChecked();
-   options.voiceA = m_oVoiceCheckBoxA->isChecked();
 
    options.user = m_userCombo->currentText();
    options.subname = m_subnameEdit->text();
    options.instruction = m_instructionEdit->text();
    options.courseName = m_courseCombo->currentText();
 
-   options.voiceNameQ = m_voiceComboQ->currentText();
+   options.voiceNameQ = m_oVoiceCheckBoxQ->isChecked() ? m_voiceComboQ->currentText() : QString();
    options.voiceGainQ = m_voiceGainQ->value();
    options.voiceTrimQ = m_voiceTrimBeginQ->value();
 
-   options.voiceNameA = m_voiceComboA->currentText();
+   options.voiceNameA = m_oVoiceCheckBoxA->isChecked() ? m_voiceComboA->currentText() : QString();
    options.voiceGainA = m_voiceGainA->value();
    options.voiceTrimA = m_voiceTrimBeginA->value();
 

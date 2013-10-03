@@ -14,8 +14,10 @@
 
 /////////////////////////////////////////////////////////////////////////////
 CourseOptions::CourseOptions() :
-   bothDirections(false), voiceQ(false), voiceA(false), graphics(false),
-   voiceGainQ(0), voiceTrimQ(0), voiceGainA(0), voiceTrimA(0)
+   bothDirections(false), graphics(false),
+   user(""), courseName(""),
+   voiceNameQ(""), voiceGainQ(0), voiceTrimQ(0),
+   voiceNameA(""), voiceGainA(0), voiceTrimA(0)
 {
 
 }
@@ -32,16 +34,6 @@ CourseOptions CourseOptions::fromString (const QString &line)
 
       if (first == "-Double") {
          options.bothDirections = true;
-         continue;
-      }
-
-      if (first == "-VoiceQ"){
-         options.voiceQ = true;
-         continue;
-      }
-
-      if (first == "-VoiceA"){
-         options.voiceA = true;
          continue;
       }
 
@@ -143,8 +135,6 @@ QString CourseOptions::toString(const CourseOptions &options)
    ret+= QString("-gainA ") +QString::number(options.voiceGainA) +" ";
 
    if (options.bothDirections) ret+= "-Double ";
-   if (options.voiceQ) ret+= "-VoiceQ ";
-   if (options.voiceA) ret+= "-VoiceA ";
    if (options.graphics) ret+= "-Image ";
 
    return ret;

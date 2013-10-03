@@ -127,7 +127,6 @@ QDomNode CourseGenerator::getNode
    return rootElement.appendChild(newElement);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
 bool CourseGenerator::buildTopic
 (
@@ -184,7 +183,7 @@ bool CourseGenerator::buildTopic
          return false;
       topicElementsIds.insert(itemId);
 
-      getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "pres", itemId);
+      getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "exercise", itemId);
 
       QString mediaDir = courseDocumentDir+"\\media\\";
       bool generateCourseElement = m_rebuild;
@@ -421,7 +420,6 @@ QDomDocument CourseGenerator::createCourseItemDoc
       table.setAttribute("cellspacing", "0");
 
       QDomElement tr = doc.createElement("tr");
-
       QDomElement td = doc.createElement("td");
       td.setAttribute("align", "center");
 
@@ -431,12 +429,9 @@ QDomDocument CourseGenerator::createCourseItemDoc
       gfx.setAttribute("width" , QString::number(IMG_WIDTH));
       gfx.setAttribute("height" , QString::number(IMG_HEIGHT));
       gfx.setAttribute("scale-base" , QString::number(900));
-      gfx.setAttribute("auto-play" , "false");
 
       td.appendChild(gfx);
-
       tr.appendChild(td);
-
       td = doc.createElement("td");
       td.setAttribute("align", "center");
 
@@ -446,9 +441,7 @@ QDomDocument CourseGenerator::createCourseItemDoc
       gfx.setAttribute("width" , QString::number(IMG_WIDTH));
       gfx.setAttribute("height" , QString::number(IMG_HEIGHT));
       gfx.setAttribute("scale-base" , QString::number(900));
-      gfx.setAttribute("auto-play" , "false");
       td.appendChild(gfx);
-
       tr.appendChild(td);
       table.appendChild(tr);
       tmpElement5.appendChild(table);

@@ -44,6 +44,7 @@ CourseGenerator::~CourseGenerator()
 void CourseGenerator::stop()
 {
    m_abortProces = true;
+   //terminate();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -157,7 +158,6 @@ bool CourseGenerator::buildTopic
    QDomDocument courseDoc("");
    if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
       return false;
-
 
    int topicId;
    if (!m_db.addItem(topicName, courseId, 0, &topicId))

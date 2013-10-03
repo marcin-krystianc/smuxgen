@@ -17,7 +17,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow() :
-   m_contentChanged (false)
+   m_contentChanged (false), m_generating(false)
 {
    createActions();
    createMenus();
@@ -327,6 +327,7 @@ void MainWindow::buildCourseSlot(bool rebuild)
    m_courseTemplate.options = m_optionsPage->getOptions();
    m_courseTemplate.content = m_contentPage->getContent();
    m_courseGenerator.build(m_courseTemplate, rebuild);
+   m_generating = true;
    updateUserInterface();
    setTitle();
    trace (QString("Started building: ")+m_courseTemplate.options.subname, traceLevel1);
@@ -364,21 +365,19 @@ void MainWindow::updateUserInterface()
       return;
    }
 
-   bool generating = m_courseGenerator.isRunning();
-
    m_dockContentPage->toggleViewAction()->setEnabled(true);
    m_dockOptionsPage->toggleViewAction()->setEnabled(true);
    m_dockContentPage->show();
    m_dockOptionsPage->show();
 
-   m_openCourseTemplateAction->setEnabled(!generating);
-   m_saveCourseTemplateAction->setEnabled(!generating);
-   m_saveAsCourseTemplateAction->setEnabled(!generating);
-   m_courseBrowserAction->setEnabled(!generating);
+   m_openCourseTemplateAction->setEnabled(!m_generating);
+   m_saveCourseTemplateAction->setEnabled(!m_generating);
+   m_saveAsCourseTemplateAction->setEnabled(!m_generating);
+   m_courseBrowserAction->setEnabled(!m_generating);
 
-   m_buildCourseAction->setVisible(!generating);
-   m_rebuildCourseAction->setVisible(!generating);
-   m_stopBuildAction->setVisible(generating);
+   m_buildCourseAction->setVisible(!m_generating);
+   m_rebuildCourseAction->setVisible(!m_generating);
+   m_stopBuildAction->setVisible(m_generating);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -392,7 +391,7 @@ void MainWindow::setTitle()
 
    title += fileInfo.fileName()+QString(" ");
 
-   if (m_courseGenerator.isRunning())
+   if (m_generating)
       title += QString("[Running]");
 
    setWindowTitle(title);
@@ -406,6 +405,7 @@ void MainWindow::buildCourseFinishedSlot()
    else
       trace (QString("Build succeeded"), traceLevel1);
 
+   m_generating = false;
    updateUserInterface();
    statusBar()->showMessage("");
    setTitle();

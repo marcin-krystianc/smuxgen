@@ -108,6 +108,7 @@ private:
    CourseTemplate m_courseTemplate;
    QString m_courseTemplateFileName;
    bool m_contentChanged;
+   bool m_generating;
 };
 
 #endif // GUI_H

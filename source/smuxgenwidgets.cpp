@@ -7,6 +7,7 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
+#include <stdexcept>
 #include <QtGui>
 #include <QTextEdit>
 #include <QColorGroup>
@@ -200,6 +201,7 @@ void OptionsPage::voiceCheckBoxChangedA (int state)
          break;
    }
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void OptionsPage::setOptions(const CourseOptions &options)
 {
@@ -268,8 +270,8 @@ void OptionsPage::voiceTestButtonTriggered ()
    Phonon::createPath(m_mediaObject, m_audioOutput);
    m_mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));
    m_mediaObject->play();
-
 }
+
 /////////////////////////////////////////////////////////////////////////////
 CourseOptions OptionsPage::getOptions()
 {
@@ -297,6 +299,7 @@ CourseOptions OptionsPage::getOptions()
 /////////////////////////////////////////////////////////////////////////////
 void OptionsPage::userChanged(const QString &userName)
 {
+   m_userCombo->setPalette(m_subnameEdit->palette()); // fileEdit to default colour
    if (!m_superDb.openUser(userName)) {
       QPalette palette = m_userCombo->palette();
       palette.setColor(QPalette::Text, Qt::red); // fg
@@ -304,15 +307,16 @@ void OptionsPage::userChanged(const QString &userName)
       return;
    }
 
-   m_userCombo->setPalette(m_subnameEdit->palette()); // fileEdit to default colour
+   QStringList courseList;
+   try {
+      m_superDb.getCourses(&courseList);
+   }
+   catch (const std::exception &e) {
+      trace(e.what(), traceError);
+   }
 
    QString oldText = m_courseCombo->currentText();
-
    m_courseCombo->clear();
-
-   QStringList courseList;
-   m_superDb.getCourses(&courseList);
-
    for (int i = 0; i<courseList.count(); ++i)
       m_courseCombo->insertItem(0, courseList.at(i));
 
@@ -367,6 +371,7 @@ ConsolePage::ConsolePage(QWidget *parent)
    connect(m_traceLevel2 , SIGNAL(stateChanged (int)) , this , SLOT(traceLevelSlot()));
    connect(m_traceLevel3 , SIGNAL(stateChanged (int)) , this , SLOT(traceLevelSlot()));
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void ConsolePage::traceLevelSlot ()
 {
@@ -379,8 +384,8 @@ void ConsolePage::traceLevelSlot ()
       flags |= traceLevel3;
 
    globalTracer.setTraceFlags(flags);
-
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void ConsolePage::traceSlot(const QString &txt, const int & flags)
 {
@@ -418,14 +423,13 @@ ContentPage::ContentPage(QWidget *parent)
 
    connect (m_findToolbar , SIGNAL(findNext(const QString&)) , this, SLOT(findNext(const QString&)));
    connect (m_findToolbar , SIGNAL(findPrev(const QString&)) , this, SLOT(findPrev(const QString&)));
-
 }
+
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::setContent (const QStringList & content)
 {
    n_contentTextEdit->setPlainText(content.join(QString("\n")));
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList ContentPage::getContent ()
@@ -486,7 +490,6 @@ FindToolbar::FindToolbar(QWidget *parent)
    connect (m_lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
    connect (m_forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
    connect (m_backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
-
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,8 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
+#include <stdexcept>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -65,38 +67,43 @@ void CourseGenerator::build (const CourseTemplate &courseTemplate, bool rebuild)
 /////////////////////////////////////////////////////////////////////////////
 void CourseGenerator::run ()
 {
-   m_isFailed = true;
+   try {
+      m_isFailed = true;
 
-   if (!m_db.openUser(m_courseTemplate.options.user))
-      return;
+      if (!m_db.openUser(m_courseTemplate.options.user))
+         return;
 
-   std::vector<QString> questions;
-   std::vector<QString> answers;
+      std::vector<QString> questions;
+      std::vector<QString> answers;
 
-   for (int i = 0; i < m_courseTemplate.content.count(); ++i) {
-      QString line = m_courseTemplate.content.at(i);
-      QStringList list1 = line.split(":");
-      if (list1.count() != 2) {
-         trace(QString("cCourseGenerator::generate Input error: ")+line, traceWarning);
-         continue;
+      for (int i = 0; i < m_courseTemplate.content.count(); ++i) {
+         QString line = m_courseTemplate.content.at(i);
+         QStringList list1 = line.split(":");
+         if (list1.count() != 2) {
+            trace(QString("cCourseGenerator::generate Input error: ")+line, traceWarning);
+            continue;
+         }
+         questions.push_back(list1[0].trimmed());
+         answers.push_back(list1[1].trimmed());
       }
-      questions.push_back(list1[0].trimmed());
-      answers.push_back(list1[1].trimmed());
+
+      buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname
+                 , questions, answers
+                 , m_courseTemplate.options.voiceNameA, m_courseTemplate.options.voiceGainA, m_courseTemplate.options.voiceTrimA
+                 , m_courseTemplate.options.voiceNameQ, m_courseTemplate.options.voiceGainQ, m_courseTemplate.options.voiceTrimQ );
+
+      if (m_courseTemplate.options.bothDirections) {
+         buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname+"*"
+                    , answers, questions
+                    , m_courseTemplate.options.voiceNameQ, m_courseTemplate.options.voiceGainQ, m_courseTemplate.options.voiceTrimQ
+                    , m_courseTemplate.options.voiceNameA, m_courseTemplate.options.voiceGainA, m_courseTemplate.options.voiceTrimA );
+      }
+
+      m_isFailed = false;
    }
-
-   buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname
-              , questions, answers
-              , m_courseTemplate.options.voiceNameA, m_courseTemplate.options.voiceGainA, m_courseTemplate.options.voiceTrimA
-              , m_courseTemplate.options.voiceNameQ, m_courseTemplate.options.voiceGainQ, m_courseTemplate.options.voiceTrimQ );
-
-   if (m_courseTemplate.options.bothDirections) {
-      buildTopic(m_courseTemplate.options.courseName, m_courseTemplate.options.subname+"*"
-                 , answers, questions
-                 , m_courseTemplate.options.voiceNameQ, m_courseTemplate.options.voiceGainQ, m_courseTemplate.options.voiceTrimQ
-                 , m_courseTemplate.options.voiceNameA, m_courseTemplate.options.voiceGainA, m_courseTemplate.options.voiceTrimA );
+   catch (const std::exception &e){
+      trace(e.what(), traceError);
    }
-
-   m_isFailed = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +136,7 @@ QDomNode CourseGenerator::getNode
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::buildTopic
+void CourseGenerator::buildTopic
 (
       const QString &courseName,
       const QString &topicName,
@@ -155,8 +162,7 @@ bool CourseGenerator::buildTopic
 
    // get root document
    QDomDocument courseDoc("");
-   if (!DomDoucumentFromFile (courseDocumentPath, &courseDoc))
-      return false;
+   DomDoucumentFromFile (courseDocumentPath, &courseDoc);
 
    int topicId;
    m_db.addItem(topicName, courseId, 0, &topicId);
@@ -171,7 +177,7 @@ bool CourseGenerator::buildTopic
    for (size_t i = 0; i < questions.size(); ++i) {
 
       if (m_abortProces)
-         return false;
+         return;
 
       emit progressSignal(QString::number(i+1)+"/"+QString::number(questions.size())+" "+topicName+"@"+courseName+":"
                           + questions[i]);
@@ -218,11 +224,10 @@ bool CourseGenerator::buildTopic
 
    doDelete(courseId, topicId, courseDocumentDir, topicElementsIds);
    DomDoucumentToFile(courseDoc, courseDocumentPath);
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::generateCourseElement2
+void CourseGenerator::generateCourseElement2
 (
       const QString &chapterName,
       const QString &instruction,
@@ -264,12 +269,10 @@ bool CourseGenerator::generateCourseElement2
       filePaths.append(mediaDir + getMediaFileName(id)+"n.jpg");
       generateGraphics(filePaths, question);
    }
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::doDelete
+void CourseGenerator::doDelete
 (
       int courseId,
       int parentId,
@@ -297,12 +300,10 @@ bool CourseGenerator::doDelete
       deleteFile(mediaDir+getMediaFileName(*i)+"n.jpg");
       m_db.deleteItem(courseId, parentId, *i);
    }
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::DomDoucumentToFile (const QDomDocument &document, const QString &path)
+void CourseGenerator::DomDoucumentToFile (const QDomDocument &document, const QString &path)
 {
    QFile file(path);
    if(!file.open(QIODevice::WriteOnly|QIODevice::Text))
@@ -316,15 +317,11 @@ bool CourseGenerator::DomDoucumentToFile (const QDomDocument &document, const QS
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::DomDoucumentFromFile(const QString &path, QDomDocument *document)
+void CourseGenerator::DomDoucumentFromFile(const QString &path, QDomDocument *document)
 {
    QFile docFile(path);
-   if (!document->setContent(&docFile)) {
-      trace(QString("Cannot open file: ") + path, traceError);
-      return false;
-   }
-
-   return true;
+   if (!document->setContent(&docFile))
+      throw std::runtime_error (std::string("Cannot open file: ")+path.toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////////////

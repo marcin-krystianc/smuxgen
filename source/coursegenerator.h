@@ -40,8 +40,8 @@ signals:
 
 private:
    static bool DomDoucumentToFile (const QDomDocument &document, const QString &path);
-   static bool DomDoucumentFromFile (const QString &path, QDomDocument *document);
-   static bool generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ, bool graphics);
+   static void DomDoucumentFromFile(const QString &path, QDomDocument *document);
+   static void generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ, bool graphics);
    static QDomDocument createCourseItemDoc (QString chapterTitle, QString instruction, QString question, QString answers, int id, bool voiceA, bool voiceQ, bool graphics);
    static void generateMp3(const QString &filePath, const QString &mp3Text, int voiceEngineIndex, int voiceGain, double voiceTrim);
    static bool generateGraphics(const QStringList &filePaths, const QString &question);
@@ -49,10 +49,10 @@ private:
    static void trace (const QString &text, int flags = traceLevel1);
 
    QDomNode getNode (QDomDocument &doc, QDomNode &rootElement, const QString &nodeName, const QString &type, int nodeID);
-   bool doDelete (int courseId, int parentId, const QString &courseFileDirectory, const std::set<int> &validIds);
+   void doDelete(int courseId, int parentId, const QString &courseFileDirectory, const std::set<int> &validIds);
    bool generateCourseElement(int courseIDSQL, const QString &question, const QString &answer, const QString &topicName
                               , QDomNode &topicNode, int topicID, QDomDocument &doc, const QString &courseFileDirectory, bool bMode, int voiceIndexA, int voiceIndexQ, bool foreceRebuild);
-   bool buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ);
+   void buildTopic(const QString &courseName, const QString &topicName, const std::vector<QString> &questions, const std::vector<QString> &answers, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ);
 
    bool checkIfNewAnswers(const QString &filePath, const QString &answers);
 

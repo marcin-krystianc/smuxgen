@@ -145,8 +145,7 @@ bool CourseGenerator::buildTopic
 {
    int courseId;
    QString courseMasterDir;
-   if (!m_db.getCourseDetails (courseName, &courseId, &courseMasterDir))
-      return false;
+   m_db.getCourseDetails (courseName, &courseId, &courseMasterDir);
 
    QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
    QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();
@@ -160,8 +159,7 @@ bool CourseGenerator::buildTopic
       return false;
 
    int topicId;
-   if (!m_db.addItem(topicName, courseId, 0, &topicId))
-      return true;
+   m_db.addItem(topicName, courseId, 0, &topicId);
 
    QDomElement rootElement = courseDoc.documentElement();
    QDomNode topicNode = getNode (courseDoc, rootElement, topicName, "pres", topicId);
@@ -179,8 +177,7 @@ bool CourseGenerator::buildTopic
                           + questions[i]);
 
       int itemId;
-      if (!m_db.addItem(getTextToPrint(questions[i]), courseId, topicId, &itemId))
-         return false;
+      m_db.addItem(getTextToPrint(questions[i]), courseId, topicId, &itemId);
       topicElementsIds.insert(itemId);
 
       getNode (courseDoc, topicNode, getTextToPrint(questions[i]), "exercise", itemId);
@@ -281,8 +278,7 @@ bool CourseGenerator::doDelete
       )
 {
    std::set<int> alIds;
-   if (!m_db.getItems(courseId, parentId, &alIds))
-      return false;
+   m_db.getItems(courseId, parentId, &alIds);
 
    std::set<int> invalidIds;
    for (std::set<int>::iterator i=alIds.begin(); i!=alIds.end(); ++i) {

@@ -21,16 +21,16 @@ class SuperMemoSQL
 public:
    static bool getAvailableDbList (QStringList *retList);
 
-   bool getCourses (QStringList *retList);
-   bool getCourseDetails (const QString &courseName, int *id, QString *path);
-   bool getItems (int courseId, int parentItemId, std::set<int> *itemsId);
+   void getCourses (QStringList *retList);
+   void getCourseDetails(const QString &courseName, int *id, QString *path);
+   void getItems (int courseId, int parentItemId, std::set<int> *itemsId);
    bool getItemId (const QString &itemName, int courseId, int parentItemId, int *retID);
-   bool addItem (const QString &itemName, int courseId, int parentItemId, int *itemId);
-   bool deleteItem (int courseId, int parentItemId, int itemId);
+   void addItem(const QString &itemName, int courseId, int parentItemId, int *itemId);
+   void deleteItem (int courseId, int parentItemId, int itemId);
    bool openUser(const QString &userName);
 
 private:
-   bool getCourseMaxId (int courseId, int *maxId);
+   void getCourseMaxId(int courseId, int *maxId);
    void trace (const QString &text, const int &flags = traceLevel1|0);
    bool openFile(const QString &fileName);
 

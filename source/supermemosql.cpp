@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <set>
+#include <stdexcept>
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -78,38 +79,31 @@ void SuperMemoSQL::trace(const QString &text, const int &flags)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::getCourses (QStringList *retList)
+void SuperMemoSQL::getCourses(QStringList *retList)
 {
    QSqlQuery query (m_database);
    QString q = QString("Select %1 from %2").arg("Title", "Courses");
-   if (!query.exec(q)) {
-      trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(), traceError);
-      return false;
-   }
+   if (!query.exec(q))
+      throw std::runtime_error (std::string("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text().toStdString());
 
    retList->clear();
    for (query.first(); query.isValid(); query.next())
       retList->append(query.value(0).toString());
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString *path)
+void SuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString *path)
 {
    QSqlQuery query (m_database);
    QString q = QString("Select %1, %2 from %3 where %4 = :v1").arg("Id", "Path", "Courses", "Title");
    query.prepare(q);
    query.bindValue(":v1", QVariant(courseName));
-   if (!query.exec()) {
-      trace(QString("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text(), traceError);
-      return false;
-   }
 
-   if (!query.first()) {
-      trace(QString("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+courseName, traceWarning);
-      return false;
-   }
+   if (!query.exec())
+      throw std::runtime_error (std::string("cSuperMemoSQL::getCourses error query.exec(): ")+query.lastError().text().toStdString());
+
+   if (!query.first())
+      throw std::runtime_error (std::string("cSuperMemoSQL::getCourseIdPath - Cannot find course with name: ")+courseName.toStdString());
 
    QVariant v1 = query.value(0);
    *id = v1.toInt();
@@ -119,12 +113,10 @@ bool SuperMemoSQL::getCourseDetails (const QString &courseName, int *id, QString
 
    trace(QString("cSuperMemoSQL::getCourseIdPath ID: ")+QString::number(*id), traceLevel2);
    trace(QString("cSuperMemoSQL::getCourseIdPath Path:")+*path, traceLevel2);
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parentItemId, int *itemId)
+void SuperMemoSQL::addItem (const QString &elementName, int courseId, int parentItemId, int *itemId)
 {
    QString filter = QString("CourseId = %1 and ParentID = %2 and Name = \"%3\"")
          .arg(QString::number(courseId), QString::number(parentItemId), QString(elementName).remove("\""));
@@ -134,21 +126,18 @@ bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parent
    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
    model.setTable("items");
    model.setFilter(filter);
-   if (!model.select()) {
-      trace(QString("setElementSQL: select: ")+m_database.lastError().text(), traceError);
-      return false;
-   }
+   if (!model.select())
+      throw std::runtime_error (std::string("setElementSQL: select: ")+m_database.lastError().text().toStdString());
 
    QSqlRecord record = model.record(0);
    if (model.rowCount() == 1) {
       *itemId = record.value("PageNum").toInt();
-      return true;
+      return;
    }
 
    // generate new record
    int maxId = 0;
-   if (!getCourseMaxId(courseId, &maxId))
-      return false;
+   getCourseMaxId(courseId, &maxId);
 
    *itemId = maxId + 1;
    record.setValue("CourseId", courseId);
@@ -167,61 +156,45 @@ bool SuperMemoSQL::addItem (const QString &elementName, int courseId, int parent
 
          , traceLevel3);
 
-   if (!model.insertRecord(-1, record)){ // to the end
-      trace(QString("setElementSQL insertRecord: ")+m_database.lastError().text(), traceError);
-      return false;
-   }
+   if (!model.insertRecord(-1, record))
+      throw std::runtime_error (std::string("setElementSQL insertRecord: ")+m_database.lastError().text().toStdString());
 
    if (!model.database().transaction() ||
        !model.submitAll() ||
        !model.database().commit()) {
       model.database().rollback();
-      trace(QString("setElementSQL submitAll: ")+m_database.lastError().text(), traceLevel3);
-      return false;
+      throw std::runtime_error (std::string("setElementSQL submitAll: ")+m_database.lastError().text().toStdString());
    }
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::getItems (int courseId, int parentItemId, std::set<int> *itemsId)
+void SuperMemoSQL::getItems(int courseId, int parentItemId, std::set<int> *itemsId)
 {
    QSqlQuery query (m_database);
    QString q = QString("select %1 from %2 where %3 = :v3 and %4 = :v4")
          .arg("PageNum", "items", "CourseId", "ParentID");
    query.prepare(q);
-
    query.bindValue(":v3", QVariant(courseId));
    query.bindValue(":v4", QVariant(parentItemId));
-   if (!query.exec()) {
-      trace(QString("doDelete error query.exec(): ")+query.lastError().text(), traceError);
-      return false;
-   }
+   if (!query.exec())
+      throw std::runtime_error (std::string("doDelete error query.exec(): ")+query.lastError().text().toStdString());
 
    for (query.first(), itemsId->clear(); query.isValid(); query.next())
       itemsId->insert(query.value(0).toInt());
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::deleteItem (int courseId, int parentItemId, int itemId)
+void SuperMemoSQL::deleteItem(int courseId, int parentItemId, int itemId)
 {
    QSqlQuery query (m_database);
    QString q = QString("delete from %1 where %2 = :v2 and %3 = :v3 and %4 = :v4")
          .arg("items", "CourseId", "ParentID", "PageNum");
-
    query.prepare(q);
    query.bindValue(":v2", QVariant(courseId));
    query.bindValue(":v3", QVariant(parentItemId));
    query.bindValue(":v4", QVariant(itemId));
-
-   if (!query.exec()) {
-      trace(QString("deleteItem error query.exec(): ")+query.lastError().text(), traceError);
-      return false;
-   }
-
-   return true;
+   if (!query.exec())
+      throw std::runtime_error (std::string("deleteItem error query.exec(): ")+query.lastError().text().toStdString());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -234,10 +207,8 @@ bool SuperMemoSQL::getItemId (const QString &itemName, int courseId, int parentI
    query.bindValue(":v1", QVariant(courseId));
    query.bindValue(":v2", QVariant(parentItemId));
    query.bindValue(":v3", QVariant(itemName));
-   if (!query.exec()) {
-      trace(QString("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text(), traceError);
-      return false;
-   }
+   if (!query.exec())
+      throw std::runtime_error (std::string("cSuperMemoSQL::getElementID error query.exec(): ")+query.lastError().text().toStdString());
 
    if (!query.first())
       return false;
@@ -247,20 +218,16 @@ bool SuperMemoSQL::getItemId (const QString &itemName, int courseId, int parentI
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool SuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
+void SuperMemoSQL::getCourseMaxId (int courseID, int *maxId)
 {
    QSqlQuery query (m_database);
    QString q1 = QString("select max(%1) from items where CourseId = :v1").arg("PageNum");
    query.prepare(q1);
    query.bindValue(":v1", QVariant(courseID));
-   if (!query.exec()) {
-      trace(QString("cSuperMemoSQL::getCourseMaxId error query.exec(): ") + query.lastError().text(), traceError);
-      return false;
-   }
+   if (!query.exec())
+      throw std::runtime_error (std::string("cSuperMemoSQL::getCourseMaxId error query.exec(): ")+query.lastError().text().toStdString());
 
    *maxId = 1;
    if (query.first())
       *maxId = query.value(0).toInt();
-
-   return true;
 }

@@ -73,8 +73,7 @@ void CourseImageEditor::workWith (const CourseTemplate &courseTemplate)
 
    int courseID;
    QString courseMasterDir;
-   if (!m_database.getCourseDetails (courseTemplate.options.courseName, &courseID, &courseMasterDir))
-      return;
+   m_database.getCourseDetails(courseTemplate.options.courseName, &courseID, &courseMasterDir);
 
    QString courseDocumentPath = courseMasterDir+"\\override\\course.xml";
    QString courseDocumentDir = QFileInfo(courseDocumentPath).dir().path();

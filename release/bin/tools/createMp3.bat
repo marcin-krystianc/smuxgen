@@ -22,9 +22,11 @@ REM -----------------------------------
 REM ------------lame.exe---------------
 REM wav -> mp3
 
-sapi2wav.exe %1sox.wav %3 -t %2
-sox.exe %1sox.wav %1.wav trim %4 gain %5
-lame.exe %1.wav %1.mp3
+set MYDIR=%~dp0
+"%MYDIR%\\sapi2wav.exe" %1sox.wav %3 -t %2
+"%MYDIR%\\sox.exe" %1sox.wav %1.wav trim %4 gain %5
+"%MYDIR%\\lame.exe" %1.wav %1.mp3
 
 del %1.wav 
 del %1sox.wav
+

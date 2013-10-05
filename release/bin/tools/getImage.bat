@@ -20,7 +20,8 @@ set tmp2=%tmp2:~0,-1%
 echo arg1=[%tmp1%]
 echo arg2=[%tmp2%]
 
-wget -U "Mozilla/5.0"  -T 60 -t 5 -O "%tmp2%" "%tmp1%"
+set MYDIR=%~dp0
+"%MYDIR%\\wget.exe" -U "Mozilla/5.0"  -T 60 -t 5 -O "%tmp2%" "%tmp1%"
 
  
 

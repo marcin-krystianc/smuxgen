@@ -465,7 +465,7 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
    if (!runExternalTool("getGoogleHtml.bat", arguments))
       return false;
 
-   QStringList fileUrls = parseGoogleHtml("googlehtml.html");
+   QStringList fileUrls = parseGoogleHtml("google.html");
 
    int i = 0; // download 2 images
    while ((fileUrls.count())>0 && (i<filePaths.count())) {

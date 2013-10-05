@@ -18,7 +18,6 @@ QStringList getVoiceEngines()
    if (!runExternalTool("sapi2wav.exe", arguments, &result))
        return QStringList();
 
-
    QStringList retlist = QString::fromLocal8Bit(result.constData(), result.length()).split("\r\n", QString::SkipEmptyParts);
 
    for (int i = 0; i<retlist.count(); i++)

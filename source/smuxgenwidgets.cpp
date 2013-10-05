@@ -15,10 +15,12 @@
 #include <QDateTime>
 #include <Phonon>
 
+#include "globalsmuxgentools.h"
 #include "smuxgenwidgets.h"
 #include "courseoptions.h"
 #include "codeeditor.h"
 #include "sapi.h"
+
 
 /////////////////////////////////////////////////////////////////////////////
 OptionsPage::OptionsPage(QWidget *parent)
@@ -230,42 +232,17 @@ void OptionsPage::setOptions(const CourseOptions &options)
 void OptionsPage::voiceTestButtonTriggered ()
 {
    CourseOptions options = getOptions();
-   QStringList arguments; // filename, text, trim, gain
 
-   if (sender() == m_voiceTestbuttonQ)
-   {
-      arguments.append("test");
-      arguments.append(m_voiceTesttextQ->text());
-      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameQ)));
-      arguments.append(QString::number(options.voiceTrimQ));
-      arguments.append(QString::number(options.voiceGainQ));
+   if (sender() == m_voiceTestbuttonQ) {
+      generateMp3 ("test", m_voiceTesttextQ->text(), getVoiceEngineIndex(options.voiceNameQ)
+                                    , options.voiceGainQ, options.voiceTrimQ);
    }
-   else if (sender() == m_voiceTestbuttonA)
-   {
-      arguments.append("test");
-      arguments.append(m_voiceTesttextA->text());
-      arguments.append(QString::number(getVoiceEngineIndex(options.voiceNameA)));
-      arguments.append(QString::number(options.voiceTrimA));
-      arguments.append(QString::number(options.voiceGainA));
+   else if (sender() == m_voiceTestbuttonA) {
+      generateMp3 ("test", m_voiceTesttextA->text(), getVoiceEngineIndex(options.voiceNameA)
+                                    , options.voiceGainA, options.voiceTrimA);
    }
    else
       return;
-
-   trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
-   QProcess myProcess;
-
-   myProcess.start("createMp3.bat", arguments);
-   if (!myProcess.waitForStarted())
-   {
-      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
-      return;
-   }
-   myProcess.waitForFinished();
-   if (myProcess.exitCode())
-   {
-      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
-      return;
-   }
 
    Phonon::createPath(m_mediaObject, m_audioOutput);
    m_mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));

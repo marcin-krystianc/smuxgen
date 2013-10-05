@@ -457,35 +457,6 @@ QDomDocument CourseGenerator::createCourseItemDoc
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void CourseGenerator::generateMp3
-(
-      const QString &filePath,
-      const QString &mp3Text,
-      int voiceEngineIndex,
-      int voiceGain,
-      double voiceTrim
-      )
-{
-   QStringList arguments;
-   arguments.append(filePath);
-   arguments.append(mp3Text);
-   arguments.append(QString::number(voiceEngineIndex));
-   arguments.append(QString::number(voiceTrim));
-   arguments.append(QString::number(voiceGain));
-
-   trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
-
-   const int noTimeout = -1;
-   QProcess myProcess;
-   myProcess.start("createMp3.bat", arguments);
-   if (!myProcess.waitForStarted())
-      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
-   myProcess.waitForFinished(noTimeout);
-   if (myProcess.exitCode())
-      trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
-}
-
-/////////////////////////////////////////////////////////////////////////////
 bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QString &question)
 {
    deleteFile(TMPDIR+"\\HTML");

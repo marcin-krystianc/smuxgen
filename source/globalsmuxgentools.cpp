@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QImage>
 #include <QSettings>
+#include <QProcess>
 
 #include "globalsmuxgentools.h"
 #include "globaltracer.h"
@@ -248,4 +249,33 @@ QString strippedFile(const QString &fullFileName)
 QString strippedDir (const QString &fullFileName)
 {
    return QFileInfo(fullFileName).dir().canonicalPath();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void generateMp3
+(
+      const QString &filePath,
+      const QString &mp3Text,
+      int voiceEngineIndex,
+      int voiceGain,
+      double voiceTrim
+      )
+{
+   QStringList arguments;
+   arguments.append(filePath);
+   arguments.append(mp3Text);
+   arguments.append(QString::number(voiceEngineIndex));
+   arguments.append(QString::number(voiceTrim));
+   arguments.append(QString::number(voiceGain));
+
+   globalTracer.trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
+
+   const int noTimeout = -1;
+   QProcess myProcess;
+   myProcess.start("createMp3.bat", arguments);
+   if (!myProcess.waitForStarted())
+      globalTracer.trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
+   myProcess.waitForFinished(noTimeout);
+   if (myProcess.exitCode())
+      globalTracer.trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
 }

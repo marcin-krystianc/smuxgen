@@ -23,10 +23,11 @@ REM ------------lame.exe---------------
 REM wav -> mp3
 
 set MYDIR=%~dp0
-set F=%~pn1
+set F=%~dpn1
 del /F /Q %1
-"%MYDIR%\\sapi2wav.exe" %F%sox.wav %3 -t %2
-"%MYDIR%\\sox.exe" %F%sox.wav %F%.wav trim %4 gain %5
-"%MYDIR%\\lame.exe" %F%.wav %1
 
-
+"%MYDIR%\\sapi2wav.exe" "%F%sox.wav" %3 -t %2
+"%MYDIR%\\sox.exe" "%F%sox.wav" "%F%.wav" trim %4 gain %5
+"%MYDIR%\\lame.exe" "%F%.wav" %1
+del "%F%sox.wav"
+del "%F%.wav"

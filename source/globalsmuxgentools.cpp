@@ -13,6 +13,7 @@
 #include <QImage>
 #include <QSettings>
 #include <QProcess>
+#include <QCoreApplication>
 
 #include "globalsmuxgentools.h"
 #include "globaltracer.h"
@@ -253,11 +254,12 @@ QString strippedDir (const QString &fullFileName)
 /////////////////////////////////////////////////////////////////////////////
 bool runExternalTool (const QString &tool, const QStringList &arguments, QByteArray *result)
 {
-   globalTracer.trace(QString("Error:")+tool+" "+ arguments.join(" "), traceLevel1);
+   QString toolPath = QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+"\\tools\\"+tool);
+   globalTracer.trace(QString("runExternalTool: ")+toolPath+" "+ arguments.join(" "), traceLevel1);
 
    const int noTimeout = -1;
    QProcess myProcess;
-   myProcess.start("tools\\"+tool, arguments);
+   myProcess.start(toolPath, arguments);
    if (!myProcess.waitForStarted()){
       globalTracer.trace(QString("runExternalTool error: waitForStarted()"), traceError);
       return false;

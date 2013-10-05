@@ -253,12 +253,12 @@ void CourseGenerator::generateCourseElement2
    QString mediaDir = courseFileDirectory + "\\media\\";
 
    if (voiceIndexQ != 0) {
-      QString filePath = QDir::toNativeSeparators(mediaDir + getMediaFileName(id)+"q.mp3");
+      QString filePath = mediaDir + getMediaFileName(id)+"q.mp3";
       generateMp3(filePath, getTranscript(QString(question).replace("|", " ")), voiceIndexQ, voiceGainQ, voiceTrimQ);
    }
 
    if (voiceIndexA != 0) {
-      QString filePath = QDir::toNativeSeparators(mediaDir + getMediaFileName(id)+"a.mp3");
+      QString filePath = mediaDir + getMediaFileName(id)+"a.mp3";
       generateMp3(filePath, getTranscript(QString(answer).replace("|", " ")), voiceIndexA, voiceGainA, voiceTrimA);
    }
 

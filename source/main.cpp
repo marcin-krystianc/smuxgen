@@ -21,8 +21,6 @@ int main (int argc, char* argv[])
    Q_INIT_RESOURCE(gui);
    QApplication app(argc, argv);
 
-   QDir::setCurrent(QCoreApplication::applicationDirPath());
-
    app.addLibraryPath(("plugins")); // sql will not work without that
 
    QDir pDir;

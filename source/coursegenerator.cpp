@@ -307,13 +307,11 @@ void CourseGenerator::DomDoucumentToFile (const QDomDocument &document, const QS
 {
    QFile file(path);
    if(!file.open(QIODevice::WriteOnly|QIODevice::Text))
-      return false;
+      throw std::runtime_error (std::string("Cannot open file: ")+path.toStdString());
 
    QTextStream ts(&file);
    ts.setCodec("UTF-8");
    ts << document.toString();
-
-   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ signals:
    void progressSignal (const QString&);
 
 private:
-   static bool DomDoucumentToFile (const QDomDocument &document, const QString &path);
+   static void DomDoucumentToFile(const QDomDocument &document, const QString &path);
    static void DomDoucumentFromFile(const QString &path, QDomDocument *document);
    static void generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ, bool graphics);
    static QDomDocument createCourseItemDoc (QString chapterTitle, QString instruction, QString question, QString answers, int id, bool voiceA, bool voiceQ, bool graphics);

@@ -1,6 +1,5 @@
 - hints for options
 - external tools into "tools" subdir
-- opening last course
 
 
 

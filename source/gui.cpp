@@ -29,7 +29,7 @@ MainWindow::MainWindow() :
    setTitle();
    resize(800, 600);
    setWindowIcon(QIcon(":/images/smuxgen.png"));
-
+   m_recentFileActions[0]->trigger();
    connect(&m_courseGenerator, SIGNAL(finished()) , this , SLOT(buildCourseFinishedSlot()));
    connect(&m_courseGenerator, SIGNAL(progressSignal(const QString&)) , this , SLOT(progressSlot(const QString&)));
 }
@@ -447,8 +447,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
             if (!saveCourseTemplateSlot())
                event->ignore();
             break;
+
          case 1:
             break;
+
          case 2:
          default:
             event->ignore();

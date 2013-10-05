@@ -34,9 +34,10 @@ QString getTextToPrint (const QString &input); // get text to show to user
 QString strippedFile(const QString &fullFileName);
 QString strippedDir (const QString &fullFileName);
 QString getLastDir ();
+void setLastDir (const QString &dir);
 
+bool runExternalTool (const QString &tool, const QStringList &arguments, QByteArray *result = 0);
 void generateMp3(const QString &filePath, const QString &mp3Text, int voiceEngineIndex, int voiceGain, double voiceTrim);
 
-void setLastDir (const QString &dir);
 
 #endif // GLOBALSMUXGENTOOLS_H

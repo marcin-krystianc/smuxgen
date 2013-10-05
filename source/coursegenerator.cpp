@@ -12,7 +12,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDomDocument>
-#include <QProcess>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QTextStream>
@@ -464,16 +463,8 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
    arguments.append(getKeyWord(question));
    arguments.append(TMPDIR+"\\HTML");
 
-   const int noTimeout = -1;
-   QProcess myProcess;
-   myProcess.start("getGoogleHtml.bat", arguments);
-   if (!myProcess.waitForStarted())
-      trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
-   myProcess.waitForFinished(noTimeout);
-   if (myProcess.exitCode()) {
-      trace(QString("Error:getGoogleHtml.bat ")+arguments.join(" "), traceError);
+   if (!runExternalTool("getGoogleHtml.bat", arguments))
       return false;
-   }
 
    QStringList fileUrls = parseGoogleHtml(TMPDIR+"\\HTML");
 
@@ -485,14 +476,7 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
       arguments.append(fileUrls.first()+QString(" "));
       arguments.append(fileName+" ");
 
-      trace(QString("getImage.bat ")+arguments.join(" "), traceLevel1);
-
-      myProcess.start("getImage.bat", arguments);
-      if (!myProcess.waitForStarted())
-         trace(QString("Error:getImage.bat ")+arguments.join(" "), traceError);
-      myProcess.waitForFinished(noTimeout);
-      if (myProcess.exitCode())
-         trace(QString("Error:getImage.bat ")+arguments.join(" "), traceError);
+      runExternalTool("getImage.bat", arguments);
 
       if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
          trace(QString("Error:scalePicture ")+fileName, traceError);
@@ -501,6 +485,7 @@ bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QStri
 
       if (checkIsFileOk(fileName))
          i++;
+
       fileUrls.removeFirst();
    }
 

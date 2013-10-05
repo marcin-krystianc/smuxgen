@@ -252,6 +252,31 @@ QString strippedDir (const QString &fullFileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
+bool runExternalTool (const QString &tool, const QStringList &arguments, QByteArray *result)
+{
+   globalTracer.trace(tool+": "+ arguments.join(" "), traceLevel1);
+
+   const int noTimeout = -1;
+   QProcess myProcess;
+   myProcess.start(tool, arguments);
+   if (!myProcess.waitForStarted()){
+      globalTracer.trace(QString("Error:")+tool+" "+ arguments.join(" "), traceError);
+      return false;
+   }
+
+   myProcess.waitForFinished(noTimeout);
+   if (myProcess.exitCode()){
+      globalTracer.trace(QString("Error::")+tool+" "+ arguments.join(" "), traceError);
+      return false;
+   }
+
+   if (result)
+      *result = myProcess.readAllStandardOutput();
+
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void generateMp3
 (
       const QString &filePath,
@@ -268,14 +293,6 @@ void generateMp3
    arguments.append(QString::number(voiceTrim));
    arguments.append(QString::number(voiceGain));
 
-   globalTracer.trace(QString("createMp3.bat ")+arguments.join(" "), traceLevel1);
-
-   const int noTimeout = -1;
-   QProcess myProcess;
-   myProcess.start("createMp3.bat", arguments);
-   if (!myProcess.waitForStarted())
-      globalTracer.trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
-   myProcess.waitForFinished(noTimeout);
-   if (myProcess.exitCode())
-      globalTracer.trace(QString("Error:createMp3.bat ")+arguments.join(" "), traceError);
+   globalTracer.trace(QString("createMp3.bat")+arguments.join(" "), traceLevel1);
+   runExternalTool ("createMp3.bat", arguments);
 }

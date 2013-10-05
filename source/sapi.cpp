@@ -6,25 +6,18 @@
 // Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
-#include <QProcess>
-
+#include "globalsmuxgentools.h"
 #include "sapi.h"
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList getVoiceEngines()
 {
-   QProcess myProcess;
+   QByteArray result;
    QStringList arguments;
    arguments.append("-list");
-   myProcess.start("sapi2wav.exe", arguments);
-   if (!myProcess.waitForStarted())
-      return QStringList();
+   if (!runExternalTool("sapi2wav.exe", arguments, &result))
+       return QStringList();
 
-   myProcess.waitForFinished();
-   if (myProcess.exitCode())
-      return QStringList();
-
-   QByteArray result = myProcess.readAllStandardOutput();
 
    QStringList retlist = QString::fromLocal8Bit(result.constData(), result.length()).split("\r\n", QString::SkipEmptyParts);
 

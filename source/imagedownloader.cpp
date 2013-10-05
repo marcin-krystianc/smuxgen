@@ -8,7 +8,6 @@
 
 #include <QString>
 #include <QDir>
-#include <Qprocess>
 #include <QPixmap>
 
 #include "imagedownloader.h"
@@ -48,25 +47,14 @@ void ImageDownloadHelper::run()
 {
    trace(QString("cImageDownloadHelper::run id:")+QString::number(m_id)+QString::fromUtf8(" url:")+m_url, traceLevel3);
 
-   QProcess myProcess;
-   const int timeOut = -1; // no timeout
+
    QString fileName = myFileName();
-
-   QStringList arguments;
-
    deleteFile(fileName);
 
+   QStringList arguments;
    arguments.append(m_url+QString(" "));
    arguments.append(fileName+" ");
-
-   trace(QString("getImage.bat ")+arguments.join(" "), traceLevel3);
-
-   myProcess.start("getImage.bat", arguments);
-   if (!myProcess.waitForStarted())
-      trace(QString("Error.waitForStarted() :getImage.bat ")+arguments.join(" "), traceError);
-   myProcess.waitForFinished(timeOut);
-   if (myProcess.exitCode())
-      trace(QString("Error.exitCode() :getImage.bat ")+arguments.join(" "), traceError);
+   runExternalTool("getImage.bat", arguments);
 
    if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
       trace(QString("Error:scalePicture ")+fileName, traceError);
@@ -133,8 +121,6 @@ void ImageDownloader::run ()
 {
    trace(QString("cImageDownloader::run id:")+m_id+QString::fromUtf8(" keywords:")+m_keyWords, traceLevel3);
 
-   QProcess myProcess;
-   const int timeOut = -1; // no timeout
    QString gFileName = myFileName();
 
    for (;;) {
@@ -150,13 +136,7 @@ void ImageDownloader::run ()
       QStringList arguments;
       arguments.append(getKeyWord(m_keyWords));
       arguments.append(gFileName);
-
-      myProcess.start("getGoogleHtml.bat", arguments);
-      if (!myProcess.waitForStarted())
-         trace(QString("Error.waitForStarted :getGoogleHtml.bat ")+arguments.join(" "), traceError);
-      myProcess.waitForFinished(timeOut);
-      if (myProcess.exitCode())
-         trace(QString("Error.exitCode :getGoogleHtml.bat ")+arguments.join(" "), traceError);
+      runExternalTool("getGoogleHtml.bat", arguments);
 
       m_urls = parseGoogleHtml(gFileName);
 

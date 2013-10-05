@@ -1,38 +1,31 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #ifndef COURSETEMPLATE_H
 #define COURSETEMPLATE_H
 
-#include "coursetemplateoptions.h"
+#include "courseoptions.h"
 
-#include <QObject>
 #include <QString>
 #include <QStringList>
 
-class cCourseTemplate
+struct CourseTemplate
 {
+   static CourseTemplate fromFile(const QString &fileName);
+   static bool toFile (const QString &fileName, const CourseTemplate &courseTemplate);
+   static CourseTemplate importQA (const QString &fileName);
+   static bool exportQA (const QString &fileName, const CourseTemplate &courseTemplate);
 
-public:
-    cCourseTemplate();
+   CourseOptions options;
+   QStringList content;
 
-    bool open (const QString &fileName);    // open from file - false if not succeeded
-    bool save (const QString &fileName);    // save to file - false if not succeeded
-    bool importQA (const QString &fileName);    // import from Q&A file - false if not succeeded
-    bool exportQA (const QString &fileName);    // export to Q&A file - false if not succeeded
-
-    cCourseTemplateOptions options;
-    QStringList content;
 private:
-
-    void trace (const QString &text,const int & flags = traceLevel1|0);
-    void clear();
-
+   static void trace (const QString &text, const int flags = traceLevel1|0);
 };
 
 #endif // COURSETEMPLATE_H

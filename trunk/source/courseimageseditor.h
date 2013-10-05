@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include <QWidget>
@@ -23,10 +23,10 @@
 #include <QLabel>
 #include <QScrollBar>
 
-#include "coursetemplateoptions.h"
-#include "csupermemosql.h"
-#include "cglobaltracer.h"
-#include "cimagedownloader.h"
+#include "courseoptions.h"
+#include "supermemosql.h"
+#include "globaltracer.h"
+#include "imagedownloader.h"
 #include "coursetemplate.h"
 
 #ifndef COURSEIMAGESEDITOR_H
@@ -34,207 +34,183 @@
 
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageList : public QListWidget
+class ImageList : public QListWidget
 {
-    Q_OBJECT
-    public:
+   Q_OBJECT
+public:
+   ImageList(QWidget *parent = 0, int m_maxCount = 128);
+   void addPiece(const QPixmap &pixmap, const QString &hint = "");
+   void resetPosition();
 
-        cImageList(QWidget *parent = 0,int maxCount = 128);
-        void addPiece(const QPixmap &pixmap,const QString &hint="");
-        void resetPosition();
-    public slots:
-        void addPieceSlot       (const QPixmap &,const QString &hint="");
-        void setIconSizeSlot    (int size );
+public slots:
+   void addPieceSlot (const QPixmap &, const QString &hint = "");
+   void setIconSizeSlot (int size);
 
-    private slots:
-        void itemClickedSlot ( QListWidgetItem * item );
+private:
+   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen"); }
+   void trace (const QString &text, const int & flags = traceLevel1|0);
 
+   int m_maxCount;
+   int m_rowIndex;
 
-    private:
-        int maxCount;
-        int rowIndex;
+   enum TILE_SIZE {
+      e_tileSizeX = 100,
+      e_tileSizeY = 100
+   };
 
-        QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
-
-        static const unsigned int tileSizeX = 100;
-        static const unsigned int tileSizeY = 100;
-
-        void trace (const QString &text,const int & flags = traceLevel1|0);
-
-    protected:
-        /*
-        void dragEnterEvent(QDragEnterEvent *event);
-        void dragMoveEvent(QDragMoveEvent *event);
-        void dropEvent(QDropEvent *event);
-        */
-        void startDrag(Qt::DropActions supportedActions);
-
+protected:
+   void startDrag(Qt::DropActions supportedActions);
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageSearch : public QWidget
+class ImageSearch : public QWidget
 {
-    Q_OBJECT
-    public:
-        cImageSearch(QWidget *parent = 0);
-        ~cImageSearch();
+   Q_OBJECT
+public:
+   ImageSearch(QWidget *parent = 0);
+   ~ImageSearch();
 
+public slots:
+   void setNewKeywordsChangedL (const QString &txt);
+   void setNewKeywordsChangedR (const QString &txt);
+   void newKeywordsChangedL (const QString &txt);
+   void newKeywordsChangedR (const QString &txt);
+   void newKeywordsL ();
+   void newKeywordsR ();
 
-    public slots:
-        void setNewKeywordsChangedL   (const QString &txt);
-        void setNewKeywordsChangedR   (const QString &txt);
-        void newKeywordsChangedL   (const QString &txt);
-        void newKeywordsChangedR   (const QString &txt);
-        void newKeywordsL   ();
-        void newKeywordsR   ();
+private:
+   void newKeywords (const QString &txt, int id);
+   void trace (const QString &text, const int & flags = traceLevel1|0);
 
-    private:
-        QLineEdit       *leftEdit;
-        QLineEdit       *rightEdit;
-        QProgressBar    *leftProgress;
-        QProgressBar    *rightProgress;
-        QTimer          *timerL;
-        QTimer          *timerR;
-
-        QSlider      *zoomSlider;
-
-        QString textL;
-        QString textR;
-
-        cImageList  *imagelist;
-        cImageDownloader *imageDownloader[2];
-        void newKeywords    (const QString &txt,int id);
-
-        void trace (const QString &text,const int & flags = traceLevel1|0);
-
-
-    protected:
-
+   QLineEdit *m_leftEdit;
+   QLineEdit *m_rightEdit;
+   QProgressBar *m_leftProgress;
+   QProgressBar *m_rightProgress;
+   QTimer *m_timerL;
+   QTimer *m_timerR;
+   QSlider *m_zoomSlider;
+   QString m_textL;
+   QString m_textR;
+   ImageList *m_imagelist;
+   ImageDownloader *m_imageDownloader[2];
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageButtonWidget : public QWidget
+class ImageButtonWidget : public QWidget
 {
-    Q_OBJECT
-    public:
-        cImageButtonWidget (QWidget *parent = 0);
-        bool setFile (const QString &path);
+   Q_OBJECT
+public:
+   ImageButtonWidget (QWidget *parent = 0);
+   bool setFile (const QString &path);
 
-    private:
+private:
+   QLabel *m_label;
+   QPixmap m_pixmap;
 
-        QLabel   *label;
-        QPixmap pixmap;
+   QString m_filePath;
+   QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen"); }
+   void trace (const QString &text, const int & flags = traceLevel1|0);
+   void setPixmap (const QPixmap &m_pixmap);
 
-        QString filePath;
-        QString tileMimeFormat () {return QString::fromUtf8("image/x-smuxgen");}
-        void trace (const QString &text,const int & flags = traceLevel1|0);
-        void setPixmap (const QPixmap &pixmap);
-
-    protected:
-        void dragEnterEvent(QDragEnterEvent *event);
-        void dragMoveEvent(QDragMoveEvent *event);
-        void dropEvent(QDropEvent *event);
-        void resizeEvent ( QResizeEvent * event ) ;
+protected:
+   void dragEnterEvent(QDragEnterEvent *event);
+   void dragMoveEvent(QDragMoveEvent *event);
+   void dropEvent(QDropEvent *event);
+   void resizeEvent (QResizeEvent * event) ;
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cImageTargetWidget : public QWidget
+class ImageTargetWidget : public QWidget
 {
-    Q_OBJECT
-    public:
-        cImageTargetWidget (QWidget *parent = 0);
-        void setFiles (const QStringList &list);
+   Q_OBJECT
+public:
+   ImageTargetWidget (QWidget *parent = 0);
+   void setFiles (const QStringList &list);
 
-    private:
+private:
+   ImageButtonWidget *imageButtonWidget[2][2];
 
-        cImageButtonWidget   *imageButtonWidget[2][2];
-
-    protected:
-        void resizeEvent ( QResizeEvent * event ) ;
+protected:
+   void resizeEvent (QResizeEvent * event) ;
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cReadyCourseElementList : public QWidget
+class ReadyCourseElementList : public QWidget
 {
-    Q_OBJECT
-    public:
-        cReadyCourseElementList (QWidget *parent = 0);
-        void clear();
-        void addItem (const QString &text,const QStringList &imgData,const QStringList &mp3Data);
+   Q_OBJECT
+public:
+   ReadyCourseElementList (QWidget *parent = 0);
+   void clear();
+   void addItem (const QString &text, const QStringList &imgData, const QStringList &mp3Data);
 
-    signals:
-        void elementSelectedImgSignal   (const QStringList &list);
-        void elementSelectedMP3Signal   (const QStringList &list);
+signals:
+   void elementSelectedImgSignal (const QStringList &list);
+   void elementSelectedMP3Signal (const QStringList &list);
 
-    private:
-        QListWidget *listWidget;
+private:
+   QListWidget *m_listWidget;
 
-    private slots:
-        void itemActivatedSlot   ( QListWidgetItem * item );
-
-    protected:
+private slots:
+   void itemActivatedSlot (QListWidgetItem * item);
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cMp3Widget : public QWidget
+class Mp3Widget : public QWidget
 {
-    Q_OBJECT
-    public:
-        cMp3Widget (QWidget *parent = 0);
-        void setData (const QString &label,const QString &path);
+   Q_OBJECT
+public:
+   Mp3Widget (QWidget *parent = 0);
+   void setData (const QString &label, const QString &path);
 
-    private:
-        QLabel          *label;
-        QPushButton     *playButton;
-        QPushButton     *openButton;
-        QString         filePath;
+private:
+   QLabel *m_label;
+   QString m_filePath;
+   QPushButton *m_playButton;
+   QPushButton *m_openButton;
+   Phonon::AudioOutput *m_audioOutput;
+   Phonon::MediaObject *m_mediaObject;
 
-        Phonon::AudioOutput *audioOutput;
-        Phonon::MediaObject *mediaObject;
-    private slots:
-       void play();
-       void openFile();
+private slots:
+   void play();
+   void openFile();
 };
 
 /////////////////////////////////////////////////////////////////////////////
-class cMp3TargetWidget : public QWidget
+class Mp3TargetWidget : public QWidget
 {
-    Q_OBJECT
-    public:
-        cMp3TargetWidget (QWidget *parent = 0);
-        void setData (const QStringList &list);
+   Q_OBJECT
+public:
+   Mp3TargetWidget (QWidget *parent = 0);
+   void setData (const QStringList &list);
 
-    private:
-        cMp3Widget   *mp3Widget[4];
+private:
+   Mp3Widget *m_mp3Widget[4];
 
-    private slots:
-        void elementSelectedMp3Slot (const QStringList& mp3Data);
+private slots:
+   void elementSelectedMp3Slot (const QStringList& mp3Data);
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // widget which allows to view and modify images for each exercise
-class cCourseImageEditor : public QWidget
+class CourseImageEditor : public QWidget
 {
-    Q_OBJECT
-    public:
-        cCourseImageEditor (QWidget *parent = 0);
-        void workWith (const cCourseTemplate &courseTemplate);
+   Q_OBJECT
+public:
+   CourseImageEditor (QWidget *parent = 0);
+   void workWith (const CourseTemplate &courseTemplate);
 
-    private:
-        void clear ();
-        void trace (const QString &text,const int & flags = traceLevel1|0);
+private:
+   void clear ();
+   void trace (const QString &text, const int & flags = traceLevel1|0);
 
-        cSuperMemoSQL           database;
+   SuperMemoSQL m_database;
+   ReadyCourseElementList *m_readyCourseElementList;
+   ImageTargetWidget *m_imageTargetWidget;
+   ImageSearch *m_imageSearch;
+   Mp3TargetWidget *m_mp3TargetWidget;
 
-        cReadyCourseElementList *readyCourseElementList;
-        cImageTargetWidget      *imageTargetWidget;
-        cImageSearch            *imageSearch;
-        cMp3TargetWidget        *mp3TargetWidget;
-
-    private slots:
-        void elementSelectedImgSlot (const QStringList &imgData);
-
-protected:
+private slots:
+   void elementSelectedImgSlot (const QStringList &imgData);
 };
 
 

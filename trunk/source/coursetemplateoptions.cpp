@@ -1,191 +1,148 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
-#include "coursetemplateoptions.h"
-#include "cglobaltracer.h"
+#include "courseoptions.h"
+#include "globaltracer.h"
 
 #include <QString>
 #include <QStringList>
 
 /////////////////////////////////////////////////////////////////////////////
-cCourseTemplateOptions::cCourseTemplateOptions()
+CourseOptions::CourseOptions() :
+   bothDirections(false), graphics(false),
+   user(""), courseName(""),
+   voiceNameQ(""), voiceGainQ(0), voiceTrimQ(0),
+   voiceNameA(""), voiceGainA(0), voiceTrimA(0)
 {
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool cCourseTemplateOptions::fromString(const QString &line)
+CourseOptions CourseOptions::fromString (const QString &line)
 {
-    if (line.isEmpty())
-    {
-        trace("cCourseTemplateOptions::fromString - line is empty: ",traceError);
-        return false;
-    }
+   CourseOptions options;
+   QStringList chunks = line.split(" ", QString::SkipEmptyParts);
+   int i = 0;
+   while (i<chunks.count())
+   {
+      QString first = chunks.at(i++);
 
-    QStringList chunks =line.split(" ",QString::SkipEmptyParts);
+      if (first == "-Double") {
+         options.bothDirections = true;
+         continue;
+      }
 
-    int i=0;
-    while (i<chunks.count())
-    {
-        QString first = chunks.at(i++);
+      if (first == "-Image"){
+         options.graphics = true;
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-Force")) {
-            this->bit.oForce = true;
-            continue;
-        }
-
-        if (first==QString::fromUtf8("-Double")) {
-            this->bit.oDouble = true;
-            continue;
-        }
-
-        if (first==QString::fromUtf8("-VoiceQ")){
-            this->bit.oVoiceQ = true;
-            continue;
-        }
-
-        if (first==QString::fromUtf8("-VoiceA")){
-            this->bit.oVoiceA = true;
-            continue;
-        }
-
-        if (first==QString::fromUtf8("-Image")){
-            this->bit.oImage = true;
-            continue;
-        }
-
-        if (i==chunks.count())
-        {
-            trace("cCourseTemplateOptions::fromString - Missing value after: "+first,traceError);
-            return false;
-        }
+      if (i == chunks.count()) {
+         trace("cCourseTemplateOptions::fromString - Missing value after: "+first, traceError);
+         return options;
+      }
 
 
-        QString second = chunks.at(i++);
+      QString second = chunks.at(i++);
 
-        // joining chunks in quotes
-        while (second.startsWith("\"")^second.endsWith("\"")) // XOR
-        {
-            if (i>=chunks.count())
-            {
-                trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second,traceError);
-                return false;   // wrong parameters
-            }
-            second += " ";
-            second += chunks.at(i++);
-        }
+      // joining chunks in quotes
+      while (second.startsWith("\"")^second.endsWith("\"")) {
+         if (i >= chunks.count()) {
+            trace("cCourseTemplateOptions::fromString - wrong second parameter:"+second, traceError);
+            return options; // wrong parameters
+         }
+         second += " ";
+         second += chunks.at(i++);
+      }
 
 
-        if (first==QString::fromUtf8("-course")) {
-            this->course = second.remove("\"");;
-            continue;
-        }
+      if (first == "-course") {
+         options.courseName = second.remove("\""); ;
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-database")) {
-            this->database = second.remove("\"");
-            continue;
-        }
+      if (first == "-user") {
+         options.user = second.remove("\"");
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-subname")) {
-            this->subname = second.remove("\"");
-            continue;
-        }
+      if (first == "-subname") {
+         options.subname = second.remove("\"");
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-instruction")) {
-            this->instruction = second.remove("\"");
-            continue;
-        }
+      if (first == "-instruction") {
+         options.instruction = second.remove("\"");
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-trimQ")) {
-            this->voiceTrimQ = second.toDouble();
-            continue;
-        }
+      if (first == "-trimQ") {
+         options.voiceTrimQ = second.toDouble();
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-vNameQ")) {
-            this->voiceNameQ = second.remove("\"");
-            continue;
-        }
+      if (first == "-vNameQ") {
+         options.voiceNameQ = second.remove("\"");
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-gainQ")) {
-            this->voiceGainQ = second.toInt();
-            continue;
-        }
-        if (first==QString::fromUtf8("-trimA")) {
-            this->voiceTrimA = second.toDouble();
-            continue;
-        }
+      if (first == "-gainQ") {
+         options.voiceGainQ = second.toInt();
+         continue;
+      }
+      if (first == "-trimA") {
+         options.voiceTrimA = second.toDouble();
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-vNameA")) {
-            this->voiceNameA = second.remove("\"");
-            continue;
-        }
+      if (first == "-vNameA") {
+         options.voiceNameA = second.remove("\"");
+         continue;
+      }
 
-        if (first==QString::fromUtf8("-gainA")) {
-            this->voiceGainA = second.toInt();
-            continue;
-        }
+      if (first == "-gainA") {
+         options.voiceGainA = second.toInt();
+         continue;
+      }
 
-        trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first,traceError);
-        continue;   // wrong parameters
-    }
-    return true;
+      trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first, traceError);
+      continue; // wrong parameters
+   }
+   return options;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString cCourseTemplateOptions::toString()
+QString CourseOptions::toString(const CourseOptions &options)
 {
-    QString ret;
+   QString ret;
 
-    ret+=QString("-course ")        +"\""+this->course      +"\" ";
-    ret+=QString("-database ")      +"\""+this->database    +"\" ";
-    ret+=QString("-subname ")       +"\""+this->subname     +"\" ";
-    ret+=QString("-instruction ")   +"\""+this->instruction +"\" ";
+   ret+= QString("-course ") +"\""+options.courseName +"\" ";
+   ret+= QString("-user ") +"\""+options.user +"\" ";
+   ret+= QString("-subname ") +"\""+options.subname +"\" ";
+   ret+= QString("-instruction ") +"\""+options.instruction +"\" ";
 
-    ret+=QString("-trimQ ")     +QString::number(this->voiceTrimQ) +" ";
-    ret+=QString("-vNameQ ")    +"\""+this->voiceNameQ+"\" ";
-    ret+=QString("-gainQ ")     +QString::number(this->voiceGainQ) +" ";
+   ret+= QString("-trimQ ") +QString::number(options.voiceTrimQ) +" ";
+   ret+= QString("-vNameQ ") +"\""+options.voiceNameQ+"\" ";
+   ret+= QString("-gainQ ") +QString::number(options.voiceGainQ) +" ";
 
-    ret+=QString("-trimA ")     +QString::number(this->voiceTrimA) +" ";
-    ret+=QString("-vNameA ")    +"\""+this->voiceNameA+"\" ";
-    ret+=QString("-gainA ")     +QString::number(this->voiceGainA) +" ";
+   ret+= QString("-trimA ") +QString::number(options.voiceTrimA) +" ";
+   ret+= QString("-vNameA ") +"\""+options.voiceNameA+"\" ";
+   ret+= QString("-gainA ") +QString::number(options.voiceGainA) +" ";
 
-    if ( this->bit.oForce)  ret+="-Force ";
-    if ( this->bit.oDouble) ret+="-Double ";
-    if ( this->bit.oVoiceQ) ret+="-VoiceQ ";
-    if ( this->bit.oVoiceA) ret+="-VoiceA ";
-    if ( this->bit.oImage)  ret+="-Image ";
+   if (options.bothDirections) ret+= "-Double ";
+   if (options.graphics) ret+= "-Image ";
 
-    return ret;
+   return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void cCourseTemplateOptions::trace(const QString &text,const int & flags)
+void CourseOptions::trace(const QString &text, const int & flags)
 {
-     globalTracer.trace(text,flags);
+   globalTracer.trace(text, flags);
 }
-/////////////////////////////////////////////////////////////////////////////
-void  cCourseTemplateOptions::clear()
-{
-    this->bit.oDouble = false;
-    this->bit.oForce  = false;
-    this->bit.oVoiceQ = false;
-    this->bit.oVoiceA = false;
-    this->bit.oImage  = false;
 
-    this->course.clear();
-    this->database.clear();
-    this->subname.clear();
-    this->instruction.clear();
-
-    voiceNameQ.clear();
-    voiceGainQ  = 0;
-    voiceTrimQ  = 0;
-
-    voiceNameA.clear();
-    voiceGainA  = 0;
-    voiceTrimA  = 0;
-}

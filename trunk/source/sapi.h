@@ -1,22 +1,21 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 #include <QStringList>
 
 
-#ifndef CSAPI_H
-#define CSAPI_H
+#ifndef SAPI_H
+#define SAPI_H
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList getVoices();
+QStringList getVoiceEngines();
 
 /////////////////////////////////////////////////////////////////////////////
-int getVoiceIndex(QString voice); // if failed then returns -1
-
+int getVoiceEngineIndex(QString voiceEngine);
 
 #endif // CSAPI_H

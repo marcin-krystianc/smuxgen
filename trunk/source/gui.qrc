@@ -12,5 +12,6 @@
         <file>images/undo.png</file>
         <file>images/prev.png</file>
         <file>images/next.png</file>
+        <file>images/rebuild.png</file>
     </qresource>
 </RCC>

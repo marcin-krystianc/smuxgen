@@ -1,9 +1,9 @@
 //============================================================================
-// Author       : Marcin Krystianc (marcin.krystianc@gmail.com)
-// Version      : 2.0
-// License      : GPL
-// URL          : http://code.google.com/p/smuxgen/
-// Description  : SMUXGEN - SuperMemo UX generator
+// Author : Marcin Krystianc (marcin.krystianc@gmail.com)
+// Version : 2.0
+// License : GPL
+// URL : http://code.google.com/p/smuxgen/
+// Description : SMUXGEN - SuperMemo UX generator
 //============================================================================
 
 
@@ -18,17 +18,17 @@
 /////////////////////////////////////////////////////////////////////////////
 int main (int argc, char* argv[])
 {
-    Q_INIT_RESOURCE(gui);
+   Q_INIT_RESOURCE(gui);
+   QApplication app(argc, argv);
 
-    QApplication app(argc, argv);
-    app.addLibraryPath(("plugins")); // sql will not work without that
+   app.addLibraryPath(("plugins")); // sql will not work without that
 
-    QDir pDir;
-    pDir.mkdir("tmp");
+   QDir pDir;
+   pDir.mkdir("tmp");
 
-    MainWindow mainWin;
-    mainWin.show();
+   MainWindow mainWin;
+   mainWin.show();
 
-    return app.exec();
+   return app.exec();
 }
 

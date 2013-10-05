@@ -253,12 +253,12 @@ void CourseGenerator::generateCourseElement2
    QString mediaDir = courseFileDirectory + "\\media\\";
 
    if (voiceIndexQ != 0) {
-      QString filePath = mediaDir + getMediaFileName(id)+"q";
+      QString filePath = QDir::toNativeSeparators(mediaDir + getMediaFileName(id)+"q.mp3");
       generateMp3(filePath, getTranscript(QString(question).replace("|", " ")), voiceIndexQ, voiceGainQ, voiceTrimQ);
    }
 
    if (voiceIndexA != 0) {
-      QString filePath = mediaDir + getMediaFileName(id)+"a";
+      QString filePath = QDir::toNativeSeparators(mediaDir + getMediaFileName(id)+"a.mp3");
       generateMp3(filePath, getTranscript(QString(answer).replace("|", " ")), voiceIndexA, voiceGainA, voiceTrimA);
    }
 
@@ -458,31 +458,31 @@ QDomDocument CourseGenerator::createCourseItemDoc
 /////////////////////////////////////////////////////////////////////////////
 bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QString &question)
 {
+   QString htmlFilePath = QDir::toNativeSeparators(QDir::tempPath()+"\\google.html");
    QStringList arguments;
    arguments.append(getKeyWord(question));
-   arguments.append("google.html");
+   arguments.append(htmlFilePath);
 
    if (!runExternalTool("getGoogleHtml.bat", arguments))
       return false;
 
-   QStringList fileUrls = parseGoogleHtml("google.html");
-
-   int i = 0; // download 2 images
+   QStringList fileUrls = parseGoogleHtml(htmlFilePath);
+   int i = 0;
    while ((fileUrls.count())>0 && (i<filePaths.count())) {
-      QString fileName = filePaths[i];
-      deleteFile(fileName);
-      arguments.clear();
-      arguments.append(fileUrls.first()+QString(" "));
-      arguments.append(fileName+" ");
+      QString imgFilePath = QDir::toNativeSeparators(filePaths[i]);
 
-      runExternalTool("getImage.bat", arguments);
+      QStringList arguments2;
+      arguments2.append(fileUrls.first());
+      arguments2.append(imgFilePath);
 
-      if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
-         trace(QString("Error:scalePicture ")+fileName, traceError);
-         deleteFile(fileName);
+      runExternalTool("getImage.bat", arguments2);
+
+      if (!scalePicture(imgFilePath , IMG_WIDTH, IMG_HEIGHT)) {
+         trace(QString("Error:scalePicture ")+imgFilePath , traceError);
+         deleteFile(imgFilePath );
       }
 
-      if (checkIsFileOk(fileName))
+      if (checkIsFileOk(imgFilePath ))
          i++;
 
       fileUrls.removeFirst();

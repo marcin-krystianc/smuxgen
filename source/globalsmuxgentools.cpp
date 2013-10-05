@@ -86,7 +86,6 @@ QString getTextToPrint (const QString &input) // get text to show to user
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
 QString getKeyWord (const QString &input)
 {
    const QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?; ':\"[]\{}|");

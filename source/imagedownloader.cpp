@@ -47,22 +47,18 @@ void ImageDownloadHelper::run()
 {
    trace(QString("cImageDownloadHelper::run id:")+QString::number(m_id)+QString::fromUtf8(" url:")+m_url, traceLevel3);
 
-
-   QString fileName = myFileName();
-   deleteFile(fileName);
-
+   QString filePath = QDir::toNativeSeparators(QDir::tempPath() + myFileName());
    QStringList arguments;
-   arguments.append(m_url+QString(" "));
-   arguments.append(fileName+" ");
+   arguments.append(m_url);
+   arguments.append(filePath);
    runExternalTool("getImage.bat", arguments);
 
-   if (!scalePicture(fileName, IMG_WIDTH, IMG_HEIGHT)) {
-      trace(QString("Error:scalePicture ")+fileName, traceError);
-      deleteFile(fileName);
+   if (!scalePicture(filePath, IMG_WIDTH, IMG_HEIGHT)) {
+      trace(QString("Error:scalePicture ")+filePath, traceError);
    }
 
-   if (checkIsFileOk(fileName)) {
-      QPixmap pixmap(fileName);
+   if (checkIsFileOk(filePath)) {
+      QPixmap pixmap(filePath);
       emit finished (true, pixmap, m_id, m_url);
    }
    else {

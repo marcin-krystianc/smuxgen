@@ -458,15 +458,14 @@ QDomDocument CourseGenerator::createCourseItemDoc
 /////////////////////////////////////////////////////////////////////////////
 bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QString &question)
 {
-   deleteFile(TMPDIR+"\\HTML");
    QStringList arguments;
    arguments.append(getKeyWord(question));
-   arguments.append(TMPDIR+"\\HTML");
+   arguments.append("google.html");
 
    if (!runExternalTool("getGoogleHtml.bat", arguments))
       return false;
 
-   QStringList fileUrls = parseGoogleHtml(TMPDIR+"\\HTML");
+   QStringList fileUrls = parseGoogleHtml("googlehtml.html");
 
    int i = 0; // download 2 images
    while ((fileUrls.count())>0 && (i<filePaths.count())) {

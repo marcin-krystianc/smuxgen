@@ -12,7 +12,6 @@
 #ifndef GLOBALSMUXGENTOOLS_H
 #define GLOBALSMUXGENTOOLS_H
 
-const QString TMPDIR = QString("tmp\\");
 const int IMG_WIDTH = 320;
 const int IMG_HEIGHT = 320;
 

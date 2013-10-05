@@ -1,5 +1,4 @@
 - hints for options
-- external tools into "tools" subdir
 
 
 

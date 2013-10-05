@@ -258,7 +258,7 @@ bool runExternalTool (const QString &tool, const QStringList &arguments, QByteAr
 
    const int noTimeout = -1;
    QProcess myProcess;
-   myProcess.start(tool, arguments);
+   myProcess.start("tools\\"+tool, arguments);
    if (!myProcess.waitForStarted()){
       globalTracer.trace(QString("Error:")+tool+" "+ arguments.join(" "), traceError);
       return false;
@@ -292,7 +292,5 @@ void generateMp3
    arguments.append(QString::number(voiceEngineIndex));
    arguments.append(QString::number(voiceTrim));
    arguments.append(QString::number(voiceGain));
-
-   globalTracer.trace(QString("createMp3.bat")+arguments.join(" "), traceLevel1);
    runExternalTool ("createMp3.bat", arguments);
 }

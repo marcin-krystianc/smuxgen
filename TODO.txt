@@ -1,4 +1,6 @@
 - hints for options
+- temporary files outside program directory
+
 
 
 

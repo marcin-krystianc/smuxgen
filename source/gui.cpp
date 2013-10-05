@@ -324,6 +324,9 @@ bool MainWindow::saveAsCourseTemplateSlot()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::buildCourseSlot(bool rebuild)
 {
+   // to mitigate focus issiues due to running external processes
+   setFocus();
+
    m_courseTemplate.options = m_optionsPage->getOptions();
    m_courseTemplate.content = m_contentPage->getContent();
    m_courseGenerator.build(m_courseTemplate, rebuild);

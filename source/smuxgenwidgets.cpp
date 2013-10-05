@@ -232,20 +232,21 @@ void OptionsPage::setOptions(const CourseOptions &options)
 void OptionsPage::voiceTestButtonTriggered ()
 {
    CourseOptions options = getOptions();
+   QString filePath = QDir::tempPath()+"\\test.mp3";
 
    if (sender() == m_voiceTestbuttonQ) {
-      generateMp3 ("test", m_voiceTesttextQ->text(), getVoiceEngineIndex(options.voiceNameQ)
+      generateMp3 (filePath, m_voiceTesttextQ->text(), getVoiceEngineIndex(options.voiceNameQ)
                                     , options.voiceGainQ, options.voiceTrimQ);
    }
    else if (sender() == m_voiceTestbuttonA) {
-      generateMp3 ("test", m_voiceTesttextA->text(), getVoiceEngineIndex(options.voiceNameA)
+      generateMp3 (filePath, m_voiceTesttextA->text(), getVoiceEngineIndex(options.voiceNameA)
                                     , options.voiceGainA, options.voiceTrimA);
    }
    else
       return;
 
    Phonon::createPath(m_mediaObject, m_audioOutput);
-   m_mediaObject->setCurrentSource(Phonon::MediaSource("test.mp3"));
+   m_mediaObject->setCurrentSource(Phonon::MediaSource(filePath));
    m_mediaObject->play();
 }
 
@@ -307,14 +308,6 @@ void OptionsPage::userChanged(const QString &userName)
       m_courseCombo->setCurrentIndex(pos);
 
    return;
-}
-
-////////////////////////////////////////////////////////////////////////////
-void OptionsPage::testFileRemoveSlot()
-{
-   m_mediaObject->setCurrentSource(Phonon::MediaSource("qwerty"));
-   if (!QFile::remove("test.mp3"))
-      trace(QString("cannot remove test.mp3 "), traceError);
 }
 
 /////////////////////////////////////////////////////////////////////////////

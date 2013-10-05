@@ -254,19 +254,19 @@ QString strippedDir (const QString &fullFileName)
 /////////////////////////////////////////////////////////////////////////////
 bool runExternalTool (const QString &tool, const QStringList &arguments, QByteArray *result)
 {
-   globalTracer.trace(tool+": "+ arguments.join(" "), traceLevel1);
+   globalTracer.trace(QString("Error:")+tool+" "+ arguments.join(" "), traceLevel1);
 
    const int noTimeout = -1;
    QProcess myProcess;
    myProcess.start("tools\\"+tool, arguments);
    if (!myProcess.waitForStarted()){
-      globalTracer.trace(QString("Error:")+tool+" "+ arguments.join(" "), traceError);
+      globalTracer.trace(QString("runExternalTool error: waitForStarted()"), traceError);
       return false;
    }
 
    myProcess.waitForFinished(noTimeout);
    if (myProcess.exitCode()){
-      globalTracer.trace(QString("Error::")+tool+" "+ arguments.join(" "), traceError);
+      globalTracer.trace(QString("runExternalTool error:") + myProcess.readAllStandardOutput(), traceError);
       return false;
    }
 
@@ -287,7 +287,7 @@ void generateMp3
       )
 {
    QStringList arguments;
-   arguments.append(filePath);
+   arguments.append(QDir::toNativeSeparators(filePath));
    arguments.append(mp3Text);
    arguments.append(QString::number(voiceEngineIndex));
    arguments.append(QString::number(voiceTrim));

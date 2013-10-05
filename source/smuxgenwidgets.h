@@ -100,7 +100,6 @@ private slots:
    void voiceCheckBoxChangedQ (int);
    void voiceCheckBoxChangedA (int);
    void voiceTestButtonTriggered ();
-   void testFileRemoveSlot();
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -121,10 +121,6 @@ void MainWindow::createActions()
    m_stopBuildAction->setText(tr("Stop "));
    connect(m_stopBuildAction, SIGNAL(triggered()), this, SLOT(stopBuildSlot()));
 
-   m_courseBrowserAction = new QAction(QIcon(":/images/imgedit.png"), tr("&Course browser"), this);
-   m_courseBrowserAction->setStatusTip(tr("Course browser"));
-   connect(m_courseBrowserAction, SIGNAL(triggered()), this, SLOT(courseBrowserOpenCloseSlot()));
-
    m_quitAction = new QAction(tr("&Quit"), this);
    m_quitAction->setShortcut(tr("Ctrl+Q"));
    m_quitAction->setStatusTip(tr("Quit the application"));
@@ -157,7 +153,6 @@ void MainWindow::createToolBars()
    m_toolBar->addAction(m_stopBuildAction);
    m_toolBar->addAction(m_buildCourseAction);
    m_toolBar->addAction(m_rebuildCourseAction);
-   m_toolBar->addAction(m_courseBrowserAction);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -185,14 +180,6 @@ void MainWindow::createDockWindows()
    m_viewMenu->addAction(m_dockConsolePage->toggleViewAction());
    m_dockConsolePage->hide();
 
-   m_dockCourseBrowser = new QDockWidget(tr("Course browser"), this);
-   m_dockCourseBrowser->setAllowedAreas(Qt::TopDockWidgetArea);
-   addDockWidget(Qt::TopDockWidgetArea, m_dockCourseBrowser);
-   m_imageWidget = new CourseImageEditor(m_dockCourseBrowser);
-   m_dockCourseBrowser->setWidget(m_imageWidget);
-   m_dockCourseBrowser->hide();
-
-   connect(m_dockCourseBrowser , SIGNAL(visibilityChanged(bool)), this, SLOT(updateUserInterface()));
    connect(&globalTracer, SIGNAL(traceSignal(const QString &, const int&)), m_consolePage , SLOT(traceSlot(const QString&, const int&)));
    connect(m_contentPage , SIGNAL(contentChangedSignal()), this, SLOT(contentChangedSlot()));
 }
@@ -343,31 +330,8 @@ void MainWindow::rebuildCourseSlot()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void MainWindow::courseBrowserOpenCloseSlot()
-{
-   if (m_dockCourseBrowser->isVisible())
-      m_dockCourseBrowser->hide();
-   else
-      m_dockCourseBrowser->show();
-}
-
-/////////////////////////////////////////////////////////////////////////////
 void MainWindow::updateUserInterface()
 {
-   if (m_dockCourseBrowser->isVisible()) {
-      m_buildCourseAction->setEnabled(false);
-      m_rebuildCourseAction->setEnabled(false);
-      m_dockContentPage->hide();
-      m_dockOptionsPage->hide();
-      m_dockContentPage->toggleViewAction()->setEnabled(false);
-      m_dockOptionsPage->toggleViewAction()->setEnabled(false);
-
-      m_courseTemplate.options = m_optionsPage->getOptions();
-      m_courseTemplate.content = m_contentPage->getContent();
-      m_imageWidget->workWith(m_courseTemplate);
-      return;
-   }
-
    m_dockContentPage->toggleViewAction()->setEnabled(true);
    m_dockOptionsPage->toggleViewAction()->setEnabled(true);
    m_dockContentPage->show();
@@ -376,7 +340,6 @@ void MainWindow::updateUserInterface()
    m_openCourseTemplateAction->setEnabled(!m_generating);
    m_saveCourseTemplateAction->setEnabled(!m_generating);
    m_saveAsCourseTemplateAction->setEnabled(!m_generating);
-   m_courseBrowserAction->setEnabled(!m_generating);
 
    m_buildCourseAction->setVisible(!m_generating);
    m_rebuildCourseAction->setVisible(!m_generating);

@@ -13,7 +13,6 @@ SOURCES += main.cpp \
  coursetemplate.cpp \
  coursetemplateoptions.cpp \
  globalsmuxgentools.cpp \
- courseimageseditor.cpp \
  globaltracer.cpp \
  coursegenerator.cpp \
  imagedownloader.cpp \
@@ -24,7 +23,6 @@ SOURCES += main.cpp \
 HEADERS += gui.h \
  coursetemplate.h \
  globalsmuxgentools.h \
- courseimageseditor.h \
  courseoptions.h \
  coursegenerator.h \
  globaltracer.h \

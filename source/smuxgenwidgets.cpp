@@ -380,7 +380,7 @@ void ConsolePage::traceSlot(const QString &txt, const int & flags)
 ContentPage::ContentPage(QWidget *parent)
    : QWidget(parent)
 {
-   n_contentTextEdit = new CodeEditor;
+   n_contentTextEdit = new ContentTable;
    m_findToolbar = new FindToolbar;
    m_findToolbar->layout()->setMargin(0);
    //contentTextEdit->setAcceptRichText(false);
@@ -398,13 +398,14 @@ ContentPage::ContentPage(QWidget *parent)
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::setContent (const QStringList & content)
 {
-   n_contentTextEdit->setPlainText(content.join(QString("\n")));
+   //n_contentTextEdit->setPlainText(content.join(QString("\n")));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList ContentPage::getContent ()
 {
-   QString str = n_contentTextEdit->toPlainText();
+   QString str;
+   //QString str = n_contentTextEdit->toPlainText();
    return str.split(QString("\n"));
 }
 
@@ -431,13 +432,13 @@ void ContentPage::keyPressEvent (QKeyEvent * event)
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::findNext(const QString &txt)
 {
-   n_contentTextEdit->find(txt);
+   //n_contentTextEdit->find(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::findPrev(const QString &txt)
 {
-   n_contentTextEdit->find(txt, QTextDocument::FindBackward);
+   //n_contentTextEdit->find(txt, QTextDocument::FindBackward);
 }
 
 /////////////////////////////////////////////////////////////////////////////

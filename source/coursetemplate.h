@@ -13,6 +13,17 @@
 
 #include <QString>
 #include <QStringList>
+#include <QImage>
+
+struct ContentItem
+{
+   QString question;
+   QString answer;
+   QByteArray imgQuestion[2];
+   QByteArray imgAnswer[2];
+   QByteArray mp3Question;
+   QByteArray mp3Answer;
+};
 
 struct CourseTemplate
 {

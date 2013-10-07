@@ -31,6 +31,8 @@
 #include "globaltracer.h"
 #include "imagedownloader.h"
 
+class ContentTable;
+
 /////////////////////////////////////////////////////////////////////////////
 class FindToolbar : public QWidget
 {
@@ -133,7 +135,7 @@ signals:
    void contentChangedSignal ();
 
 private:
-   QPlainTextEdit *n_contentTextEdit;
+   ContentTable *n_contentTextEdit;
    FindToolbar *m_findToolbar;
 
 private slots:

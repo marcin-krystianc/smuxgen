@@ -22,10 +22,14 @@ QT_END_NAMESPACE
 
 class ContentTable: public QTableView
 {
+   Q_OBJECT
+
 public:
    ContentTable();
 private:
    QStandardItemModel m_itemModel;
+private slots:
+   void itemChangedSlot(QStandardItem *item);
 };
 
 

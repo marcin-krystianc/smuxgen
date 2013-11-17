@@ -380,16 +380,16 @@ void ConsolePage::traceSlot(const QString &txt, const int & flags)
 ContentPage::ContentPage(QWidget *parent)
    : QWidget(parent)
 {
-   n_contentTextEdit = new ContentTable;
+   m_contentTextEdit = new ContentTable;
    m_findToolbar = new FindToolbar;
    m_findToolbar->layout()->setMargin(0);
    //contentTextEdit->setAcceptRichText(false);
    QVBoxLayout *mainLayout = new QVBoxLayout;
    mainLayout->addWidget(m_findToolbar);
-   mainLayout->addWidget(n_contentTextEdit);
+   mainLayout->addWidget(m_contentTextEdit);
    setLayout(mainLayout);
 
-   connect (n_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
+   connect (m_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
 
    connect (m_findToolbar , SIGNAL(findNext(const QString&)) , this, SLOT(findNext(const QString&)));
    connect (m_findToolbar , SIGNAL(findPrev(const QString&)) , this, SLOT(findPrev(const QString&)));
@@ -399,6 +399,8 @@ ContentPage::ContentPage(QWidget *parent)
 void ContentPage::setContent (const QStringList & content)
 {
    //n_contentTextEdit->setPlainText(content.join(QString("\n")));
+   CourseTemplate courseTemplate;
+   m_contentTextEdit->fromCourseTemplate (courseTemplate);
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -14,22 +14,25 @@
 /////////////////////////////////////////////////////////////////////////////
 ContentTable::ContentTable()
 {
-   QStringList labels;
-   labels.push_back("Question");
-   labels.push_back("Answer");
-   m_itemModel.setHorizontalHeaderLabels(labels);
-   m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
-   setModel(&m_itemModel);
-   connect(&m_itemModel, SIGNAL(itemChanged(QStandardItem*)), this , SLOT(itemChangedSlot(QStandardItem *)));
+   m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
 
-   //setRowHeight(0,5);
+   connect(&m_templateModel, SIGNAL(itemChanged(QStandardItem*)), this , SLOT(itemChangedSlot(QStandardItem *)));
 
-   horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-   horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-   m_itemModel.setRowCount(1);
+   m_templateView.setModel(&m_templateModel);
+   m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+   m_templateView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+
+   m_itemModel.setRowCount(2);
+   m_itemModel.setColumnCount(2);
+   m_itemView.setModel(&m_itemModel);
+
+   QVBoxLayout *layout = new QVBoxLayout;
+   layout->addWidget(&m_templateView);
+   layout->addWidget(&m_itemView);
+   setLayout(layout);
 
    /*
-
+   //setRowHeight(0,5);
    setColumnCount(2);
    QStringList labels;
    labels.push_back("Question");
@@ -46,11 +49,11 @@ void ContentTable::itemChangedSlot(QStandardItem *item)
    // remove row if element was cleared
    if (item->data(Qt::EditRole).isNull() ||
        item->data(Qt::EditRole).toString().isEmpty()) {
-      m_itemModel.removeRow(m_itemModel.indexFromItem(item).row());
+      m_templateModel.removeRow(m_templateModel.indexFromItem(item).row());
    }
 
-   int rowCount = m_itemModel.rowCount();
-   QStandardItem *lastItem = m_itemModel.item(rowCount - 1, 0);
+   int rowCount = m_templateModel.rowCount();
+   QStandardItem *lastItem = m_templateModel.item(rowCount - 1, 0);
    if (!lastItem ||
        lastItem->data(Qt::EditRole).isNull() ||
        lastItem->data(Qt::EditRole).toString().isEmpty()) {
@@ -58,6 +61,16 @@ void ContentTable::itemChangedSlot(QStandardItem *item)
    }
    else {
       // last row is not empty, add new one
-      m_itemModel.setRowCount(rowCount+1);
+      m_templateModel.setRowCount(rowCount+1);
    }
+
+   if (rowCount == 0)
+      m_templateModel.setRowCount(rowCount+1);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
+{
+   //m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
+   m_templateModel.setRowCount(1);
 }

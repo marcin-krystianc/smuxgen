@@ -135,7 +135,7 @@ signals:
    void contentChangedSignal ();
 
 private:
-   ContentTable *n_contentTextEdit;
+   ContentTable *m_contentTextEdit;
    FindToolbar *m_findToolbar;
 
 private slots:

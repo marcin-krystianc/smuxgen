@@ -11,6 +11,8 @@
 
 #include <QObject>
 #include <QTableWidget>
+#include <QModelIndex>
+#include <QAbstractItemModel>
 #include <QStandardItemModel>
 
 #include "coursetemplate.h"
@@ -22,6 +24,21 @@ class QSize;
 class QWidget;
 QT_END_NAMESPACE
 
+
+class QMyItemModel : public QAbstractItemModel
+{
+   Q_OBJECT
+
+public:
+   QMyItemModel();
+   ~QMyItemModel();
+   QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+   QModelIndex parent ( const QModelIndex & index ) const;
+   int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+   int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+   QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+};
+
 class ContentTable: public QWidget
 {
    Q_OBJECT
@@ -32,10 +49,10 @@ public:
    bool toCourseTemplate (CourseTemplate *courseTemplate);
 
 private:
-   QStandardItemModel m_templateModel;
-   QStandardItemModel m_itemModel;
+   QMyItemModel m_templateModel;
+   //QStandardItemModel m_itemModel;
    QTableView m_templateView;
-   QTableView m_itemView;
+   //QTableView m_itemView;
 
 private slots:
    void itemChangedSlot(QStandardItem *item);

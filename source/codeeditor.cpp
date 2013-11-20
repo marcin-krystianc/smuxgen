@@ -12,9 +12,60 @@
 #include "codeeditor.h"
 
 /////////////////////////////////////////////////////////////////////////////
+QMyItemModel::QMyItemModel()
+{
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QMyItemModel::~QMyItemModel()
+{
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QModelIndex QMyItemModel::index(int row, int column, const QModelIndex &parent) const
+{
+   return createIndex(row, column, NULL);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QModelIndex QMyItemModel::parent (const QModelIndex &index) const
+{
+   // returns invalid (no parent) index
+   return QModelIndex();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+int QMyItemModel::rowCount (const QModelIndex &parent) const
+{
+   return 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+int QMyItemModel::columnCount (const QModelIndex &parent) const
+{
+   return 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QVariant QMyItemModel::data (const QModelIndex &index, int role) const
+{
+   switch (role)
+   {
+      case Qt::DisplayRole:
+         return QString("asdf");
+
+      default:
+         break;
+   }
+   return QVariant();
+}
+
+/////////////////////////////////////////////////////////////////////////////
 ContentTable::ContentTable()
 {
-   m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
+   //m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
 
    connect(&m_templateModel, SIGNAL(itemChanged(QStandardItem*)), this , SLOT(itemChangedSlot(QStandardItem *)));
 
@@ -22,13 +73,13 @@ ContentTable::ContentTable()
    m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
    m_templateView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
 
-   m_itemModel.setRowCount(2);
-   m_itemModel.setColumnCount(2);
-   m_itemView.setModel(&m_itemModel);
+   //m_itemModel.setRowCount(2);
+   //m_itemModel.setColumnCount(2);
+   //m_itemView.setModel(&m_itemModel);
 
    QVBoxLayout *layout = new QVBoxLayout;
    layout->addWidget(&m_templateView);
-   layout->addWidget(&m_itemView);
+   //layout->addWidget(&m_itemView);
    setLayout(layout);
 
    /*
@@ -46,6 +97,7 @@ ContentTable::ContentTable()
 /////////////////////////////////////////////////////////////////////////////
 void ContentTable::itemChangedSlot(QStandardItem *item)
 {
+   /*
    // remove row if element was cleared
    if (item->data(Qt::EditRole).isNull() ||
        item->data(Qt::EditRole).toString().isEmpty()) {
@@ -66,11 +118,15 @@ void ContentTable::itemChangedSlot(QStandardItem *item)
 
    if (rowCount == 0)
       m_templateModel.setRowCount(rowCount+1);
+      */
 }
 
 /////////////////////////////////////////////////////////////////////////////
 bool ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
 {
    //m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
-   m_templateModel.setRowCount(1);
+   //m_templateModel.setRowCount(1);
+   //m_templateModel.setData(m_itemModel.index(0,0), QString("asdf"), Qt::UserRole+1);
+   //m_templateModel.setData(m_itemModel.index(0,0), QImage(), Qt::UserRole+2);
+   //m_templateModel.setData(m_itemModel.index(0,0), QStandardItemModel(), Qt::UserRole+3);
 }

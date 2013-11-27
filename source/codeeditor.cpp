@@ -58,6 +58,7 @@ QVariant QMyItemModel::data (const QModelIndex &index, int role) const
    switch (role)
    {
       case Qt::DisplayRole:
+      case Qt::EditRole:
       {
          return m_items[index.column()][index.row()].text;
       }

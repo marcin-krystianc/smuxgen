@@ -44,6 +44,9 @@ public:
    bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
    bool insertRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
+   void fromCourseTemplate (const CourseTemplate &courseTemplate);
+   void toCourseTemplate (CourseTemplate *courseTemplate);
+
 private:
    struct MyItem {
       QString text;
@@ -58,8 +61,8 @@ class ContentTable: public QWidget
 
 public:
    ContentTable();
-   bool fromCourseTemplate(const CourseTemplate &courseTemplate);
-   bool toCourseTemplate (CourseTemplate *courseTemplate);
+   void fromCourseTemplate (const CourseTemplate &courseTemplate);
+   void toCourseTemplate (CourseTemplate *courseTemplate);
 
 private:
    QMyItemModel m_templateModel;

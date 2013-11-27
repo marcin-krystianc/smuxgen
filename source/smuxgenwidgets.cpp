@@ -396,19 +396,19 @@ ContentPage::ContentPage(QWidget *parent)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::setContent (const QStringList & content)
+void ContentPage::setContent (const QStringList &content)
 {
-   //n_contentTextEdit->setPlainText(content.join(QString("\n")));
    CourseTemplate courseTemplate;
+   courseTemplate.content = content;
    m_contentTextEdit->fromCourseTemplate (courseTemplate);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 QStringList ContentPage::getContent ()
 {
-   QString str;
-   //QString str = n_contentTextEdit->toPlainText();
-   return str.split(QString("\n"));
+   CourseTemplate courseTemplate;
+   m_contentTextEdit->toCourseTemplate(&courseTemplate);
+   return courseTemplate.content;
 }
 
 /////////////////////////////////////////////////////////////////////////////

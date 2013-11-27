@@ -28,26 +28,26 @@ QMyItemModel::~QMyItemModel()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QModelIndex QMyItemModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex QMyItemModel::index(int row, int column, const QModelIndex&) const
 {
    return createIndex(row, column, NULL);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QModelIndex QMyItemModel::parent (const QModelIndex &index) const
+QModelIndex QMyItemModel::parent (const QModelIndex&) const
 {
    // returns invalid (no parent) index
    return QModelIndex();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int QMyItemModel::rowCount (const QModelIndex &parent) const
+int QMyItemModel::rowCount (const QModelIndex &) const
 {
    return m_items[0].size();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int QMyItemModel::columnCount (const QModelIndex &parent) const
+int QMyItemModel::columnCount (const QModelIndex &) const
 {
    return 2;
 }
@@ -75,8 +75,8 @@ bool QMyItemModel::setData(const QModelIndex &index, const QVariant &value, int 
        index.column() > 1)
       return false;
 
-   size_t nRows = rowCount();
-   size_t row = index.row();
+   int nRows = rowCount();
+   int row = index.row();
 
    if (nRows <= index.row() + 1) {
       insertRows (nRows - 1, 1);
@@ -96,7 +96,7 @@ bool QMyItemModel::setData(const QModelIndex &index, const QVariant &value, int 
 }
 
 /////////////////////////////////////////////////////////////////////////////
-Qt::ItemFlags QMyItemModel::flags(const QModelIndex &index) const
+Qt::ItemFlags QMyItemModel::flags(const QModelIndex &) const
 {
    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
@@ -111,6 +111,7 @@ bool QMyItemModel::insertRows (int row, int count, const QModelIndex &parent)
    std::rotate (&m_items[0][row], &m_items[0][row], &m_items[0][rowCount()-1]);
    std::rotate (&m_items[1][row], &m_items[1][row], &m_items[1][rowCount()-1]);
    endInsertRows();
+   return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -121,10 +122,45 @@ bool QMyItemModel::removeRows (int row, int count, const QModelIndex &parent)
    for (int i=row; i<nRows-count; ++i) {
       m_items[0][i] = m_items[0][i+count];
       m_items[1][i] = m_items[1][i+count];
-      m_items[0].resize(nRows - count);
-      m_items[1].resize(nRows - count);
    }
+   m_items[0].resize(nRows - count);
+   m_items[1].resize(nRows - count);
    endRemoveRows();
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void QMyItemModel::fromCourseTemplate(const CourseTemplate &courseTemplate)
+{
+   removeRows(0, rowCount());
+   for (int i = 0; i < courseTemplate.content.count(); ++i) {
+      QString line = courseTemplate.content.at(i);
+      QStringList list1 = line.split(":");
+      if (list1.count() != 2)
+         continue;
+
+      int row = rowCount();
+      insertRows(row, 1);
+      m_items[0][row].text = list1[0].trimmed();
+      m_items[1][row].text = list1[1].trimmed();
+   }
+   insertRows(rowCount(), 1);
+
+   emit dataChanged (createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void QMyItemModel::toCourseTemplate (CourseTemplate *courseTemplate)
+{
+   courseTemplate->content.clear();
+   for (int i = 0; i < rowCount(); ++i) {
+      if (m_items[0][i].text.trimmed() == "" ||
+          m_items[1][i].text.trimmed() == ""  )
+         continue;
+
+      QString s = m_items[0][i].text + ":" + m_items[1][i].text;
+      courseTemplate->content.push_back(s);
+   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -168,11 +204,21 @@ void ContentTable::dataChangedSlot(const QModelIndex &topLeft, const QModelIndex
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
+void ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
 {
+   m_templateModel.fromCourseTemplate(courseTemplate);
+
    //m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
    //m_templateModel.setRowCount(1);
    //m_templateModel.setData(m_itemModel.index(0,0), QString("asdf"), Qt::UserRole+1);
    //m_templateModel.setData(m_itemModel.index(0,0), QImage(), Qt::UserRole+2);
    //m_templateModel.setData(m_itemModel.index(0,0), QStandardItemModel(), Qt::UserRole+3);
 }
+
+/////////////////////////////////////////////////////////////////////////////
+void ContentTable::toCourseTemplate (CourseTemplate *courseTemplate)
+{
+   m_templateModel.toCourseTemplate(courseTemplate);
+}
+
+

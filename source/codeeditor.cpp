@@ -14,7 +14,11 @@
 /////////////////////////////////////////////////////////////////////////////
 QMyItemModel::QMyItemModel()
 {
+   MyItem m1 = {"asdf"};
+   MyItem m2 = {"qwerty"};
 
+   m_items[0].push_back(m1);
+   m_items[1].push_back(m2);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +43,7 @@ QModelIndex QMyItemModel::parent (const QModelIndex &index) const
 /////////////////////////////////////////////////////////////////////////////
 int QMyItemModel::rowCount (const QModelIndex &parent) const
 {
-   return 2;
+   return m_items[0].size();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +58,9 @@ QVariant QMyItemModel::data (const QModelIndex &index, int role) const
    switch (role)
    {
       case Qt::DisplayRole:
-         return QString("asdf");
+      {
+         return m_items[index.column()][index.row()].text;
+      }
 
       default:
          break;
@@ -63,11 +69,72 @@ QVariant QMyItemModel::data (const QModelIndex &index, int role) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
+bool QMyItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+   if (role != Qt::EditRole ||
+       index.column() > 1)
+      return false;
+
+   size_t nRows = rowCount();
+   size_t row = index.row();
+
+   if (nRows <= index.row() + 1) {
+      insertRows (nRows - 1, 1);
+   }
+
+   m_items[index.column()][index.row()].text = value.toString();
+   emit dataChanged (index, index);
+   if (index.column() != 0)
+      return true;
+
+   if (!value.isValid() ||
+       value.toString().trimmed().isEmpty()) {
+      removeRows(row, 1);
+   }
+
+   return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+Qt::ItemFlags QMyItemModel::flags(const QModelIndex &index) const
+{
+   return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool QMyItemModel::insertRows (int row, int count, const QModelIndex &parent)
+{
+   size_t nRows = rowCount();
+   beginInsertRows (QModelIndex(), row, row + count - 1);
+   m_items[0].resize(nRows + count);
+   m_items[1].resize(nRows + count);
+   std::rotate (&m_items[0][row], &m_items[0][row], &m_items[0][rowCount()-1]);
+   std::rotate (&m_items[1][row], &m_items[1][row], &m_items[1][rowCount()-1]);
+   endInsertRows();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+bool QMyItemModel::removeRows (int row, int count, const QModelIndex &parent)
+{
+   int nRows = rowCount();
+   beginRemoveRows (QModelIndex(), row, row + count - 1);
+   for (int i=row; i<nRows-count; ++i) {
+      m_items[0][i] = m_items[0][i+count];
+      m_items[1][i] = m_items[1][i+count];
+      m_items[0].resize(nRows - count);
+      m_items[1].resize(nRows - count);
+   }
+   endRemoveRows();
+}
+
+/////////////////////////////////////////////////////////////////////////////
 ContentTable::ContentTable()
 {
    //m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
 
-   connect(&m_templateModel, SIGNAL(itemChanged(QStandardItem*)), this , SLOT(itemChangedSlot(QStandardItem *)));
+   connect(&m_templateModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex &))
+           , this , SLOT(dataChangedSlot(const QModelIndex&, const QModelIndex &)));
+
 
    m_templateView.setModel(&m_templateModel);
    m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
@@ -95,30 +162,9 @@ ContentTable::ContentTable()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentTable::itemChangedSlot(QStandardItem *item)
+void ContentTable::dataChangedSlot(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-   /*
-   // remove row if element was cleared
-   if (item->data(Qt::EditRole).isNull() ||
-       item->data(Qt::EditRole).toString().isEmpty()) {
-      m_templateModel.removeRow(m_templateModel.indexFromItem(item).row());
-   }
-
-   int rowCount = m_templateModel.rowCount();
-   QStandardItem *lastItem = m_templateModel.item(rowCount - 1, 0);
-   if (!lastItem ||
-       lastItem->data(Qt::EditRole).isNull() ||
-       lastItem->data(Qt::EditRole).toString().isEmpty()) {
-      // last row is empty
-   }
-   else {
-      // last row is not empty, add new one
-      m_templateModel.setRowCount(rowCount+1);
-   }
-
-   if (rowCount == 0)
-      m_templateModel.setRowCount(rowCount+1);
-      */
+   int x=0;
 }
 
 /////////////////////////////////////////////////////////////////////////////

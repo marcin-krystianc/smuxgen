@@ -102,7 +102,7 @@ Qt::ItemFlags QMyItemModel::flags(const QModelIndex &) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool QMyItemModel::insertRows (int row, int count, const QModelIndex &parent)
+bool QMyItemModel::insertRows (int row, int count, const QModelIndex &)
 {
    size_t nRows = rowCount();
    beginInsertRows (QModelIndex(), row, row + count - 1);
@@ -115,7 +115,7 @@ bool QMyItemModel::insertRows (int row, int count, const QModelIndex &parent)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool QMyItemModel::removeRows (int row, int count, const QModelIndex &parent)
+bool QMyItemModel::removeRows (int row, int count, const QModelIndex &)
 {
    int nRows = rowCount();
    beginRemoveRows (QModelIndex(), row, row + count - 1);
@@ -130,19 +130,14 @@ bool QMyItemModel::removeRows (int row, int count, const QModelIndex &parent)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void QMyItemModel::fromCourseTemplate(const CourseTemplate &courseTemplate)
+void QMyItemModel::fromCourseTemplate(const std::vector<ContentItem> &content)
 {
    removeRows(0, rowCount());
-   for (int i = 0; i < courseTemplate.content.count(); ++i) {
-      QString line = courseTemplate.content.at(i);
-      QStringList list1 = line.split(":");
-      if (list1.count() != 2)
-         continue;
-
+   for (size_t i = 0; i < content.size(); ++i) {
       int row = rowCount();
       insertRows(row, 1);
-      m_items[0][row].text = list1[0].trimmed();
-      m_items[1][row].text = list1[1].trimmed();
+      m_items[0][row].text = content[i].question;
+      m_items[1][row].text = content[i].answer;
    }
    insertRows(rowCount(), 1);
 
@@ -150,16 +145,18 @@ void QMyItemModel::fromCourseTemplate(const CourseTemplate &courseTemplate)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void QMyItemModel::toCourseTemplate (CourseTemplate *courseTemplate)
+void QMyItemModel::toCourseTemplate (std::vector<ContentItem> *content)
 {
-   courseTemplate->content.clear();
+   content->clear();
    for (int i = 0; i < rowCount(); ++i) {
       if (m_items[0][i].text.trimmed() == "" ||
           m_items[1][i].text.trimmed() == ""  )
          continue;
 
-      QString s = m_items[0][i].text + ":" + m_items[1][i].text;
-      courseTemplate->content.push_back(s);
+      ContentItem item;
+      item.question = m_items[0][i].text;
+      item.answer = m_items[1][i].text;
+      content->push_back(item);
    }
 }
 
@@ -204,9 +201,9 @@ void ContentTable::dataChangedSlot(const QModelIndex &topLeft, const QModelIndex
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
+void ContentTable::fromCourseTemplate(const std::vector<ContentItem> &content)
 {
-   m_templateModel.fromCourseTemplate(courseTemplate);
+   m_templateModel.fromCourseTemplate(content);
 
    //m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
    //m_templateModel.setRowCount(1);
@@ -216,9 +213,9 @@ void ContentTable::fromCourseTemplate(const CourseTemplate &courseTemplate)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentTable::toCourseTemplate (CourseTemplate *courseTemplate)
+void ContentTable::toCourseTemplate (std::vector<ContentItem> *content)
 {
-   m_templateModel.toCourseTemplate(courseTemplate);
+   m_templateModel.toCourseTemplate(content);
 }
 
 

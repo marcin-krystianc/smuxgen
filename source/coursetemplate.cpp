@@ -14,6 +14,24 @@
 #include <QTextStream>
 
 /////////////////////////////////////////////////////////////////////////////
+ContentItem fromLegacyString(const QString &s)
+{
+   ContentItem item;
+   QStringList list = s.split(":");
+   if (list.size() != 2)
+      return item;
+   item.question = list.at(0);
+   item.answer = list.at(1);
+   return item;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QString toLegacyString(const ContentItem &item)
+{
+   return item.question + ":" + item.answer;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 CourseTemplate CourseTemplate::fromFile(const QString &fileName)
 {
    CourseTemplate courseTemplate;
@@ -34,7 +52,7 @@ CourseTemplate CourseTemplate::fromFile(const QString &fileName)
       if (line.isNull())
          break; //end of file
 
-      courseTemplate.content.push_back(line);
+      courseTemplate.content.push_back(fromLegacyString(line));
    }
 
    return courseTemplate;
@@ -54,8 +72,9 @@ bool CourseTemplate::toFile(const QString &fileName, const CourseTemplate &cours
    outputFileStream.setCodec("UTF-8");
    outputFileStream << CourseOptions::toString(courseTemplate.options) << endl;
 
-   for (int i = 0; i<courseTemplate.content.count(); ++i)
-      outputFileStream << courseTemplate.content.at(i) << endl;
+   for (size_t i = 0; i<courseTemplate.content.size(); ++i)
+      outputFileStream << toLegacyString (courseTemplate.content[i]) << endl;
+
 
    return true;
 }
@@ -86,7 +105,7 @@ CourseTemplate CourseTemplate::importQA(const QString &fileName)
 
       if (line.startsWith(QString::fromUtf8("Q:"), Qt::CaseInsensitive)) {
          if (q&&a)
-            courseTemplate.content.push_back(entry);
+            courseTemplate.content.push_back(fromLegacyString(entry));
 
          a = false;
          entry = (line.remove(0, 2)).trimmed()+QString::fromUtf8(":");
@@ -108,7 +127,7 @@ CourseTemplate CourseTemplate::importQA(const QString &fileName)
    }
 
    if (q&&a)
-      courseTemplate.content.push_back(entry);
+      courseTemplate.content.push_back(fromLegacyString(entry));
 
    return courseTemplate;
 }
@@ -126,8 +145,8 @@ bool CourseTemplate::exportQA (const QString &fileName, const CourseTemplate &co
    outputFileStream.setDevice(&file);
    outputFileStream.setCodec("UTF-8");
 
-   for (int i = 0; i<courseTemplate.content.count(); ++i) {
-      QString s = courseTemplate.content.at(i);
+   for (size_t i = 0; i<courseTemplate.content.size(); ++i) {
+      QString s = toLegacyString(courseTemplate.content[i]);
       QStringList l1 = s.split(":");
       if (l1.count()!= 2)
          continue;

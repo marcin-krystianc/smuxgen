@@ -396,19 +396,17 @@ ContentPage::ContentPage(QWidget *parent)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::setContent (const QStringList &content)
+void ContentPage::setContent (const std::vector<ContentItem> &content)
 {
-   CourseTemplate courseTemplate;
-   courseTemplate.content = content;
-   m_contentTextEdit->fromCourseTemplate (courseTemplate);
+   m_contentTextEdit->fromCourseTemplate (content);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList ContentPage::getContent ()
+std::vector<ContentItem> ContentPage::getContent ()
 {
-   CourseTemplate courseTemplate;
-   m_contentTextEdit->toCourseTemplate(&courseTemplate);
-   return courseTemplate.content;
+   std::vector<ContentItem> content;
+   m_contentTextEdit->toCourseTemplate(&content);
+   return content;
 }
 
 /////////////////////////////////////////////////////////////////////////////

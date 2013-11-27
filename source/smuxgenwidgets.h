@@ -30,6 +30,7 @@
 #include "supermemosql.h"
 #include "globaltracer.h"
 #include "imagedownloader.h"
+#include "coursetemplate.h"
 
 class ContentTable;
 
@@ -128,8 +129,8 @@ class ContentPage : public QWidget
    Q_OBJECT
 public:
    ContentPage(QWidget *parent = 0);
-   void setContent (const QStringList & content);
-   QStringList getContent ();
+   void setContent (const std::vector<ContentItem> &content);
+   std::vector<ContentItem> getContent();
 
 signals:
    void contentChangedSignal ();

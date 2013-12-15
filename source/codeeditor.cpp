@@ -17,17 +17,7 @@ QTemplateDetailedModel::QTemplateDetailedModel():
    QAbstractItemModel()
 {
 }
-/*
-/////////////////////////////////////////////////////////////////////////////
-QTemplateDetailedModel::QTemplateDetailedModel(const QTemplateDetailedModel& other)
-{
-}
 
-/////////////////////////////////////////////////////////////////////////////
-QTemplateDetailedModel& QTemplateDetailedModel::operator=(const QTemplateDetailedModel& other)
-{
-}
-*/
 /////////////////////////////////////////////////////////////////////////////
 QTemplateDetailedModel::~QTemplateDetailedModel()
 {
@@ -108,7 +98,7 @@ QModelIndex QTemplateModel::parent (const QModelIndex&) const
 /////////////////////////////////////////////////////////////////////////////
 int QTemplateModel::rowCount (const QModelIndex &) const
 {
-   return m_items[0].size();
+   return m_items.size();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -125,7 +115,7 @@ QVariant QTemplateModel::data (const QModelIndex &index, int role) const
       case Qt::DisplayRole:
       case Qt::EditRole:
       {
-         return m_items[index.column()][index.row()].text;
+         return m_items[index.row()].text[index.column()];
       }
 
       default:
@@ -148,7 +138,7 @@ bool QTemplateModel::setData(const QModelIndex &index, const QVariant &value, in
       insertRows (nRows - 1, 1);
    }
 
-   m_items[index.column()][index.row()].text = value.toString();
+   m_items[index.row()].text[index.column()] = value.toString();
    emit dataChanged (index, index);
    if (index.column() != 0)
       return true;
@@ -172,10 +162,8 @@ bool QTemplateModel::insertRows (int row, int count, const QModelIndex &)
 {
    size_t nRows = rowCount();
    beginInsertRows (QModelIndex(), row, row + count - 1);
-   m_items[0].resize(nRows + count);
-   m_items[1].resize(nRows + count);
-   std::rotate (&m_items[0][row], &m_items[0][row], &m_items[0][rowCount()-1]);
-   std::rotate (&m_items[1][row], &m_items[1][row], &m_items[1][rowCount()-1]);
+   m_items.resize(nRows + count);
+   std::rotate (&m_items[row], &m_items[row], &m_items[rowCount()-1]);
    endInsertRows();
    return true;
 }
@@ -183,14 +171,15 @@ bool QTemplateModel::insertRows (int row, int count, const QModelIndex &)
 /////////////////////////////////////////////////////////////////////////////
 bool QTemplateModel::removeRows (int row, int count, const QModelIndex &)
 {
+   if (count <= 0)
+       return false;
+
    int nRows = rowCount();
    beginRemoveRows (QModelIndex(), row, row + count - 1);
    for (int i=row; i<nRows-count; ++i) {
-      m_items[0][i] = m_items[0][i+count];
-      m_items[1][i] = m_items[1][i+count];
+      m_items[i] = m_items[i+count];
    }
-   m_items[0].resize(nRows - count);
-   m_items[1].resize(nRows - count);
+   m_items.resize(nRows - count);
    endRemoveRows();
    return true;
 }
@@ -202,8 +191,8 @@ void QTemplateModel::fromCourseTemplate(const std::vector<ContentItem> &content)
    for (size_t i = 0; i < content.size(); ++i) {
       int row = rowCount();
       insertRows(row, 1);
-      m_items[0][row].text = content[i].question;
-      m_items[1][row].text = content[i].answer;
+      m_items[row].text[0] = content[i].question;
+      m_items[row].text[1] = content[i].answer;
    }
    insertRows(rowCount(), 1);
 
@@ -214,14 +203,10 @@ void QTemplateModel::fromCourseTemplate(const std::vector<ContentItem> &content)
 void QTemplateModel::toCourseTemplate (std::vector<ContentItem> *content)
 {
    content->clear();
-   for (int i = 0; i < rowCount(); ++i) {
-      if (m_items[0][i].text.trimmed() == "" ||
-          m_items[1][i].text.trimmed() == ""  )
-         continue;
-
+   for (int i = 0; i < rowCount() - 1; ++i) {
       ContentItem item;
-      item.question = m_items[0][i].text;
-      item.answer = m_items[1][i].text;
+      item.question = m_items[i].text[0];
+      item.answer = m_items[i].text[1];
       content->push_back(item);
    }
 }

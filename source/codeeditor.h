@@ -24,6 +24,9 @@ class QSize;
 class QWidget;
 QT_END_NAMESPACE
 
+struct MyItem {
+   QString text[2];
+};
 
 class QTemplateDetailedModel : public QAbstractItemModel
 {
@@ -31,8 +34,6 @@ class QTemplateDetailedModel : public QAbstractItemModel
 
 public:
    QTemplateDetailedModel();
-   //QTemplateDetailedModel(const QTemplateDetailedModel& other);
-   //QTemplateDetailedModel& operator=(const QTemplateDetailedModel& other);
    ~QTemplateDetailedModel();
    QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
    QModelIndex parent ( const QModelIndex & index ) const;
@@ -66,12 +67,8 @@ public:
    void toCourseTemplate (std::vector<ContentItem> *content);
 
 private:
-   struct MyItem {
-      QString text;
-      //QTemplateDetailedModel detailedModel;
-   };
 
-   std::vector<MyItem> m_items[2];
+   std::vector<MyItem> m_items;
 };
 
 

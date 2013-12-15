@@ -11,49 +11,114 @@
 
 #include "codeeditor.h"
 
-/////////////////////////////////////////////////////////////////////////////
-QMyItemModel::QMyItemModel()
-{
-   MyItem m1 = {"asdf"};
-   MyItem m2 = {"qwerty"};
 
-   m_items[0].push_back(m1);
-   m_items[1].push_back(m2);
+/////////////////////////////////////////////////////////////////////////////
+QTemplateDetailedModel::QTemplateDetailedModel():
+   QAbstractItemModel()
+{
+}
+/*
+/////////////////////////////////////////////////////////////////////////////
+QTemplateDetailedModel::QTemplateDetailedModel(const QTemplateDetailedModel& other)
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QMyItemModel::~QMyItemModel()
+QTemplateDetailedModel& QTemplateDetailedModel::operator=(const QTemplateDetailedModel& other)
 {
-
+}
+*/
+/////////////////////////////////////////////////////////////////////////////
+QTemplateDetailedModel::~QTemplateDetailedModel()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QModelIndex QMyItemModel::index(int row, int column, const QModelIndex&) const
+QModelIndex QTemplateDetailedModel::index(int row, int column, const QModelIndex&) const
 {
    return createIndex(row, column, NULL);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QModelIndex QMyItemModel::parent (const QModelIndex&) const
+QModelIndex QTemplateDetailedModel::parent (const QModelIndex&) const
 {
    // returns invalid (no parent) index
    return QModelIndex();
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int QMyItemModel::rowCount (const QModelIndex &) const
+int QTemplateDetailedModel::rowCount (const QModelIndex &) const
 {
-   return m_items[0].size();
+   return 4;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int QMyItemModel::columnCount (const QModelIndex &) const
+int QTemplateDetailedModel::columnCount (const QModelIndex &) const
 {
    return 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QVariant QMyItemModel::data (const QModelIndex &index, int role) const
+QVariant QTemplateDetailedModel::data (const QModelIndex &index, int role) const
+{
+   switch (role)
+   {
+      case Qt::DisplayRole:
+      case Qt::EditRole:
+      {
+         return "asdf";
+      }
+
+      default:
+         break;
+   }
+   return QVariant();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+Qt::ItemFlags QTemplateDetailedModel::flags(const QModelIndex &) const
+{
+   return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QTemplateModel::QTemplateModel()
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QTemplateModel::~QTemplateModel()
+{
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QModelIndex QTemplateModel::index(int row, int column, const QModelIndex&) const
+{
+   return createIndex(row, column, NULL);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QModelIndex QTemplateModel::parent (const QModelIndex&) const
+{
+   // returns invalid (no parent) index
+   return QModelIndex();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+int QTemplateModel::rowCount (const QModelIndex &) const
+{
+   return m_items[0].size();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+int QTemplateModel::columnCount (const QModelIndex &) const
+{
+   return 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+QVariant QTemplateModel::data (const QModelIndex &index, int role) const
 {
    switch (role)
    {
@@ -70,7 +135,7 @@ QVariant QMyItemModel::data (const QModelIndex &index, int role) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool QMyItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool QTemplateModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
    if (role != Qt::EditRole ||
        index.column() > 1)
@@ -97,13 +162,13 @@ bool QMyItemModel::setData(const QModelIndex &index, const QVariant &value, int 
 }
 
 /////////////////////////////////////////////////////////////////////////////
-Qt::ItemFlags QMyItemModel::flags(const QModelIndex &) const
+Qt::ItemFlags QTemplateModel::flags(const QModelIndex &) const
 {
    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool QMyItemModel::insertRows (int row, int count, const QModelIndex &)
+bool QTemplateModel::insertRows (int row, int count, const QModelIndex &)
 {
    size_t nRows = rowCount();
    beginInsertRows (QModelIndex(), row, row + count - 1);
@@ -116,7 +181,7 @@ bool QMyItemModel::insertRows (int row, int count, const QModelIndex &)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool QMyItemModel::removeRows (int row, int count, const QModelIndex &)
+bool QTemplateModel::removeRows (int row, int count, const QModelIndex &)
 {
    int nRows = rowCount();
    beginRemoveRows (QModelIndex(), row, row + count - 1);
@@ -131,7 +196,7 @@ bool QMyItemModel::removeRows (int row, int count, const QModelIndex &)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void QMyItemModel::fromCourseTemplate(const std::vector<ContentItem> &content)
+void QTemplateModel::fromCourseTemplate(const std::vector<ContentItem> &content)
 {
    removeRows(0, rowCount());
    for (size_t i = 0; i < content.size(); ++i) {
@@ -146,7 +211,7 @@ void QMyItemModel::fromCourseTemplate(const std::vector<ContentItem> &content)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void QMyItemModel::toCourseTemplate (std::vector<ContentItem> *content)
+void QTemplateModel::toCourseTemplate (std::vector<ContentItem> *content)
 {
    content->clear();
    for (int i = 0; i < rowCount(); ++i) {
@@ -180,7 +245,7 @@ ContentTable::ContentTable()
 
    QVBoxLayout *layout = new QVBoxLayout;
    layout->addWidget(&m_templateView);
-   //layout->addWidget(&m_itemView);
+   layout->addWidget(&m_detailedView);
    setLayout(layout);
 
    /*

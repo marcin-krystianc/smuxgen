@@ -25,13 +25,31 @@ class QWidget;
 QT_END_NAMESPACE
 
 
-class QMyItemModel : public QAbstractItemModel
+class QTemplateDetailedModel : public QAbstractItemModel
 {
    Q_OBJECT
 
 public:
-   QMyItemModel();
-   ~QMyItemModel();
+   QTemplateDetailedModel();
+   //QTemplateDetailedModel(const QTemplateDetailedModel& other);
+   //QTemplateDetailedModel& operator=(const QTemplateDetailedModel& other);
+   ~QTemplateDetailedModel();
+   QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+   QModelIndex parent ( const QModelIndex & index ) const;
+   int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+   int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+   QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   QVariant setData ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   Qt::ItemFlags flags(const QModelIndex &index) const;
+};
+
+class QTemplateModel : public QAbstractItemModel
+{
+   Q_OBJECT
+
+public:
+   QTemplateModel();
+   ~QTemplateModel();
    QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
    QModelIndex parent ( const QModelIndex & index ) const;
    int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
@@ -50,10 +68,12 @@ public:
 private:
    struct MyItem {
       QString text;
+      //QTemplateDetailedModel detailedModel;
    };
 
    std::vector<MyItem> m_items[2];
 };
+
 
 class ContentTable: public QWidget
 {
@@ -65,10 +85,9 @@ public:
    void toCourseTemplate (std::vector<ContentItem> *content);
 
 private:
-   QMyItemModel m_templateModel;
-   //QStandardItemModel m_itemModel;
+   QTemplateModel m_templateModel;
    QTableView m_templateView;
-   //QTableView m_itemView;
+   QTableView m_detailedView;
 
 private slots:
    void dataChangedSlot(const QModelIndex &topLeft, const QModelIndex &bottomRight);

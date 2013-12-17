@@ -380,32 +380,33 @@ void ConsolePage::traceSlot(const QString &txt, const int & flags)
 ContentPage::ContentPage(QWidget *parent)
    : QWidget(parent)
 {
-   n_contentTextEdit = new CodeEditor;
+   m_contentTextEdit = new ContentTable;
    m_findToolbar = new FindToolbar;
    m_findToolbar->layout()->setMargin(0);
    //contentTextEdit->setAcceptRichText(false);
    QVBoxLayout *mainLayout = new QVBoxLayout;
    mainLayout->addWidget(m_findToolbar);
-   mainLayout->addWidget(n_contentTextEdit);
+   mainLayout->addWidget(m_contentTextEdit);
    setLayout(mainLayout);
 
-   connect (n_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
+   connect (m_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
 
    connect (m_findToolbar , SIGNAL(findNext(const QString&)) , this, SLOT(findNext(const QString&)));
    connect (m_findToolbar , SIGNAL(findPrev(const QString&)) , this, SLOT(findPrev(const QString&)));
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentPage::setContent (const QStringList & content)
+void ContentPage::setContent (const std::vector<ContentItem> &content)
 {
-   n_contentTextEdit->setPlainText(content.join(QString("\n")));
+   m_contentTextEdit->fromCourseTemplate (content);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList ContentPage::getContent ()
+std::vector<ContentItem> ContentPage::getContent ()
 {
-   QString str = n_contentTextEdit->toPlainText();
-   return str.split(QString("\n"));
+   std::vector<ContentItem> content;
+   m_contentTextEdit->toCourseTemplate(&content);
+   return content;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -431,13 +432,13 @@ void ContentPage::keyPressEvent (QKeyEvent * event)
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::findNext(const QString &txt)
 {
-   n_contentTextEdit->find(txt);
+   //n_contentTextEdit->find(txt);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::findPrev(const QString &txt)
 {
-   n_contentTextEdit->find(txt, QTextDocument::FindBackward);
+   //n_contentTextEdit->find(txt, QTextDocument::FindBackward);
 }
 
 /////////////////////////////////////////////////////////////////////////////

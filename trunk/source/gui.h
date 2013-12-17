@@ -14,7 +14,6 @@
 #include "smuxgenwidgets.h"
 #include "coursetemplate.h"
 #include "coursegenerator.h"
-#include "courseimageseditor.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -40,8 +39,6 @@ private slots:
    void buildCourseSlot(bool rebuild=false);
    void rebuildCourseSlot();
    void stopBuildSlot();
-
-   void courseBrowserOpenCloseSlot(); // start/stop picture browser
 
    void buildCourseFinishedSlot(); // generate finished
    void progressSlot(const QString &);
@@ -82,7 +79,6 @@ private:
    QAction *m_buildCourseAction;
    QAction *m_rebuildCourseAction;
    QAction *m_stopBuildAction;
-   QAction *m_courseBrowserAction;
 
    QAction *m_aboutAction;
    QAction *m_aboutQtAction;
@@ -91,12 +87,10 @@ private:
    OptionsPage *m_optionsPage;
    ConsolePage *m_consolePage;
    ContentPage *m_contentPage;
-   CourseImageEditor *m_imageWidget;
 
    QDockWidget *m_dockOptionsPage;
    QDockWidget *m_dockConsolePage;
    QDockWidget *m_dockContentPage;
-   QDockWidget *m_dockCourseBrowser;
 
    QVector <QAction*> m_recentFileActions;
 

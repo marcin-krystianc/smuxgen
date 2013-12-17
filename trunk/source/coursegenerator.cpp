@@ -75,8 +75,8 @@ void CourseGenerator::run ()
       std::vector<QString> questions;
       std::vector<QString> answers;
 
-      for (int i = 0; i < m_courseTemplate.content.count(); ++i) {
-         QString line = m_courseTemplate.content.at(i);
+      for (size_t i = 0; i < m_courseTemplate.content.size(); ++i) {
+         QString line = toLegacyString(m_courseTemplate.content[i]);
          QStringList list1 = line.split(":");
          if (list1.count() != 2) {
             trace(QString("cCourseGenerator::generate Input error: ")+line, traceWarning);

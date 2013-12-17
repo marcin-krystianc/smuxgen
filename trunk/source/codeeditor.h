@@ -9,8 +9,13 @@
 #ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
-#include <QPlainTextEdit>
 #include <QObject>
+#include <QTableWidget>
+#include <QModelIndex>
+#include <QAbstractItemModel>
+#include <QStandardItemModel>
+#include <QVector2D>
+#include "coursetemplate.h"
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -19,55 +24,77 @@ class QSize;
 class QWidget;
 QT_END_NAMESPACE
 
-class LineNumberArea;
+struct MyItem {
+   QString text;
+};
 
-//![codeeditordefinition]
-
-class CodeEditor : public QPlainTextEdit
+class QTemplateDetailedModel: public QAbstractItemModel
 {
    Q_OBJECT
 
 public:
-   CodeEditor(QWidget *parent = 0);
+   QTemplateDetailedModel(MyItem *item);
+   ~QTemplateDetailedModel();
+   QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+   QModelIndex parent ( const QModelIndex & index ) const;
+   int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+   int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+   QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   QVariant setData ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   Qt::ItemFlags flags(const QModelIndex &index) const;
+private:
+   enum ROWS {
+      e_text = 0
+   };
+   MyItem *m_item;
+};
 
-   void lineNumberAreaPaintEvent(QPaintEvent *event);
-   int lineNumberAreaWidth();
+class QTemplateModel: public QAbstractItemModel
+{
+   Q_OBJECT
 
-protected:
-   void resizeEvent(QResizeEvent *event);
-   void wheelEvent(QWheelEvent *event);
+public:
+   QTemplateModel();
+   ~QTemplateModel();
+   QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+   QModelIndex parent ( const QModelIndex & index ) const;
+   int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+   int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+   QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   QVariant setData ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+   bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+   Qt::ItemFlags flags(const QModelIndex &index) const;
+
+   bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+   bool insertRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+
+   void fromCourseTemplate (const std::vector<ContentItem> &content);
+   void toCourseTemplate (std::vector<ContentItem> *content);
+
+   QTemplateDetailedModel* getDetailedModel (const QModelIndex &index);
+private:
+   std::vector<std::vector<MyItem> > m_items;
+};
+
+class ContentTable: public QWidget
+{
+   Q_OBJECT
+
+public:
+   ContentTable();
+   ~ContentTable();
+   void fromCourseTemplate (const std::vector<ContentItem> &content);
+   void toCourseTemplate (std::vector<ContentItem> *content);
+   QTemplateDetailedModel *m_detailedModel;
+
+private:
+   QTemplateModel m_templateModel;
+   QTableView m_templateView;
+   QTableView m_detailedView;
 
 private slots:
-   void updateLineNumberAreaWidth(int newBlockCount);
-   void updateLineNumberArea(const QRect &, int);
-
-private:
-   QWidget *m_lineNumberArea;
+   void selectionChanged(const QModelIndex &index);
 };
 
-//![codeeditordefinition]
-//![extraarea]
-
-class LineNumberArea : public QWidget
-{
-public:
-   LineNumberArea(CodeEditor *editor) : QWidget(editor) {
-      m_codeEditor = editor;
-   }
-
-   QSize sizeHint() const {
-      return QSize(m_codeEditor->lineNumberAreaWidth(), 0);
-   }
-
-protected:
-   void paintEvent(QPaintEvent *event) {
-      m_codeEditor->lineNumberAreaPaintEvent(event);
-   }
-
-private:
-   CodeEditor *m_codeEditor;
-};
-
-//![extraarea]
 
 #endif

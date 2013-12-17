@@ -12,7 +12,21 @@
 #include "courseoptions.h"
 
 #include <QString>
-#include <QStringList>
+#include <QImage>
+
+
+struct ContentItem
+{
+   QString question;
+   QString answer;
+   QByteArray imgQuestion[2];
+   QByteArray imgAnswer[2];
+   QByteArray mp3Question;
+   QByteArray mp3Answer;
+};
+
+ContentItem fromLegacyString(const QString &s);
+QString toLegacyString(const ContentItem &item);
 
 struct CourseTemplate
 {
@@ -22,7 +36,7 @@ struct CourseTemplate
    static bool exportQA (const QString &fileName, const CourseTemplate &courseTemplate);
 
    CourseOptions options;
-   QStringList content;
+   std::vector<ContentItem> content;
 
 private:
    static void trace (const QString &text, const int flags = traceLevel1|0);

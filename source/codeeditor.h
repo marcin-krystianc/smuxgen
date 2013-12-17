@@ -14,7 +14,7 @@
 #include <QModelIndex>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
-
+#include <QVector2D>
 #include "coursetemplate.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,15 +25,15 @@ class QWidget;
 QT_END_NAMESPACE
 
 struct MyItem {
-   QString text[2];
+   QString text;
 };
 
-class QTemplateDetailedModel : public QAbstractItemModel
+class QTemplateDetailedModel: public QAbstractItemModel
 {
    Q_OBJECT
 
 public:
-   QTemplateDetailedModel();
+   QTemplateDetailedModel(MyItem *item);
    ~QTemplateDetailedModel();
    QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
    QModelIndex parent ( const QModelIndex & index ) const;
@@ -42,9 +42,14 @@ public:
    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
    QVariant setData ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
    Qt::ItemFlags flags(const QModelIndex &index) const;
+private:
+   enum ROWS {
+      e_text = 0
+   };
+   MyItem *m_item;
 };
 
-class QTemplateModel : public QAbstractItemModel
+class QTemplateModel: public QAbstractItemModel
 {
    Q_OBJECT
 
@@ -66,11 +71,10 @@ public:
    void fromCourseTemplate (const std::vector<ContentItem> &content);
    void toCourseTemplate (std::vector<ContentItem> *content);
 
+   QTemplateDetailedModel* getDetailedModel (const QModelIndex &index);
 private:
-
-   std::vector<MyItem> m_items;
+   std::vector<std::vector<MyItem> > m_items;
 };
-
 
 class ContentTable: public QWidget
 {
@@ -78,8 +82,10 @@ class ContentTable: public QWidget
 
 public:
    ContentTable();
+   ~ContentTable();
    void fromCourseTemplate (const std::vector<ContentItem> &content);
    void toCourseTemplate (std::vector<ContentItem> *content);
+   QTemplateDetailedModel *m_detailedModel;
 
 private:
    QTemplateModel m_templateModel;
@@ -87,7 +93,7 @@ private:
    QTableView m_detailedView;
 
 private slots:
-   void dataChangedSlot(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+   void selectionChanged(const QModelIndex &index);
 };
 
 

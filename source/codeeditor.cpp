@@ -11,10 +11,11 @@
 
 #include "codeeditor.h"
 
+#include "assert.h"
 
 /////////////////////////////////////////////////////////////////////////////
-QTemplateDetailedModel::QTemplateDetailedModel():
-   QAbstractItemModel()
+QTemplateDetailedModel::QTemplateDetailedModel(MyItem *item):
+   QAbstractItemModel(), m_item(item)
 {
 }
 
@@ -51,17 +52,35 @@ int QTemplateDetailedModel::columnCount (const QModelIndex &) const
 /////////////////////////////////////////////////////////////////////////////
 QVariant QTemplateDetailedModel::data (const QModelIndex &index, int role) const
 {
-   switch (role)
+   if (index.column() == 0 &&
+       role == Qt::DisplayRole)
    {
-      case Qt::DisplayRole:
-      case Qt::EditRole:
+      switch (index.row())
       {
-         return "asdf";
+         case e_text:
+            return "Visible text";
+
+         default:
+            return "?";
       }
+   }
+
+   if (index.column() != 1)
+      return QVariant();
+
+   if (role != Qt::DisplayRole &&
+       role != Qt::EditRole)
+      return QVariant();
+
+   switch (index.row())
+   {
+      case e_text:
+         return m_item->text;
 
       default:
-         break;
+         return "?";
    }
+
    return QVariant();
 }
 
@@ -115,7 +134,7 @@ QVariant QTemplateModel::data (const QModelIndex &index, int role) const
       case Qt::DisplayRole:
       case Qt::EditRole:
       {
-         return m_items[index.row()].text[index.column()];
+         return m_items[index.row()][index.column()].text;
       }
 
       default:
@@ -138,7 +157,7 @@ bool QTemplateModel::setData(const QModelIndex &index, const QVariant &value, in
       insertRows (nRows - 1, 1);
    }
 
-   m_items[index.row()].text[index.column()] = value.toString();
+   m_items[index.row()][index.column()].text = value.toString();
    emit dataChanged (index, index);
    if (index.column() != 0)
       return true;
@@ -191,8 +210,9 @@ void QTemplateModel::fromCourseTemplate(const std::vector<ContentItem> &content)
    for (size_t i = 0; i < content.size(); ++i) {
       int row = rowCount();
       insertRows(row, 1);
-      m_items[row].text[0] = content[i].question;
-      m_items[row].text[1] = content[i].answer;
+      m_items[row].resize(2);
+      m_items[row][0].text = content[i].question;
+      m_items[row][1].text = content[i].answer;
    }
    insertRows(rowCount(), 1);
 
@@ -205,28 +225,33 @@ void QTemplateModel::toCourseTemplate (std::vector<ContentItem> *content)
    content->clear();
    for (int i = 0; i < rowCount() - 1; ++i) {
       ContentItem item;
-      item.question = m_items[i].text[0];
-      item.answer = m_items[i].text[1];
+      item.question = m_items[i][0].text;
+      item.answer = m_items[i][1].text;
       content->push_back(item);
    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
+QTemplateDetailedModel* QTemplateModel::getDetailedModel (const QModelIndex &index)
+{
+   if (index.row() >= m_items.size())
+      return NULL;
+
+   return new QTemplateDetailedModel(&m_items[index.row()][index.column()]);
+}
+
+/////////////////////////////////////////////////////////////////////////////
 ContentTable::ContentTable()
+   : m_detailedModel(NULL)
 {
    //m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
 
-   connect(&m_templateModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex &))
-           , this , SLOT(dataChangedSlot(const QModelIndex&, const QModelIndex &)));
-
+   connect(&m_templateView, SIGNAL(clicked (const QModelIndex &))
+           , this, SLOT(selectionChanged(const QModelIndex&)));
 
    m_templateView.setModel(&m_templateModel);
    m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
    m_templateView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-
-   //m_itemModel.setRowCount(2);
-   //m_itemModel.setColumnCount(2);
-   //m_itemView.setModel(&m_itemModel);
 
    QVBoxLayout *layout = new QVBoxLayout;
    layout->addWidget(&m_templateView);
@@ -246,9 +271,20 @@ ContentTable::ContentTable()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void ContentTable::dataChangedSlot(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+ContentTable::~ContentTable()
 {
-   int x=0;
+   delete m_detailedModel;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void ContentTable::selectionChanged(const QModelIndex &index)
+{
+   delete m_detailedModel;
+   m_detailedModel = m_templateModel.getDetailedModel(index);
+   m_detailedView.setModel(m_detailedModel);
+   m_detailedView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+   m_detailedView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+   m_detailedView.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 }
 
 /////////////////////////////////////////////////////////////////////////////

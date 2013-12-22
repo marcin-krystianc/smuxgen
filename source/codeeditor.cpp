@@ -40,7 +40,7 @@ QModelIndex QTemplateDetailedModel::parent (const QModelIndex&) const
 /////////////////////////////////////////////////////////////////////////////
 int QTemplateDetailedModel::rowCount (const QModelIndex &) const
 {
-   return 4;
+   return 1;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -58,10 +58,7 @@ QVariant QTemplateDetailedModel::data (const QModelIndex &index, int role) const
       switch (index.row())
       {
          case e_text:
-            return "Visible text";
-
-         default:
-            return "?";
+            return "Text";
       }
    }
 
@@ -76,9 +73,6 @@ QVariant QTemplateDetailedModel::data (const QModelIndex &index, int role) const
    {
       case e_text:
          return m_item->text;
-
-      default:
-         return "?";
    }
 
    return QVariant();
@@ -127,8 +121,31 @@ int QTemplateModel::columnCount (const QModelIndex &) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
+QVariant QTemplateModel::headerData ( int section, Qt::Orientation orientation, int role ) const
+{
+   if (orientation != Qt::Horizontal ||
+       role != Qt::DisplayRole)
+      return QAbstractItemModel::headerData(section, orientation, role);
+
+   switch (section)
+   {
+      case 0:
+         return "Question";
+      case 1:
+         return "Answer";
+   }
+
+   return QVariant();
+}
+
+/////////////////////////////////////////////////////////////////////////////
 QVariant QTemplateModel::data (const QModelIndex &index, int role) const
 {
+   if (!index.isValid() ||
+      index.row() >= m_items.size() ||
+      index.column() >= m_items[index.row()].size())
+      return QVariant();
+
    switch (role)
    {
       case Qt::DisplayRole:
@@ -255,7 +272,7 @@ ContentTable::ContentTable()
 
    QVBoxLayout *layout = new QVBoxLayout;
    layout->addWidget(&m_templateView);
-   layout->addWidget(&m_detailedView);
+   //layout->addWidget(&m_detailedView);
    setLayout(layout);
 
    /*

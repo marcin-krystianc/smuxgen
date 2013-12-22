@@ -34,27 +34,6 @@
 
 class ContentTable;
 
-/////////////////////////////////////////////////////////////////////////////
-class FindToolbar : public QWidget
-{
-   Q_OBJECT
-public:
-   FindToolbar(QWidget *parent = 0);
-   void setFindFocus();
-
-private:
-   QLineEdit *m_lineEdit;
-   QPushButton *m_forwardButton;
-   QPushButton *m_backwardButton;
-
-signals:
-   void findNext (const QString &text);
-   void findPrev (const QString &text);
-
-private slots:
-   void nextSlot();
-   void prevSlot();
-};
 
 /////////////////////////////////////////////////////////////////////////////
 class OptionsPage : public QWidget
@@ -137,14 +116,9 @@ signals:
 
 private:
    ContentTable *m_contentTextEdit;
-   FindToolbar *m_findToolbar;
 
 private slots:
-   void findNext(const QString &txt);
-   void findPrev(const QString &txt);
-
    void contentChangedSlot();
-   void keyPressEvent (QKeyEvent * event);
 };
 
 

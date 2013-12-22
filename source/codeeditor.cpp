@@ -13,6 +13,37 @@
 
 #include "assert.h"
 
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+FindToolbar::FindToolbar(QWidget *parent)
+   : QWidget(parent)
+{
+   QHBoxLayout *mainLayout = new QHBoxLayout;
+   mainLayout->addWidget(new QLabel("Find:"));
+   mainLayout->addWidget(&m_lineEdit);
+   setLayout(mainLayout);
+
+   connect(&m_lineEdit, SIGNAL(textChanged (const QString &))
+           , this, SLOT(textChangedSlot (const QString&)));
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void FindToolbar::setFindFocus ()
+{
+   m_lineEdit.setFocus();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void FindToolbar::textChangedSlot (const QString& text)
+{
+   if (text.isEmpty())
+      this->hide();
+
+   emit textChanged(text);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 QTemplateDetailedModel::QTemplateDetailedModel(MyItem *item):
    QAbstractItemModel(), m_item(item)
@@ -261,30 +292,24 @@ QTemplateDetailedModel* QTemplateModel::getDetailedModel (const QModelIndex &ind
 ContentTable::ContentTable()
    : m_detailedModel(NULL)
 {
-   //m_templateModel.setHorizontalHeaderLabels(QStringList() << "Question" << "Answer");
-
    connect(&m_templateView, SIGNAL(clicked (const QModelIndex &))
            , this, SLOT(selectionChanged(const QModelIndex&)));
 
-   m_templateView.setModel(&m_templateModel);
+   connect(&m_findToolbar, SIGNAL(textChanged (const QString &))
+           , this, SLOT(filterChanged(const QString&)));
+
+   m_templateProxyModel.setSourceModel(&m_templateModel);
+   m_templateProxyModel.setFilterKeyColumn(-1);
+   m_templateView.setModel(&m_templateProxyModel);
    m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
    m_templateView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
 
+   m_findToolbar.hide();
    QVBoxLayout *layout = new QVBoxLayout;
+   layout->addWidget(&m_findToolbar);
    layout->addWidget(&m_templateView);
    //layout->addWidget(&m_detailedView);
    setLayout(layout);
-
-   /*
-   //setRowHeight(0,5);
-   setColumnCount(2);
-   QStringList labels;
-   labels.push_back("Question");
-   labels.push_back("Answer");
-   setHorizontalHeaderLabels(labels);
-   horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-   horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-   */
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -308,12 +333,6 @@ void ContentTable::selectionChanged(const QModelIndex &index)
 void ContentTable::fromCourseTemplate(const std::vector<ContentItem> &content)
 {
    m_templateModel.fromCourseTemplate(content);
-
-   //m_itemModel.setData(m_itemModel.index(0,0), Qt::lightGray, Qt::BackgroundColorRole);
-   //m_templateModel.setRowCount(1);
-   //m_templateModel.setData(m_itemModel.index(0,0), QString("asdf"), Qt::UserRole+1);
-   //m_templateModel.setData(m_itemModel.index(0,0), QImage(), Qt::UserRole+2);
-   //m_templateModel.setData(m_itemModel.index(0,0), QStandardItemModel(), Qt::UserRole+3);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -322,4 +341,23 @@ void ContentTable::toCourseTemplate (std::vector<ContentItem> *content)
    m_templateModel.toCourseTemplate(content);
 }
 
+/////////////////////////////////////////////////////////////////////////////
+void ContentTable::keyPressEvent (QKeyEvent * event)
+{
+   if ((event->modifiers()&Qt::ControlModifier) &&
+       (event->key() == Qt::Key_F))
+   {
+      m_findToolbar.show();
+      m_findToolbar.setFindFocus();
+   }
+   else
+      QWidget::keyPressEvent(event);
+}
 
+/////////////////////////////////////////////////////////////////////////////
+void ContentTable::filterChanged (const QString&text)
+{
+   QRegExp::PatternSyntax syntax = QRegExp::PatternSyntax(QRegExp::Wildcard);
+   QRegExp regExp(text, Qt::CaseInsensitive, syntax);
+   m_templateProxyModel.setFilterRegExp(regExp);
+}

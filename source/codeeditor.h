@@ -12,9 +12,11 @@
 #include <QObject>
 #include <QTableWidget>
 #include <QModelIndex>
+#include <QLineEdit>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
-#include <QVector2D>
+#include <QSortFilterProxyModel>
+
 #include "coursetemplate.h"
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +30,24 @@ struct MyItem {
    QString text;
    QImage pic1;
    QImage pic2;
+};
+
+
+class FindToolbar : public QWidget
+{
+   Q_OBJECT
+public:
+   FindToolbar(QWidget *parent = 0);
+   void setFindFocus();
+
+private:
+   QLineEdit m_lineEdit;
+
+private slots:
+   void textChangedSlot (const QString&);
+
+signals:
+   void textChanged (const QString&);
 };
 
 class QTemplateDetailedModel: public QAbstractItemModel
@@ -96,9 +116,13 @@ private:
    QTemplateModel m_templateModel;
    QTableView m_templateView;
    QTableView m_detailedView;
+   QSortFilterProxyModel m_templateProxyModel;
+   FindToolbar m_findToolbar;
 
 private slots:
    void selectionChanged(const QModelIndex &index);
+   void keyPressEvent (QKeyEvent * event);
+   void filterChanged (const QString&);
 };
 
 

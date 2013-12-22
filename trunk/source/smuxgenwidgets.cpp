@@ -381,18 +381,11 @@ ContentPage::ContentPage(QWidget *parent)
    : QWidget(parent)
 {
    m_contentTextEdit = new ContentTable;
-   m_findToolbar = new FindToolbar;
-   m_findToolbar->layout()->setMargin(0);
-   //contentTextEdit->setAcceptRichText(false);
    QVBoxLayout *mainLayout = new QVBoxLayout;
-   mainLayout->addWidget(m_findToolbar);
    mainLayout->addWidget(m_contentTextEdit);
    setLayout(mainLayout);
 
    connect (m_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
-
-   connect (m_findToolbar , SIGNAL(findNext(const QString&)) , this, SLOT(findNext(const QString&)));
-   connect (m_findToolbar , SIGNAL(findPrev(const QString&)) , this, SLOT(findPrev(const QString&)));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -412,79 +405,7 @@ std::vector<ContentItem> ContentPage::getContent ()
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::contentChangedSlot()
 {
-   m_findToolbar->hide();
    emit contentChangedSignal();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-void ContentPage::keyPressEvent (QKeyEvent * event)
-{
-   if ((event->modifiers()&Qt::ControlModifier) &&
-       (event->key() == Qt::Key_F))
-   {
-      m_findToolbar->show();
-      m_findToolbar->setFindFocus();
-   }
-   else
-      QWidget::keyPressEvent(event);
-}
 
-/////////////////////////////////////////////////////////////////////////////
-void ContentPage::findNext(const QString &txt)
-{
-   //n_contentTextEdit->find(txt);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void ContentPage::findPrev(const QString &txt)
-{
-   //n_contentTextEdit->find(txt, QTextDocument::FindBackward);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-FindToolbar::FindToolbar(QWidget *parent)
-   : QWidget(parent)
-{
-   m_lineEdit = new QLineEdit;
-   m_forwardButton = new QPushButton (QIcon(":/images/next.png"), "");
-   m_backwardButton = new QPushButton (QIcon(":/images/prev.png"), "");
-
-   QHBoxLayout *mainLayout = new QHBoxLayout;
-   mainLayout->addWidget(new QLabel("Find:"));
-   mainLayout->addWidget(m_lineEdit);
-   mainLayout->addWidget(m_backwardButton);
-   mainLayout->addWidget(m_forwardButton);
-   setLayout(mainLayout);
-
-   connect (m_lineEdit , SIGNAL(returnPressed()), this , SLOT(nextSlot()));
-   connect (m_forwardButton , SIGNAL(clicked()) , this , SLOT(nextSlot()));
-   connect (m_backwardButton , SIGNAL(clicked()) , this , SLOT(prevSlot()));
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void FindToolbar::nextSlot()
-{
-   QString txt = m_lineEdit->text();
-   if (txt.isEmpty())
-      return;
-
-   emit findNext(txt);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void FindToolbar::prevSlot()
-{
-   QString txt = m_lineEdit->text();
-   if (txt.isEmpty())
-      return;
-
-   emit findPrev(txt);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void FindToolbar::setFindFocus ()
-{
-   m_lineEdit->setFocus();
-}

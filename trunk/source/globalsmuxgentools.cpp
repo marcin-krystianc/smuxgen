@@ -39,7 +39,7 @@ QStringList parseGoogleHtml (const QString &fileName)
    html = inputFileStream.readAll();
 
 
-   QString leftBound ("imgres?imgurl=");
+   QString leftBound (";imgurl=");
    QString rightBound ("&amp");
    int leftPos = 0;
    int pos = 0;

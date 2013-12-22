@@ -12,9 +12,11 @@
 #include <QObject>
 #include <QTableWidget>
 #include <QModelIndex>
+#include <QLineEdit>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
-#include <QVector2D>
+#include <QSortFilterProxyModel>
+
 #include "coursetemplate.h"
 
 QT_BEGIN_NAMESPACE
@@ -26,6 +28,26 @@ QT_END_NAMESPACE
 
 struct MyItem {
    QString text;
+   QImage pic1;
+   QImage pic2;
+};
+
+
+class FindToolbar : public QWidget
+{
+   Q_OBJECT
+public:
+   FindToolbar(QWidget *parent = 0);
+   void setFindFocus();
+
+private:
+   QLineEdit m_lineEdit;
+
+private slots:
+   void textChangedSlot (const QString&);
+
+signals:
+   void textChanged (const QString&);
 };
 
 class QTemplateDetailedModel: public QAbstractItemModel
@@ -44,7 +66,9 @@ public:
    Qt::ItemFlags flags(const QModelIndex &index) const;
 private:
    enum ROWS {
-      e_text = 0
+      e_text = 0,
+      e_pic1 = 1,
+      e_pic2 = 2
    };
    MyItem *m_item;
 };
@@ -60,6 +84,7 @@ public:
    QModelIndex parent ( const QModelIndex & index ) const;
    int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
    int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+   QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
    QVariant setData ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
@@ -91,9 +116,13 @@ private:
    QTemplateModel m_templateModel;
    QTableView m_templateView;
    QTableView m_detailedView;
+   QSortFilterProxyModel m_templateProxyModel;
+   FindToolbar m_findToolbar;
 
 private slots:
    void selectionChanged(const QModelIndex &index);
+   void keyPressEvent (QKeyEvent * event);
+   void filterChanged (const QString&);
 };
 
 

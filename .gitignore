@@ -1,4 +1,4 @@
 .svn
-build-smuxgen-qt_4_8-Debug/
 *.user
-source/build*
+source/debug*
+source/release*

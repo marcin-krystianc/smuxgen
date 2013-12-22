@@ -2,3 +2,4 @@
 *.user
 source/debug*
 source/release*
+build-smuxgen-qt_4_8-Release/*

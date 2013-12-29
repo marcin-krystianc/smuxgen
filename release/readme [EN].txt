@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 			SMUXGEN - SuperMemo UX Generator
 --------------------------------------------------------------------------------
-Version 2.1 (Tested with SuperMemo UX 1.4.3.2)
+Version 2.22 (Tested with SuperMemo UX 1.5.1.13)
 Author	Marcin Krystianc (marcin.krystianc@gmail.com)
 OS	Windows
 License GPL
@@ -49,30 +49,26 @@ Archive contain:
 
 4. To create new course.
   a. Install SuperMemo UX (http://www.supermemo.pl/)
-  b. Get all updates (WITHOUT UPDATES SMUXGEN WILL NOT WORK, tested with version 1.4.3.2)
+  b. Get all updates (WITHOUT UPDATES SMUXGEN WILL NOT WORK)
   c. Create new course (course->subscribe->create)
      in directory "C:\Program Files\SuperMemo UX\Courses\" new direcotry with course name will be created .
   d. Start SMUXGEN (smuxgen.bat)
   e. See example file and create Your own file
-  f. Set correct path to database file and select correct course name (see options)
+  f. Select user and select course name (see options)
   g. Save it and press GENERATE button (See conole window for diagnostics).
   h. After any change just generate course again 
      
 5. Options.
   
-  Database file:	- path to  SuperMemo UX dataabse file name ("C:/Documents and Settings/????/Application Data/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
-  Course			- Course name to which current lesson will be added
-  Regenerate 	 	- create again all flash cards
+  user:			- user name in SuperMemo UX
+  Course		- Course name to which current lesson will be added
   Alternate 	 	- create mirrored course
-  Images			- add pictures
-  Lector			- add mp3 with sample  pronunciation
+  Images		- add pictures
+  Lector		- add mp3 with sample pronunciation
   
  
   Word List:
-    In following lines enter A:B|C
-	A   - word in native language
-	B,C - words in foreign language
-	
+    In following lines enter pairs of words in word in native language and in foreign language:	
 	()	- everything included in round brackets will be shown, but not read by lector.
 	[] 	- everything included in square brackets will be shown and used as keaywors for image searching
 	{} 	- everything included in curly brackets won't be shown
@@ -80,7 +76,7 @@ Archive contain:
   Examples:
    	w koñcu(wreszcie):schließlich
 	syrop na kaszel:der Hustensaft|der Hustensirup
-	Wer ist das {[wasser]}?(Kind) :Das ist das Kind.
+	Wer ist das {[wasser]}?(Kind):Das ist das Kind.
 	
 6. Mp3
 
@@ -107,7 +103,10 @@ New pictures are downloaded from Internet. When default results are insufficient
 To change unwanted picture just use "drag and drop" technique.
 
 8. Changelog
-
+V 2.22		- Issue: images aren't downloaded
+ 		- Removed option: regenerate
+		- Removed course browser
+		- Word list redisigned (In future will replace picture browser)
 V 2.21		- Issue: images aren't downloaded
 V 2.20		- Issue: both images are the same
 V 2.19		- Pop-up window for unsaved changes 

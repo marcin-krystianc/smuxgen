@@ -1,7 +1,7 @@
 ﻿--------------------------------------------------------------------------------
 			SMUXGEN - SuperMemo UX Generator
 --------------------------------------------------------------------------------
-Version 2.1 (Tested with SuperMemo UX 1.4.3.2)
+Version 2.22 (Tested with SuperMemo UX 1.5.1.13)
 Author	Marcin Krystianc (marcin.krystianc@gmail.com)
 OS	Windows
 License GPL
@@ -68,29 +68,26 @@ W skład programu wchodzi:
 4. Tworzenie nowego kursu.
 
   a. Zainstaluj program SuperMemo UX (http://www.supermemo.pl/)
-  b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ, testowane z wersją 1.4.3.2)
+  b. Pobierz aktualizacje (BEZ AKTUALIZACJI WYGENEROWANE KURSY MOGĄ NIE DZIAŁAĆ)
   c. Utwórz nowy kurs w programie SuperMemo (kurs->dodaj->utwórz)
      W katalogu "C:\Program Files\SuperMemo UX\Courses\" zostanie stworzony katalog z nowym kursem.
   d. Uruchom program smuxgen (zobacz smuxgen.bat)
   e. Wzorując się na przykładzie, utwórz słówka dla nowego kursu
-  f. Ustaw odpowiedni plik bazy danych i wybierz nazwę kursu (patrz punkt Opcje)
-  g. Zapisz kurs i kliknij przycisk GENERATE (Informacje diagnostyczne znajdziesz w okienku "Consloe")
+  f. Wybierz użytkownika i nazwę kursu (patrz punkt Opcje)
+  g. Zapisz kurs i kliknij przycisk GENERATE (Informacje diagnostyczne znajdziesz w okienku "Console")
   h. Po dodaniu nowych słówek, lub zmianie istniejęcyh kliknij ponownie przycisk GENERATE
      
 5. Opcje.
   
-  Database file: - ściezka do pliku bazy danych SuperMemo UX ("C:/Documents and Settings/????/Dane aplikacji/SuperMemo World/SuperMemo UX/?????/Repetitions.dat"
+  User: 	- Nazwa użytkownika w SuperMemo UX
   Course	- Nazwa kursu do którego chemy dodać aktualną lekcję  
-  Regenerate 	- wymusza powtórne wygenerowanie wszystkich ćwiczeń
   Alternate 	- generuje kurs lustrzany
   Images	- dodaje obrazki do ćwiczeń
   Lector	- dodaje lektora do ćwiczeń
   
  
   Word List:
-  W kolejnych linijkach znajdują się słówka według schematu A:B|C
-	A   - słówko w języku polskim
-	B,C - alternatywne odpowiedzi w języku obcym
+  W kolejnych linijkach znajdują się pary słów do nauki:
 
 	()	- wszystko co znajduje się w nawiasach okragłych będzie wyświetlane, ale nie będzie czytane przez lektora
 	[] 	- wszystko co znajduje się w nawiasach kwadratowych będzie wyświetlane (bez nawiasów) i użyte jako słowo kluczowe do wyszukiwania obrazków
@@ -131,6 +128,10 @@ Obrazy podmienia się przeciągając je z listy po prawej na jeden z obrazów do
 
 8. Changelog
 
+V 2.22		- Issue: images aren't downloaded
+ 		- Removed option: regenerate
+		- Removed course browser
+		- Word list redisigned (In future will replace picture browser)
 V 2.21		- Issue: images aren't downloaded
 V 2.20		- Issue: both images are the same
 V 2.19		- Pop-up window for unsaved changes 

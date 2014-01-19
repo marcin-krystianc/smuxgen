@@ -31,6 +31,7 @@ public:
    ~MainWindow();
 
 private slots:
+   void newCourseTemplateSlot();
    void openCourseTemplateSlot(const QString &fileNamePar = "");
    bool saveCourseTemplateSlot();
    void importQASlot();
@@ -71,6 +72,7 @@ private:
 
    QMenu *m_viewMenu;
 
+   QAction *m_newCourseTemplateAction;
    QAction *m_openCourseTemplateAction;
    QAction *m_saveCourseTemplateAction;
    QAction *m_importQAAction;

@@ -229,7 +229,7 @@ bool QTemplateModel::insertRows (int row, int count, const QModelIndex &)
 {
    size_t nRows = rowCount();
    beginInsertRows (QModelIndex(), row, row + count - 1);
-   m_items.resize(nRows + count);
+   m_items.resize(nRows + count, std::vector<MyItem>(2));
    std::rotate (&m_items[row], &m_items[row], &m_items[rowCount()-1]);
    endInsertRows();
    return true;

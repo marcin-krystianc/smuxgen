@@ -52,6 +52,7 @@ void MainWindow::about()
 void MainWindow::createMenus()
 {
    m_fileMenu = menuBar()->addMenu(tr("&File"));
+   m_fileMenu->addAction(m_newCourseTemplateAction);
    m_fileMenu->addAction(m_openCourseTemplateAction);
    m_fileMenu->addAction(m_saveCourseTemplateAction);
    m_fileMenu->addAction(m_saveAsCourseTemplateAction);
@@ -80,6 +81,11 @@ void MainWindow::createMenus()
 /////////////////////////////////////////////////////////////////////////////
 void MainWindow::createActions()
 {
+   m_newCourseTemplateAction = new QAction(QIcon(":/images/new.png"), tr("&New..."), this);
+   m_newCourseTemplateAction->setShortcuts(QKeySequence::New);
+   m_newCourseTemplateAction->setStatusTip(tr("New..."));
+   connect(m_newCourseTemplateAction, SIGNAL(triggered()), this, SLOT(newCourseTemplateSlot()));
+
    m_openCourseTemplateAction = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
    m_openCourseTemplateAction->setShortcuts(QKeySequence::Open);
    m_openCourseTemplateAction->setStatusTip(tr("Open..."));
@@ -147,6 +153,7 @@ void MainWindow::createToolBars()
 {
    m_toolBar = new QToolBar;
    m_toolBar = addToolBar(tr("Toolbar"));
+   m_toolBar->addAction(m_newCourseTemplateAction);
    m_toolBar->addAction(m_openCourseTemplateAction);
    m_toolBar->addAction(m_saveCourseTemplateAction);
    m_toolBar->addSeparator();
@@ -188,6 +195,18 @@ void MainWindow::createDockWindows()
 void MainWindow::createStatusBar()
 {
    statusBar()->showMessage(tr("Ready"));
+}
+
+///////////////////////////////////////////////////////////////////////////
+void MainWindow::newCourseTemplateSlot()
+{
+   m_courseTemplateFileName.clear();
+   m_courseTemplate.content.clear();
+   m_courseTemplate.options = m_optionsPage->getOptions();
+   m_optionsPage->setOptions(m_courseTemplate.options);
+   m_contentPage->setContent(m_courseTemplate.content);
+   m_contentChanged = false;
+   setTitle();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -337,6 +356,7 @@ void MainWindow::updateUserInterface()
    m_dockContentPage->show();
    m_dockOptionsPage->show();
 
+   m_newCourseTemplateAction->setEnabled(!m_generating);
    m_openCourseTemplateAction->setEnabled(!m_generating);
    m_saveCourseTemplateAction->setEnabled(!m_generating);
    m_saveAsCourseTemplateAction->setEnabled(!m_generating);

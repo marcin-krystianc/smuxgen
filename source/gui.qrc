@@ -13,5 +13,6 @@
         <file>images/prev.png</file>
         <file>images/next.png</file>
         <file>images/rebuild.png</file>
+        <file>images/new.png</file>
     </qresource>
 </RCC>

@@ -205,7 +205,7 @@ void MainWindow::newCourseTemplateSlot()
    m_courseTemplate.options = m_optionsPage->getOptions();
    m_optionsPage->setOptions(m_courseTemplate.options);
    m_contentPage->setContent(m_courseTemplate.content);
-   m_contentChanged = false;
+   m_contentChanged = true;
    setTitle();
 }
 

@@ -8,6 +8,7 @@
 
 #include <QtGui>
 #include <QStringList>
+#include <QModelIndexList>
 
 #include "codeeditor.h"
 
@@ -173,8 +174,8 @@ QVariant QTemplateModel::headerData ( int section, Qt::Orientation orientation, 
 QVariant QTemplateModel::data (const QModelIndex &index, int role) const
 {
    if (!index.isValid() ||
-      index.row() >= m_items.size() ||
-      index.column() >= m_items[index.row()].size())
+      static_cast<size_t>(index.row()) >= m_items.size() ||
+      static_cast<size_t>(index.column()) >= m_items[index.row()].size())
       return QVariant();
 
    switch (role)
@@ -282,7 +283,7 @@ void QTemplateModel::toCourseTemplate (std::vector<ContentItem> *content)
 /////////////////////////////////////////////////////////////////////////////
 QTemplateDetailedModel* QTemplateModel::getDetailedModel (const QModelIndex &index)
 {
-   if (index.row() >= m_items.size())
+   if (static_cast<size_t>(index.row()) >= m_items.size())
       return NULL;
 
    return new QTemplateDetailedModel(&m_items[index.row()][index.column()]);
@@ -298,6 +299,9 @@ ContentTable::ContentTable()
    connect(&m_findToolbar, SIGNAL(textChanged (const QString &))
            , this, SLOT(filterChanged(const QString&)));
 
+   connect (&m_templateModel, SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &))
+           , this, SLOT(dataChangedSlot()));
+
    m_templateProxyModel.setSourceModel(&m_templateModel);
    m_templateProxyModel.setFilterKeyColumn(-1);
    m_templateView.setModel(&m_templateProxyModel);
@@ -310,6 +314,9 @@ ContentTable::ContentTable()
    layout->addWidget(&m_templateView);
    //layout->addWidget(&m_detailedView);
    setLayout(layout);
+
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -350,6 +357,13 @@ void ContentTable::keyPressEvent (QKeyEvent * event)
       m_findToolbar.show();
       m_findToolbar.setFindFocus();
    }
+   else if ((event->modifiers()&Qt::ControlModifier) &&
+            (event->key() == Qt::Key_C))
+   {
+      QItemSelectionModel *x = m_templateView.selectionModel();
+      QModelIndexList ix = x->selectedIndexes();
+      x = x;
+   }
    else
       QWidget::keyPressEvent(event);
 }
@@ -360,4 +374,10 @@ void ContentTable::filterChanged (const QString&text)
    QRegExp::PatternSyntax syntax = QRegExp::PatternSyntax(QRegExp::Wildcard);
    QRegExp regExp(text, Qt::CaseInsensitive, syntax);
    m_templateProxyModel.setFilterRegExp(regExp);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void ContentTable::dataChangedSlot()
+{
+   emit contentChanged ();
 }

@@ -115,7 +115,7 @@ signals:
    void contentChangedSignal ();
 
 private:
-   ContentTable *m_contentTextEdit;
+   ContentTable *m_content;
 
 private slots:
    void contentChangedSlot();

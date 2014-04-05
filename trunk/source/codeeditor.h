@@ -123,6 +123,10 @@ private slots:
    void selectionChanged(const QModelIndex &index);
    void keyPressEvent (QKeyEvent * event);
    void filterChanged (const QString&);
+   void dataChangedSlot ();
+
+signals:
+   void contentChanged ();
 };
 
 

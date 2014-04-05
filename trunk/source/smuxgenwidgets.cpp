@@ -152,8 +152,6 @@ OptionsPage::OptionsPage(QWidget *parent)
    connect(m_oVoiceCheckBoxQ , SIGNAL(stateChanged (int)) , this , SLOT(voiceCheckBoxChangedQ(int)));
    connect(m_oVoiceCheckBoxA , SIGNAL(stateChanged (int)) , this , SLOT(voiceCheckBoxChangedA(int)));
 
-   connect(m_mediaObject , SIGNAL(finished ()) , this , SLOT(testFileRemoveSlot()));
-
    voiceCheckBoxChangedQ(m_oVoiceCheckBoxQ->checkState());
    voiceCheckBoxChangedA(m_oVoiceCheckBoxA->checkState());
 }
@@ -380,25 +378,25 @@ void ConsolePage::traceSlot(const QString &txt, const int & flags)
 ContentPage::ContentPage(QWidget *parent)
    : QWidget(parent)
 {
-   m_contentTextEdit = new ContentTable;
+   m_content = new ContentTable;
    QVBoxLayout *mainLayout = new QVBoxLayout;
-   mainLayout->addWidget(m_contentTextEdit);
+   mainLayout->addWidget(m_content);
    setLayout(mainLayout);
 
-   connect (m_contentTextEdit, SIGNAL(textChanged()), this, SLOT(contentChangedSlot()));
+   connect (m_content, SIGNAL(contentChanged()), this, SLOT(contentChangedSlot()));
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void ContentPage::setContent (const std::vector<ContentItem> &content)
 {
-   m_contentTextEdit->fromCourseTemplate (content);
+   m_content->fromCourseTemplate (content);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 std::vector<ContentItem> ContentPage::getContent ()
 {
    std::vector<ContentItem> content;
-   m_contentTextEdit->toCourseTemplate(&content);
+   m_content->toCourseTemplate(&content);
    return content;
 }
 

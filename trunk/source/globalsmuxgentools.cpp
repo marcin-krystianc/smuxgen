@@ -38,8 +38,7 @@ QStringList parseGoogleHtml (const QString &fileName)
    inputFileStream.setCodec("UTF-8");
    html = inputFileStream.readAll();
 
-
-   QString leftBound (";imgurl=");
+   QString leftBound ("?imgurl=");
    QString rightBound ("&amp");
    int leftPos = 0;
    int pos = 0;

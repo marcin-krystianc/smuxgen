@@ -286,6 +286,7 @@ void generateMp3
       double voiceTrim
       )
 {
+   QString escapedText = "\"" + mp3Text + "\"";
    QStringList arguments;
    arguments.append(QDir::toNativeSeparators(filePath));
    arguments.append(mp3Text);

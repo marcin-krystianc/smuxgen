@@ -2,7 +2,6 @@
 # Project created by QtCreator 2009-11-18T13:51:28
 # -------------------------------------------------
 
-QT += multimedia
 QT += sql
 QT += xml
 QT += widgets

@@ -12,7 +12,6 @@
 #include <QtWidgets/QTextEdit>
 #include <QPalette>
 #include <QDateTime>
-#include <QtMultimedia/QMediaPlayer>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -242,10 +241,13 @@ void OptionsPage::voiceTestButtonTriggered ()
    else
       return;
 
-   QMediaPlayer *player = new QMediaPlayer;
-   player->setMedia(QUrl::fromLocalFile(filePath));
-   player->setVolume(50);
-   player->play();
+   ShellExecute(NULL,
+     NULL,
+     filePath.toStdWString().c_str(),
+     NULL,
+     NULL,
+     SW_HIDE
+   );
 }
 
 /////////////////////////////////////////////////////////////////////////////

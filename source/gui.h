@@ -10,7 +10,15 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
+#include <QACTION>
+#include <QMessageBox>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QDockWidget>
+#include <QStatusBar>
+
+
 #include "smuxgenwidgets.h"
 #include "coursetemplate.h"
 #include "coursegenerator.h"

@@ -22,6 +22,7 @@ int main (int argc, char* argv[])
    QApplication app(argc, argv);
 
    app.addLibraryPath(("plugins")); // sql will not work without that
+   app.addLibraryPath(("C:\\Users\\Ja\\Documents\\smuxgen\\build-smuxgen-Desktop_Qt_5_8_0_MSVC2015_64bit-Debug\\debug\\plugins")); // sql will not work without that
 
    QDir pDir;
    pDir.mkdir("tmp");

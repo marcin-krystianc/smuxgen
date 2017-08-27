@@ -10,6 +10,7 @@
 #ifndef COURSEGENERATOR_H
 #define COURSEGENERATOR_H
 
+#include <QHeaderView>
 #include <vector>
 
 #include "coursetemplate.h"

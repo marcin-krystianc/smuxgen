@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <QtGui>
+#include <QFileDialog>
 
 #include "gui.h"
 #include "smuxgenwidgets.h"

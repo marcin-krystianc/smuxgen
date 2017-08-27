@@ -10,21 +10,19 @@
 #ifndef CSMUXGENWIDGETS_H
 #define CSMUXGENWIDGETS_H
 
-#include <QWidget>
-#include <QCheckBox>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QTextEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QTextEdit>
 #include <QObject>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QPushButton>
-#include <Phonon>
-#include <QListWidget>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QListWidget>
 #include <QTimer>
-#include <QProgressBar>
-#include <QToolButton>
-#include <QPlainTextEdit>
+#include <QtWidgets/QProgressBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QPlainTextEdit>
 
 #include "courseoptions.h"
 #include "supermemosql.h"
@@ -73,9 +71,6 @@ private:
 private:
    SuperMemoSQL m_superDb;
    void trace (const QString &text, const int & flags = traceLevel1|0);
-
-   Phonon::AudioOutput *m_audioOutput;
-   Phonon::MediaObject *m_mediaObject;
 
 private slots:
    void userChanged (const QString &userName);

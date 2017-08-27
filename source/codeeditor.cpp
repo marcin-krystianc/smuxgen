@@ -9,6 +9,9 @@
 #include <QtGui>
 #include <QStringList>
 #include <QModelIndexList>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QHeaderView>
 
 #include "codeeditor.h"
 
@@ -59,7 +62,7 @@ QTemplateDetailedModel::~QTemplateDetailedModel()
 /////////////////////////////////////////////////////////////////////////////
 QModelIndex QTemplateDetailedModel::index(int row, int column, const QModelIndex&) const
 {
-   return createIndex(row, column, NULL);
+   return createIndex(row, column, nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -130,7 +133,7 @@ QTemplateModel::~QTemplateModel()
 /////////////////////////////////////////////////////////////////////////////
 QModelIndex QTemplateModel::index(int row, int column, const QModelIndex&) const
 {
-   return createIndex(row, column, NULL);
+   return createIndex(row, column, nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -206,7 +209,7 @@ bool QTemplateModel::setData(const QModelIndex &index, const QVariant &value, in
       insertRows (nRows - 1, 1);
    }
 
-   m_items[index.row()][index.column()].text = value.toString();
+   m_items[index.row()][index.column()].text = value.toString().trimmed();
    emit dataChanged (index, index);
    if (index.column() != 0)
       return true;
@@ -305,8 +308,8 @@ ContentTable::ContentTable()
    m_templateProxyModel.setSourceModel(&m_templateModel);
    m_templateProxyModel.setFilterKeyColumn(-1);
    m_templateView.setModel(&m_templateProxyModel);
-   m_templateView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-   m_templateView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+   m_templateView.horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+   m_templateView.horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
    m_findToolbar.hide();
    QVBoxLayout *layout = new QVBoxLayout;
@@ -331,8 +334,8 @@ void ContentTable::selectionChanged(const QModelIndex &index)
    delete m_detailedModel;
    m_detailedModel = m_templateModel.getDetailedModel(index);
    m_detailedView.setModel(m_detailedModel);
-   m_detailedView.horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-   m_detailedView.horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+   m_detailedView.horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+   m_detailedView.horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
    m_detailedView.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 }
 

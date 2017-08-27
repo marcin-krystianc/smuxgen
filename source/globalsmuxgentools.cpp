@@ -38,8 +38,7 @@ QStringList parseGoogleHtml (const QString &fileName)
    inputFileStream.setCodec("UTF-8");
    html = inputFileStream.readAll();
 
-
-   QString leftBound (";imgurl=");
+   QString leftBound ("?imgurl=");
    QString rightBound ("&amp");
    int leftPos = 0;
    int pos = 0;
@@ -89,7 +88,7 @@ QString getTextToPrint (const QString &input) // get text to show to user
 /////////////////////////////////////////////////////////////////////////////
 QString getKeyWord (const QString &input)
 {
-   const QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?; ':\"[]\{}|");
+   const QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?; ':\"[]{}|");
    const QString B = QString::fromUtf8("ACZXSNOLEaczzsnole                                   ");
 
    QString temp = input;

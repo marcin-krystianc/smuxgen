@@ -1,4 +1,4 @@
-set name=smuxgen v2.23
+set name=smuxgen v2.24
 xcopy /D /Y "%~dp0\build-smuxgen-qt_4_8-Release\release\smuxgen.exe" "%~dp0\release\bin\"
 rmdir "%name%" /S /Q
 mkdir "%name%" 

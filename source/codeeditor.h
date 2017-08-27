@@ -10,9 +10,9 @@
 #define CODEEDITOR_H
 
 #include <QObject>
-#include <QTableWidget>
+#include <QtWidgets/QTableWidget>
 #include <QModelIndex>
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>

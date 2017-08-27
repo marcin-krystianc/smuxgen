@@ -9,11 +9,13 @@
 
 #include <stdexcept>
 #include <QtGui>
-#include <QTextEdit>
-#include <QColorGroup>
+#include <QtWidgets/QTextEdit>
 #include <QPalette>
 #include <QDateTime>
-#include <Phonon>
+#include <QtMultimedia/QMediaPlayer>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QLabel>
 
 #include "globalsmuxgentools.h"
 #include "smuxgenwidgets.h"
@@ -142,9 +144,6 @@ OptionsPage::OptionsPage(QWidget *parent)
 
    setLayout(configLayout);
 
-   m_audioOutput = new Phonon::AudioOutput (Phonon::MusicCategory, this);
-   m_mediaObject = new Phonon::MediaObject (this);
-
    connect(m_userCombo , SIGNAL(currentIndexChanged(const QString &)) , this , SLOT(userChanged(const QString &)));
    connect(m_voiceTestbuttonQ, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
    connect(m_voiceTestbuttonA, SIGNAL(clicked()) , this , SLOT(voiceTestButtonTriggered()));
@@ -243,9 +242,10 @@ void OptionsPage::voiceTestButtonTriggered ()
    else
       return;
 
-   Phonon::createPath(m_mediaObject, m_audioOutput);
-   m_mediaObject->setCurrentSource(Phonon::MediaSource(filePath));
-   m_mediaObject->play();
+   QMediaPlayer *player = new QMediaPlayer;
+   player->setMedia(QUrl::fromLocalFile(filePath));
+   player->setVolume(50);
+   player->play();
 }
 
 /////////////////////////////////////////////////////////////////////////////

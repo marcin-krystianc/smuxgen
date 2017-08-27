@@ -22,6 +22,7 @@
 #include "codeeditor.h"
 #include "sapi.h"
 
+#include <Windows.h>
 
 /////////////////////////////////////////////////////////////////////////////
 OptionsPage::OptionsPage(QWidget *parent)
@@ -32,10 +33,18 @@ OptionsPage::OptionsPage(QWidget *parent)
    m_oImageCheckBox = new QCheckBox(tr("Images"));
    m_oVoiceCheckBoxQ = new QCheckBox(tr("Lector (Questions)"));
    m_oVoiceCheckBoxA = new QCheckBox(tr("Lector (Answers)"));
+   m_graphicsSearchUrl = new QLineEdit;
+   m_graphicsRegex = new QLineEdit;
+   m_graphicsSearchUrl->setToolTip("Search address. Use %%%%% as a placeholder for searched items.");
+   m_graphicsRegex->setToolTip("Regular expression to with single capture group, to parse search html.");
 
-   QVBoxLayout *checkLayout = new QVBoxLayout;
+   QHBoxLayout *checkLayout = new QHBoxLayout;
    checkLayout->addWidget(m_oDoubleCheckBox);
    checkLayout->addWidget(m_oImageCheckBox);
+
+   QVBoxLayout *imgLayout = new QVBoxLayout;
+   imgLayout->addWidget(m_graphicsSearchUrl);
+   imgLayout->addWidget(m_graphicsRegex);
 
    QLabel *userLabel = new QLabel(tr("User:"));
    m_userCombo = new QComboBox;
@@ -134,6 +143,7 @@ OptionsPage::OptionsPage(QWidget *parent)
    configLayout->addLayout(instructionLayout);
    configLayout->addSpacing(10);
    configLayout->addLayout(checkLayout);
+   configLayout->addLayout(imgLayout);
    configLayout->addSpacing(10);
    configLayout->addLayout(voiceLayoutQ);
    configLayout->addSpacing(20);
@@ -222,6 +232,9 @@ void OptionsPage::setOptions(const CourseOptions &options)
    m_voiceTrimBeginA->setValue(options.voiceTrimA);
 
    m_userCombo->setCurrentIndex(m_userCombo->findText(options.user));
+   m_graphicsSearchUrl->setText(options.graphiscSearchUrl);
+   m_graphicsRegex->setText(options.graphiscRegex);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -271,6 +284,8 @@ CourseOptions OptionsPage::getOptions()
    options.voiceGainA = m_voiceGainA->value();
    options.voiceTrimA = m_voiceTrimBeginA->value();
 
+   options.graphiscSearchUrl = m_graphicsSearchUrl->text();
+   options.graphiscRegex = m_graphicsRegex->text();
    return options;
 }
 

@@ -42,9 +42,31 @@ signals:
 private:
    static void DomDoucumentToFile(const QDomDocument &document, const QString &path);
    static void DomDoucumentFromFile(const QString &path, QDomDocument *document);
-   static void generateCourseElement2(const QString &chapterName, const QString &instruction, const QString &question, const QString &answer, const QString &courseFileDirectory, int id, const QString &voiceNameA, int voiceGainA, double voiceTrimA, const QString &voiceNameQ, int voiceGainQ, double voiceTrimQ, bool graphics);
+   static void generateCourseElement2(
+        const QString &chapterName,
+        const QString &instruction,
+        const QString &question,
+        const QString &answer,
+        const QString &courseFileDirectory,
+        int id,
+        const QString &voiceNameA,
+        int voiceGainA,
+        double voiceTrimA,
+        const QString &voiceNameQ,
+        int voiceGainQ,
+        double voiceTrimQ,
+        bool graphics,
+        const QString &searchUrl,
+        const QString &regex);
+
    static QDomDocument createCourseItemDoc (QString chapterTitle, QString instruction, QString question, QString answers, int id, bool voiceA, bool voiceQ, bool graphics);
-   static bool generateGraphics(const QStringList &filePaths, const QString &question);
+   static bool generateGraphics
+   (
+       const QStringList &filePaths,
+       const QStringList &keywords,
+       const QString &searchUrl,
+       const QString &regex
+    );
 
    static void trace (const QString &text, int flags = traceLevel1);
 

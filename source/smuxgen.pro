@@ -16,7 +16,6 @@ SOURCES += main.cpp \
  globalsmuxgentools.cpp \
  globaltracer.cpp \
  coursegenerator.cpp \
- imagedownloader.cpp \
  sapi.cpp \
  smuxgenwidgets.cpp \
  supermemosql.cpp \
@@ -27,7 +26,6 @@ HEADERS += gui.h \
  courseoptions.h \
  coursegenerator.h \
  globaltracer.h \
- imagedownloader.h \
  sapi.h \
  smuxgenwidgets.h \
  supermemosql.h \

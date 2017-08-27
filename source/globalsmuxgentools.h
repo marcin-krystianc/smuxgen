@@ -15,7 +15,7 @@
 const int IMG_WIDTH = 320;
 const int IMG_HEIGHT = 320;
 
-QStringList parseGoogleHtml (const QString &fileName);
+QStringList parseImagesHtml (const QString &fileName, const QString &regex);
 void deleteFile (const QString &fileName);
 bool scalePicture (QString path, int x, int y);
 bool checkIsFileOk(const QString &fileName);
@@ -26,7 +26,7 @@ QString removeAllBetween (const QString &input, const QString &first, const QStr
 QStringList getAllBetween (const QString &input, const QString &first, const QString &second);
 QString removeAllSpecialCharacters (const QString &input, const QStringList &list);
 
-QString getKeyWord (const QString &input); // get keywords for google search
+QStringList getKeyWord (const QString &input); // get keywords for google search
 QString getTranscript (const QString &input); // get text to read
 QString getTextToPrint (const QString &input); // get text to show to user
 

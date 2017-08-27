@@ -18,6 +18,7 @@
 #include <QDate>
 #include <QImage>
 #include <QSqlQuery>
+#include <QUrl>
 
 #include <algorithm>
 #include <set>
@@ -217,7 +218,9 @@ void CourseGenerator::buildTopic
                                 , itemId
                                 , voiceNameA, voiceGainA, voiceTrimA
                                 , voiceNameQ, voiceGainQ, voiceTrimQ
-                                , m_courseTemplate.options.graphics);
+                                , m_courseTemplate.options.graphics
+                                , m_courseTemplate.options.graphiscSearchUrl
+                                , m_courseTemplate.options.graphiscRegex);
       }
    }
 
@@ -240,7 +243,9 @@ void CourseGenerator::generateCourseElement2
       const QString &voiceNameQ,
       int voiceGainQ,
       double voiceTrimQ,
-      bool graphics
+      bool graphics,
+      const QString &searchUrl,
+      const QString &regex
       )
 {
    int voiceIndexA = getVoiceEngineIndex(voiceNameA);
@@ -266,7 +271,13 @@ void CourseGenerator::generateCourseElement2
       QStringList filePaths;
       filePaths.append(mediaDir + getMediaFileName(id)+"m.jpg");
       filePaths.append(mediaDir + getMediaFileName(id)+"n.jpg");
-      generateGraphics(filePaths, question);
+      QStringList keywords = getKeyWord(question);
+      bool success = generateGraphics(filePaths, keywords, searchUrl, regex);
+      if (!success && keywords.count() > 1)
+      {
+          keywords = QStringList(keywords.first());
+          generateGraphics(filePaths, keywords, searchUrl, regex);
+      }
    }
 }
 
@@ -327,29 +338,40 @@ bool CourseGenerator::checkIfNewAnswers(const QString &filePath, const QString &
    QDomDocument doc("");
    QFile docFile(filePath);
    if (!doc.setContent(&docFile)) {
-      trace(QString("cCourseGenerator::checkIfNewAnswers file not exist:")+filePath, traceLevel1);
+      trace(QString("CourseGenerator::checkIfNewAnswers file doesn't exist:")+filePath, traceLevel1);
       return true;
    }
 
    QDomElement rootElement = doc.documentElement();
    QDomNode n = rootElement.firstChildElement("question");
    if (n.isNull())
+   {
+      trace(QString("CourseGenerator::checkIfNewAnswers question doesn't exist:")+filePath, traceLevel1);
       return true;
+   }
 
    QDomNode n1 = n.firstChildElement("spellpad");
    if (n1.isNull())
+   {
+      trace(QString("CourseGenerator::checkIfNewAnswers spellpad doesn't exist:")+filePath, traceLevel1);
       return true;
+   }
 
    QDomElement e = n1.toElement(); // try to convert the node to an element.
    if(e.isNull())
+   {
+      trace(QString("CourseGenerator::checkIfNewAnswers QDomElement is null")+filePath, traceLevel1);
       return true;
+   }
 
    QString oldAnswer = e.attribute("correct", "");
-   if (oldAnswer == answer)
-      return false;
+   if (oldAnswer != answer)
+   {
+       trace(QString("New answers: ")+oldAnswer+":"+answer, traceLevel1);
+       return true;
+   }
 
-   trace(QString("New answers: ")+oldAnswer+":"+answer, traceLevel1);
-   return true;
+   return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -456,23 +478,34 @@ QDomDocument CourseGenerator::createCourseItemDoc
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool CourseGenerator::generateGraphics(const QStringList &filePaths, const QString &question)
+bool CourseGenerator::generateGraphics
+(
+    const QStringList &filePaths,
+    const QStringList &keywords,
+    const QString &searchUrl,
+    const QString &regex
+)
 {
-   QString htmlFilePath = QDir::toNativeSeparators(QDir::tempPath()+"\\google.html");
+   QString htmlFilePath = QDir::toNativeSeparators(QDir::tempPath()+"\\images.html");
+   QString url = searchUrl;
+   url.replace(QString("%%%%%"), QUrl::toPercentEncoding(keywords.join(" ")));
    QStringList arguments;
-   arguments.append(getKeyWord(question));
+   arguments.append(url + " ");
    arguments.append(htmlFilePath);
 
-   if (!runExternalTool("getGoogleHtml.bat", arguments))
+   if (!runExternalTool("getImages.bat", arguments))
       return false;
 
-   QStringList fileUrls = parseGoogleHtml(htmlFilePath);
+   QStringList fileUrls = parseImagesHtml(htmlFilePath, regex);
+   if (fileUrls.count() < 2)
+       return false;
+
    int i = 0;
    while ((fileUrls.count())>0 && (i<filePaths.count())) {
       QString imgFilePath = QDir::toNativeSeparators(filePaths[i]);
 
       QStringList arguments2;
-      arguments2.append(fileUrls.first());
+      arguments2.append(fileUrls.first() + " "); // space to enforce parameter escaping
       arguments2.append(imgFilePath);
 
       runExternalTool("getImage.bat", arguments2);

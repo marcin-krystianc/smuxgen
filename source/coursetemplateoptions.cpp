@@ -110,6 +110,16 @@ CourseOptions CourseOptions::fromString (const QString &line)
          continue;
       }
 
+      if (first == "-graphicsUrl") {
+         options.graphiscSearchUrl = QByteArray::fromBase64(second.toUtf8());
+         continue;
+      }
+
+      if (first == "-graphiscRegex") {
+         options.graphiscRegex = QByteArray::fromBase64(second.toUtf8());
+         continue;
+      }
+
       trace("cCourseTemplateOptions::fromString - Unknown parameter:"+first, traceError);
       continue; // wrong parameters
    }
@@ -133,6 +143,8 @@ QString CourseOptions::toString(const CourseOptions &options)
    ret+= QString("-trimA ") +QString::number(options.voiceTrimA) +" ";
    ret+= QString("-vNameA ") +"\""+options.voiceNameA+"\" ";
    ret+= QString("-gainA ") +QString::number(options.voiceGainA) +" ";
+   ret+= QString("-graphicsUrl ") + options.graphiscSearchUrl.toUtf8().toBase64() +" ";
+   ret+= QString("-graphiscRegex ") + options.graphiscRegex.toUtf8().toBase64() + " ";
 
    if (options.bothDirections) ret+= "-Double ";
    if (options.graphics) ret+= "-Image ";

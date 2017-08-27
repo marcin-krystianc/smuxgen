@@ -14,50 +14,39 @@
 #include <QSettings>
 #include <QProcess>
 #include <QCoreApplication>
+#include <QRegularExpressionMatchIterator>
 
 #include "globalsmuxgentools.h"
 #include "globaltracer.h"
 
 /////////////////////////////////////////////////////////////////////////////
-QStringList parseGoogleHtml (const QString &fileName)
+QStringList parseImagesHtml (const QString &fileName, const QString &regex)
 {
-   QFile inputFile;
-   QStringList retList;
-   QTextStream inputFileStream;
-   QString html;
+   QStringList result;
+   globalTracer.trace(QString("parseImagesHtml: ")+fileName, traceLevel3);
 
-   globalTracer.trace(QString("parseGoogleHtml: ")+fileName, traceLevel3);
-
-   inputFile.setFileName(fileName);
+   QFile inputFile(fileName);
    if (!inputFile.open(QIODevice::ReadOnly)) {
       globalTracer.trace(QString("Cannot open file: ")+fileName, traceError);
-      return retList;
+      return result;
    }
 
+   QTextStream inputFileStream;
    inputFileStream.setDevice(&inputFile);
    inputFileStream.setCodec("UTF-8");
-   html = inputFileStream.readAll();
+   QString html = inputFileStream.readAll();
+   QRegularExpression re(regex);
+   QRegularExpressionMatchIterator i = re.globalMatch(html);
 
-   QString leftBound ("?imgurl=");
-   QString rightBound ("&amp");
-   int leftPos = 0;
-   int pos = 0;
+   while (i.hasNext()) {
+       QRegularExpressionMatch match = i.next();
+       QString word = match.captured(1);
+       result << word;
 
-   while ((leftPos = html.indexOf(leftBound, pos)) != -1) {
-      int rightPos = html.indexOf(rightBound, leftPos);
-      globalTracer.trace(QString("leftPos: ")+leftPos+QString(" rightPos: ")+rightPos, traceLevel3);
-      if (rightPos == -1)
-         break;
-
-      pos = rightPos;
-      QString tmp = html.mid(leftPos+leftBound.length(), rightPos-leftPos-leftBound.length());
-      if (tmp.indexOf("%")!= -1)
-         continue;
-      globalTracer.trace(QString("Img url: ")+tmp, traceLevel3);
-
-      retList.append(tmp);
+       globalTracer.trace(QString("parseImagesHtml: found link:")+word, traceLevel3);
    }
-   return retList;
+
+   return result;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,7 +75,7 @@ QString getTextToPrint (const QString &input) // get text to show to user
 }
 
 /////////////////////////////////////////////////////////////////////////////
-QString getKeyWord (const QString &input)
+QStringList getKeyWord (const QString &input)
 {
    const QString A = QString::fromUtf8("ĄĆŻŹŚŃÓŁĘąćżźśńółę!@#$%^&*()_- = +, ./<>?; ':\"[]{}|");
    const QString B = QString::fromUtf8("ACZXSNOLEaczzsnole                                   ");
@@ -125,7 +114,7 @@ QString getKeyWord (const QString &input)
       }
    }
 
-   return (retList.join(" "));
+   return retList;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -199,7 +188,7 @@ bool checkIsFileOk(const QString &fileName)
    if (fileObject.size() > 0)
       return true;
 
-   globalTracer.trace(QString("NOT OK: ")+fileName, traceLevel2);
+   globalTracer.trace(QString("NOT OK: ")+fileName, traceLevel1);
    return false;
 }
 

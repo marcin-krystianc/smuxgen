@@ -22,6 +22,9 @@ struct CourseOptions {
    bool bothDirections; // make also alternative course
    bool graphics; // get Images
 
+   QString graphiscSearchUrl;
+   QString graphiscRegex;
+
    QString user;
    QString courseName;
 

@@ -23,11 +23,11 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QPlainTextEdit>
+#include <QMutex>
 
 #include "courseoptions.h"
 #include "supermemosql.h"
 #include "globaltracer.h"
-#include "imagedownloader.h"
 #include "coursetemplate.h"
 
 class ContentTable;
@@ -55,6 +55,9 @@ private:
    QComboBox *m_courseCombo;
    QLineEdit *m_subnameEdit;
    QLineEdit *m_instructionEdit;
+
+   QLineEdit *m_graphicsSearchUrl;
+   QLineEdit *m_graphicsRegex;
 
    QComboBox *m_voiceComboQ;
    QSpinBox *m_voiceGainQ;
